@@ -1,3 +1,5 @@
+/*Class Description: */
+
 public class Switch {
     private Vector2 position;
     private float radius;

@@ -1,3 +1,5 @@
+/*Class Description: */
+
 public class Goal
 {
     private Rectangle bounds;

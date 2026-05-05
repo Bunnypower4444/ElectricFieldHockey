@@ -1,3 +1,5 @@
+/*Class Description: */
+
 public class UniformEField {
     private Vector2 strength;
 

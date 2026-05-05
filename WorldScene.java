@@ -1,3 +1,5 @@
+/*Class Description: */
+
 public class WorldScene {
 
     private ArrayList<Actor> actors;

@@ -1,3 +1,5 @@
+/*Class Description: */
+
 public class TotalBField {
 
     private Vector3[][] fieldDisplayPoints(){}

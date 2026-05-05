@@ -1,3 +1,5 @@
+/*Class Description: */
+
 public class Puck{
     private float charge;
     private static final MASS;

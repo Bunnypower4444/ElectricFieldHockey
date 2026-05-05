@@ -1,3 +1,5 @@
+/*Class Description: */
+
 public class Level {
     private HashMap<String, float>[] objects;
 

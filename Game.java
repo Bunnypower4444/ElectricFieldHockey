@@ -1,3 +1,5 @@
+/*Class Description: */
+
 public class Game{
     private Stack<Scene> scenes;
     private Game instance;
