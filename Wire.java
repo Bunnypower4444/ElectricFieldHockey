@@ -1,6 +1,6 @@
 /*Class Description: */
 
-public class Wire {
+public class Wire extends Actor implements HasBField{
     private Vector2 current;
     private Vector2 position;
     private boolean enabled;

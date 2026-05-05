@@ -1,6 +1,6 @@
 /*Class Description: */
 
-public class Game{
+public class Game extends JPanel implements ActionListener{
     private Stack<Scene> scenes;
     private Game instance;
 

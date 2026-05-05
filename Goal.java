@@ -1,6 +1,6 @@
 /*Class Description: */
 
-public class Goal
+public class Goal extends Actor
 {
     private Rectangle bounds;
 

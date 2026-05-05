@@ -1,6 +1,6 @@
 /*Class Description: */
 
-public class Charge{
+public class Charge extends Actor implements HasEField{
     private float charge;
     private Vector2 position;
 

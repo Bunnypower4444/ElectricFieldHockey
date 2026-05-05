@@ -1,6 +1,6 @@
 /*Class Description: */
 
-public class Switch {
+public class Switch extends Actor{
     private Vector2 position;
     private float radius;
     private Wire wire;

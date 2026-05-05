@@ -1,6 +1,6 @@
 /*Class Description: */
 
-public abstract Actor{
+public abstract class Actor{
     
     private WorldScene world;
 

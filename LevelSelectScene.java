@@ -1,6 +1,6 @@
 /*Class Description: */
 
-public class LevelSelectScene
+public class LevelSelectScene extends Scene
 {
     private ArrayList<Level> levels;
 

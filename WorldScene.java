@@ -1,6 +1,6 @@
 /*Class Description: */
 
-public class WorldScene {
+public class WorldScene extends Scene{
 
     private ArrayList<Actor> actors;
     private HashMap<Class, Actor> trackedActors;
