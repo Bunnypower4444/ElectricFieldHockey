@@ -1,8 +1,13 @@
-/*Class Description: */
 
-public class TotalBField extends Actor implements HasBField{
+/**
+ * 
+ */
+public class TotalBField extends Actor implements HasBField
+{
+    private Vector3[][] fieldDisplayPoints();
 
-    private Vector3[][] fieldDisplayPoints(){}
-
-    public void recalculateDisplays(){}
+    public void recalculateDisplays()
+    {
+        
+    }
 }

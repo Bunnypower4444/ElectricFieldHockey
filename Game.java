@@ -1,28 +1,44 @@
-/*Class Description: */
 
-public class Game extends JPanel implements ActionListener{
+/**
+ * 
+ */
+public class Game extends JPanel implements ActionListener
+{
     private Stack<Scene> scenes;
     private Game instance;
 
-    private Game(){
+    private Game()
+    {
 
     }
-    public static void createGame(){
+
+    public static void createGame()
+    {
 
     }
-    public static Game instance(){
+
+    public static Game instance()
+    {
 
     }
-    public void pushScene(Scene s){
+
+    public void pushScene(Scene s)
+    {
 
     }
-    public void popScene(){
+
+    public void popScene()
+    {
 
     }
-    public void actionPerformed(ActionEvent e){
+
+    public void actionPerformed(ActionEvent e)
+    {
 
     }
-    public void paintComponent(Graphics2D g){
+
+    public void paintComponent(Graphics2D g)
+    {
         
     }
 }

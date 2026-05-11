@@ -1,5 +1,11 @@
-public class ElectricFieldHockey{
-    public static void main(String[] args){
+
+/**
+ * 
+ */
+public class ElectricFieldHockey
+{
+    public static void main(String[] args)
+    {
         
     }
 }

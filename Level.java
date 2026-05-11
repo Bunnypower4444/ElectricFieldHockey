@@ -1,12 +1,17 @@
-/*Class Description: */
 
+/**
+ * 
+ */
 public class Level {
-    private HashMap<String, float>[] objects;
+    private HashMap<String, String>[] objects;
 
-    public Level(Strem data){
+    public Level(Stream data)
+    {
 
     }
-    public loadLevel(WorldScene world){
+
+    public loadLevel(WorldScene world)
+    {
         
     }
 }

@@ -1,13 +1,18 @@
-/*Class Description: */
 
+/**
+ * 
+ */
 public class LevelSelectScene extends Scene
 {
-    private ArrayList<Level> levels;
+    private Level[] levels;
 
-    public void update(){
+    public void update()
+    {
 
     }
-    public void render(Graphics 2D g){
+
+    public void render(Graphics2D g)
+    {
 
     }
 }

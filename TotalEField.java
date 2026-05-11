@@ -1,6 +1,13 @@
-/*Class Description: */
 
-public class TotalEField extends Actor implements HasEField{
-    private Vector2[][] fieldDisplayPoints(){}
-    public void recalculateDisplays(){};
+/**
+ * 
+ */
+public class TotalEField extends Actor implements HasEField
+{
+    private Vector2[][] fieldDisplayPoints();
+    
+    public void recalculateDisplays()
+    {
+
+    }
 }

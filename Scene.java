@@ -1,7 +1,10 @@
-/*Class Description: */
 
-public abstract class Scene{
-    public void abstract update(){}
-    public void abstract render(Graphics3D g){}
+/**
+ * 
+ */
+public abstract class Scene
+{
+    public abstract void update();
+    public abstract void render(Graphics3D g);
 }
 

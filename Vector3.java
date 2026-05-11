@@ -1,0 +1,8 @@
+
+/**
+ * 
+ */
+public class Vector3
+{
+    
+}

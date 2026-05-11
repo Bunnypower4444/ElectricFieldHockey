@@ -1,13 +1,32 @@
-/*Class Description: */
 
-public abstract class Actor{
-    
+/**
+ * 
+ */
+public abstract class Actor
+{
     private WorldScene world;
 
-    /*Method description: */    
-    public void update();
+    public void removeFromWorld()
+    {
 
-    /*Method description: */
-    public void render(Graphics g);
+    }
 
+    public void addToWorld()
+    {
+
+    }
+
+    public WorldScene getWorld()
+    {
+
+    }
+
+    public void update() {}
+    
+    public void render(Graphics2D g) {}
+    
+    public int getZIndex()
+    {
+        return 0;
+    }
 }
