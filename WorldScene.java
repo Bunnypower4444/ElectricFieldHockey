@@ -1,25 +1,32 @@
 
+import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+
 /**
  * 
  */
 public class WorldScene extends Scene
 {
-    private ArrayList<Actor> actors;
-    private HashMap<Class, LinkedList<Actor>> trackedActors;
-    private float globalTimer;
+    private ArrayList<Actor> actors = new ArrayList<>();
+    private HashMap<Class<Actor>, LinkedList<Actor>> trackedActors = new HashMap<>();
+    private float globalTimer = 0;
 
-    public boolean paused;
+    public boolean paused = true;
 
     public WorldScene(Level level)
     {
-
+        
     }
 
+    @Override
     public void update()
     {
 
     }
 
+    @Override
     public void render(Graphics2D g)
     {
 
@@ -27,25 +34,25 @@ public class WorldScene extends Scene
 
     public float globalTimer()
     {
-
+        return globalTimer;
     }
 
     public float deltaTime()
     {
-
+        return Game.instance().deltaTime();
     }
 
     public void addActor()
     {
-
+        
     }
 
-    public void removeActor()
+    public void removeActor(Actor actor)
     {
 
     }
 
-    public LinkedList<Actor> getActorsOfType(Class c)
+    public LinkedList<Actor> getActorsOfType(Class<Actor> c)
     {
 
     }
@@ -67,6 +74,6 @@ public class WorldScene extends Scene
 
     public void loadLevel(Level level)
     {
-
+        level.loadLevel(this);
     }
 }
