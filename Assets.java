@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.awt.image.BufferedImage;
 
 /**
  * 
@@ -9,7 +11,7 @@ public class Assets
 
     public static void load()
     {
-
+        
     }
 
     public static Level getLevel(int num)

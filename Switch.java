@@ -15,7 +15,8 @@ public class Switch extends Actor
 
     public boolean collision(Puck puck)
     {
-
+        boolean bool = false;
+        return bool; /*FIX THIS */
     }
 
     public void activate()

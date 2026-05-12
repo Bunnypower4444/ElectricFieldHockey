@@ -10,4 +10,9 @@ public class UniformBField extends Actor implements HasBField
     {
 
     }
+
+    public Vector3 getFieldAt(Vector2 position){
+        Vector3 vector = new Vector3();
+        return vector; /*FIX THIS */
+    }
 }
