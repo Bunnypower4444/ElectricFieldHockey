@@ -11,12 +11,12 @@ public abstract class Actor
 
     public void removeFromWorld()
     {
-
+        world = null;
     }
 
-    public void addToWorld()
+    public void addToWorld(WorldScene world)
     {
-
+        this.world = world;
     }
 
     public WorldScene getWorld()

@@ -1,4 +1,6 @@
 
+import java.awt.Point;
+
 /**
  * 
  */
@@ -10,6 +12,12 @@ public class Vector2
     {
         this.x = x;
         this.y = y;
+    }
+
+    public Vector2(Point p)
+    {
+        x = p.x;
+        y = p.y;
     }
 
     public static Vector2 fromAngle(float angle, float magnitude)
