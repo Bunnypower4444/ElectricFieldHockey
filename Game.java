@@ -32,6 +32,8 @@ public class Game extends JPanel implements ActionListener, MouseListener
     {
         timer = new Timer((int)(1000 / FPS), this);
 
+        addMouseListener(this);
+
         pushScene(new TitleScene());
 
         timer.start();
