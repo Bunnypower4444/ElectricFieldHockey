@@ -11,7 +11,7 @@ public class UniformEField extends Actor implements HasEField
         
     }
     public Vector2 getFieldAt(Vector2 position){
-        Vector2 vector = new Vector2();
+        Vector2 vector = strength;
         return vector; /*FIX THIS */
     }
 
