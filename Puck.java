@@ -6,6 +6,7 @@ public class Puck extends Actor
 {
     private float charge;
     private static final float MASS = 1;
+    private static final int RADIUS = 1;
     private Vector2 position;
     private Vector2 initialPosition;
 
@@ -13,11 +14,16 @@ public class Puck extends Actor
     {
 
         initialPosition = position;
+        this.charge = charge;
+        this.position = position;
     }
     
     public Rectangle collisionBox()
     {
-        
+        int startX = (int)position.x();
+        int startY = (int)position.y();
+        Rectangle box = new Rectangle(startX - RADIUS, startY - RADIUS, 2*RADIUS, 2*RADIUS);
+        return(box);
     }
 
     public void reset()
