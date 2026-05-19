@@ -28,6 +28,10 @@ public class Game extends JPanel implements ActionListener, MouseListener
 
     private static final float FPS = 60;
 
+    public static final int WIDTH = 1280;
+    public static final int HEIGHT = 720;
+    public static final float RELATIVE_SCALE = HEIGHT / 720;
+
     private Game()
     {
         timer = new Timer((int)(1000 / FPS), this);

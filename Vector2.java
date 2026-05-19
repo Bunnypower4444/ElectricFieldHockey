@@ -20,9 +20,9 @@ public class Vector2
         y = p.y;
     }
 
-    public static Vector2 fromAngle(float angle, float magnitude)
+    public static Vector2 createPolar(float angle, float length)
     {
-        return new Vector2((float)(magnitude * Math.cos(angle)), (float)(magnitude * Math.sin(angle)));
+        return new Vector2((float)(length * Math.cos(angle)), (float)(length * Math.sin(angle)));
     }
 
     public static Vector2 zero()

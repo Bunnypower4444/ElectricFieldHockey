@@ -5,12 +5,15 @@ import java.awt.Rectangle;
 public class Puck extends Actor
 {
     private float charge;
-    private static final double MASS = 1;
+    private static final float MASS = 1;
     private static final int RADIUS = 1;
     private Vector2 position;
+    private Vector2 initialPosition;
 
     public Puck(float charge, Vector2 position)
     {
+
+        initialPosition = position;
         this.charge = charge;
         this.position = position;
     }
@@ -21,5 +24,10 @@ public class Puck extends Actor
         int startY = (int)position.y();
         Rectangle box = new Rectangle(startX - RADIUS, startY - RADIUS, 2*RADIUS, 2*RADIUS);
         return(box);
+    }
+
+    public void reset()
+    {
+        position = initialPosition;
     }
 }

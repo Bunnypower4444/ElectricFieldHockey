@@ -27,11 +27,11 @@ public class Vector3
         this.z = 0;
     }
 
-    public static Vector3 fromAngle(float theta, float phi, float magnitude)
+    public static Vector3 createPolar(float theta, float phi, float length)
     {
         return new Vector3(
-            Vector2.fromAngle(theta, (float)(magnitude * Math.cos(phi))),
-            (float)(magnitude * Math.sin(phi)));
+            Vector2.createPolar(theta, (float)(length * Math.cos(phi))),
+            (float)(length * Math.sin(phi)));
     }
 
     public static Vector3 zero()
