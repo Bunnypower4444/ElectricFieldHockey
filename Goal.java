@@ -7,11 +7,12 @@ public class Goal extends Actor
     private Rectangle bounds;
     private static final int WIDTH = 10;
 
+    //Initializes the boundary for goal
     public Goal(Rectangle bounds)
     {
         this.bounds = bounds;
     }
-
+    //Checks if the puck is inside the goal
     public boolean goalCollision(Puck puck)
     {
         int x = (int)bounds.getX();
@@ -22,6 +23,7 @@ public class Goal extends Actor
 
         return(puck.collisionBox().intersects(goal));
     }
+    // Checks is the puck collides with the wall's of the goal
     public boolean wallCollision(Puck puck)
     {
         if(goalCollision(puck)){

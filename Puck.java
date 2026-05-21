@@ -12,6 +12,7 @@ public class Puck extends Actor implements RequireReset
     private Vector2 position;
     private Vector2 initialPosition;
 
+    //Initializes the charge, and position
     public Puck(float charge, Vector2 position)
     {
 
@@ -26,6 +27,7 @@ public class Puck extends Actor implements RequireReset
 
     }
     
+    //Creates a box around the puck for detecting collision
     public Rectangle collisionBox()
     {
         int startX = (int)position.x();

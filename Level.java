@@ -18,8 +18,8 @@ public class Level {
     {
 
     }
-
-    public loadLevel(WorldScene world)
+    //Loads the given world scene with a level
+    public void loadLevel(WorldScene world)
     {
         for(HashMap<String, String> obj : objects){
             Actor actor = createActor(obj);
@@ -27,7 +27,7 @@ public class Level {
         }
         
     }
-
+   // Creates the actors in the world scene
     private Actor createActor(HashMap<String, String> attrs) {
         String objType = attrs.get("Type");
         switch(objType){
@@ -37,19 +37,40 @@ public class Level {
                 float y = Float.parseFloat(attrs.get("Y"));
                 Vector2 pos = new Vector2(x, y);
                 return(new Puck(charge, pos));
-                break;
             }
 
             case "Goal":{
-                int x = Integer.parseFloat(attrs.get("X"));
-                int y = Integer.parseFloat(attrs.get("Y"));
-                int w = Integer.parseFloat(attrs.get("W"));
-                int h = Integer.parseFloat(attrs.get("H"));
+                int x = Integer.parseInt(attrs.get("X"));
+                int y = Integer.parseInt(attrs.get("Y"));
+                int w = Integer.parseInt(attrs.get("W"));
+                int h = Integer.parseInt(attrs.get("H"));
                 Rectangle rec = new Rectangle(x, y, w, h);
                 return(new Goal(rec));
             }
+
+            case "Wall":{
+                int x = Integer.parseInt(attrs.get("X"));
+                int y = Integer.parseInt(attrs.get("Y"));
+                int w = Integer.parseInt(attrs.get("W"));
+                int h = Integer.parseInt(attrs.get("H"));
+                Rectangle rec = new Rectangle(x, y, w, h);
+                return(new Wall(rec));
+
+            }
+            case "Wire":{
+                float c = Float.parseFloat(attrs.get("C"));
+                float x1 = Float.parseFloat(attrs.get("X1"));
+                float y1 = Float.parseFloat(attrs.get("Y1"));
+                Vector2 start = new Vector2(x1, y1);
+                float x2 = Float.parseFloat(attrs.get("X2"));
+                float y2 = Float.parseFloat(attrs.get("Y2"));
+                Vector2 end = new Vector2(x2, y2);
+                return(new Wire(c, start, end));
+
+            }
         }
-        
+        return(null);
+   
     }
 
 }
