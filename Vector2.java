@@ -107,7 +107,12 @@ public class Vector2
 
     public Vector2 normalize()
     {
-        return div(length());
+        return equals(Vector2.zero()) ? Vector2.zero() : div(length());
+    }
+
+    public Point toPoint()
+    {
+        return new Point((int)x, (int)y);
     }
 
     @Override

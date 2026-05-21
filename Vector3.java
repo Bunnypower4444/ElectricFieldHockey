@@ -54,6 +54,11 @@ public class Vector3
         return z;
     }
 
+    public Vector2 xy()
+    {
+        return new Vector2(x, y);
+    }
+
     public Vector3 withX(float x)
     {
         return new Vector3(x, this.y, this.z);
@@ -67,11 +72,6 @@ public class Vector3
     public Vector3 withZ(float z)
     {
         return new Vector3(this.x, this.y, z);
-    }
-
-    public Vector2 xy()
-    {
-        return new Vector2(x, y);
     }
 
     public float angleTheta()
@@ -141,7 +141,7 @@ public class Vector3
 
     public Vector3 normalize()
     {
-        return div(length());
+        return equals(Vector3.zero()) ? Vector3.zero() : div(length());
     }
 
     @Override
