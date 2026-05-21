@@ -1,8 +1,10 @@
+
 import java.awt.Rectangle;
+
 /**
  * 
  */
-public class Puck extends Actor
+public class Puck extends Actor implements RequireReset
 {
     private float charge;
     private static final float MASS = 1;
@@ -17,6 +19,12 @@ public class Puck extends Actor
         this.charge = charge;
         this.position = position;
     }
+
+    @Override
+    public void lateUpdate()
+    {
+
+    }
     
     public Rectangle collisionBox()
     {
@@ -26,6 +34,7 @@ public class Puck extends Actor
         return(box);
     }
 
+    @Override
     public void reset()
     {
         position = initialPosition;

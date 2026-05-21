@@ -2,7 +2,7 @@
 /**
  * 
  */
-public class Switch extends Actor
+public class Switch extends Actor implements RequireReset
 {
     private Vector2 position;
     private float radius;
@@ -22,5 +22,12 @@ public class Switch extends Actor
     public void activate()
     {
         
+    }
+
+    @Override
+    public void reset()
+    {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'reset'");
     }
 }
