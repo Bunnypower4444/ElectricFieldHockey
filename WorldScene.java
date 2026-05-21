@@ -1,6 +1,7 @@
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,19 +13,49 @@ import java.util.LinkedList;
 public class WorldScene extends Scene
 {
     private ArrayList<Actor> actors = new ArrayList<>();
-    private HashMap<Class<Actor>, LinkedList<Actor>> trackedActors = new HashMap<>();
+    private HashMap<Class<?>, LinkedList<Actor>> trackedActors = new HashMap<>();
     private float globalTimer = 0;
 
-    public boolean paused = true;
+    private static enum GameState { Initial, Paused, Unpaused, Failed, Won };
+
+    private GameState gameState = GameState.Initial;
+
+    private UIButton playButton, resetButton;
 
     public WorldScene(Level level)
     {
         level.loadLevel(this);
+
+        playButton = new UIButton(new Rectangle(
+            (int)(200 * Game.RELATIVE_SCALE),
+            Game.HEIGHT - (int)(125 * Game.RELATIVE_SCALE),
+            (int)(350 * Game.RELATIVE_SCALE),
+            Game.HEIGHT - (int)(75 * Game.RELATIVE_SCALE)
+            ), "Play", Color.GRAY,
+            () -> { setPaused(!getPaused()); });
+
+        resetButton = new UIButton(new Rectangle(
+            (int)(400 * Game.RELATIVE_SCALE),
+            Game.HEIGHT - (int)(125 * Game.RELATIVE_SCALE),
+            (int)(550 * Game.RELATIVE_SCALE),
+            Game.HEIGHT - (int)(75 * Game.RELATIVE_SCALE)
+            ), "Reset", Color.GRAY,
+            this::reset);
     }
 
     @Override
     public void update()
     {
+        globalTimer += deltaTime();
+
+        if (Game.instance().mouseClicked())
+        {
+            if (playButton.mouseOver(Game.instance().mousePos()))
+                playButton.click();
+            if (resetButton.mouseOver(Game.instance().mousePos()))
+                resetButton.click();
+        }
+
         for (Actor a : actors)
             a.update();
     }
@@ -36,6 +67,16 @@ public class WorldScene extends Scene
 
         for (Actor a : actors)
             a.render(g);
+
+        //#region UI
+
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(0, Game.HEIGHT - (int)(200 * Game.RELATIVE_SCALE), Game.WIDTH, (int)(200 * Game.RELATIVE_SCALE));
+
+        playButton.render(g);
+        resetButton.render(g);
+
+        //#endregion
     }
 
     public float globalTimer()
@@ -59,7 +100,7 @@ public class WorldScene extends Scene
         actors.add(index, actor);
         actor.addToWorld(this);
 
-        for (Class<Actor> type : trackedActors.keySet())
+        for (Class<?> type : trackedActors.keySet())
         {
             if (type.isAssignableFrom(actor.getClass()))
                 trackedActors.get(type).add(actor);
@@ -71,17 +112,17 @@ public class WorldScene extends Scene
         actors.remove(actor);
         actor.removeFromWorld();
 
-        for (Class<Actor> type : trackedActors.keySet())
+        for (Class<?> type : trackedActors.keySet())
         {
             if (type.isAssignableFrom(actor.getClass()))
                 trackedActors.get(type).remove(actor);
         }
     }
 
-    public LinkedList<Actor> getActorsOfType(Class<Actor> c)
+    public <T> LinkedList<T> getActorsOfType(Class<T> c)
     {
         if (trackedActors.keySet().contains(c))
-            return trackedActors.get(c);
+            return castActorList(trackedActors.get(c));
 
         LinkedList<Actor> actorsOfType = new LinkedList<>();
         for (Actor a : actors)
@@ -92,23 +133,76 @@ public class WorldScene extends Scene
 
         trackedActors.put(c, actorsOfType);
 
-        return actorsOfType;
+        return castActorList(actorsOfType);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> LinkedList<T> castActorList(LinkedList<Actor> actors)
+    {
+        LinkedList<T> casted = new LinkedList<T>();
+        for (Actor a : actors)
+        {
+            casted.add((T)a);
+        }
+
+        return casted;
+    }
+
+    public boolean getPaused()
+    {
+        return gameState == GameState.Paused
+            || gameState == GameState.Failed || gameState == GameState.Won;
+    }
+
+    public void setPaused(boolean paused)
+    {
+        switch (gameState)
+        {
+            case Initial:
+                if (!paused)
+                    gameState = GameState.Unpaused;
+                break;
+            
+            case Unpaused:
+            case Paused:
+                gameState = paused ? GameState.Paused : GameState.Unpaused;
+                if (paused)
+                    playButton.setText("Play");
+                else
+                    playButton.setText("Pause");
+                break;
+            
+            default:
+                break;
+        }
+    }
+
+    public boolean gameStarted()
+    {
+        return gameState != GameState.Initial;
     }
 
     public void reset()
     {
         globalTimer = 0;
-        paused = true;
+        gameState = GameState.Initial;
+
+        for (RequireReset p : getActorsOfType(RequireReset.class))
+        {
+            p.reset();
+        }
     }
 
     public void levelComplete()
     {
-
+        if (gameState != GameState.Failed)
+            gameState = GameState.Won;
     }
 
     public void levelFail()
     {
-
+        if (gameState != GameState.Won)
+            gameState = GameState.Failed;
     }
 
     public void loadLevel(Level level)
