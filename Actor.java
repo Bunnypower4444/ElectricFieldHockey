@@ -24,10 +24,9 @@ public abstract class Actor
         return world;
     }
 
-    public void update()
-    {
-        
-    }
+    public void update() {}
+
+    public void lateUpdate() {}
     
     public void render(Graphics2D g) {}
     
