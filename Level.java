@@ -18,7 +18,7 @@ public class Level {
     {
 
     }
-
+    //Loads the given world scene with a level
     public void loadLevel(WorldScene world)
     {
         for(HashMap<String, String> obj : objects){
@@ -27,7 +27,7 @@ public class Level {
         }
         
     }
-
+   // Creates the actors in the world scene
     private Actor createActor(HashMap<String, String> attrs) {
         String objType = attrs.get("Type");
         switch(objType){

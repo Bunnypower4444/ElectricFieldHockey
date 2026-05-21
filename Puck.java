@@ -10,6 +10,7 @@ public class Puck extends Actor
     private Vector2 position;
     private Vector2 initialPosition;
 
+    //Initializes the charge, and position
     public Puck(float charge, Vector2 position)
     {
 
@@ -18,6 +19,7 @@ public class Puck extends Actor
         this.position = position;
     }
     
+    //Creates a box around the puck for detecting collision
     public Rectangle collisionBox()
     {
         int startX = (int)position.x();
