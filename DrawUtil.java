@@ -5,9 +5,14 @@ import java.awt.Point;
 
 public class DrawUtil
 {
+    public static void fillCircle(Graphics2D g, Point center, int radius)
+    {
+        g.fillOval(center.x - radius, center.y - radius, 2 * radius, 2 * radius);
+    }
+
     public static void drawCircle(Graphics2D g, Point center, int radius)
     {
-        g.fillOval(center.x, center.y, 2 * radius, 2 * radius);
+        g.drawOval(center.x - radius, center.y - radius, 2 * radius, 2 * radius);
     }
 
     public static void drawText(Graphics2D g, Vector2 pos, String text, Vector2 justify)
