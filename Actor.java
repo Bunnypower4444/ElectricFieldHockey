@@ -9,19 +9,14 @@ public abstract class Actor
 {
     private WorldScene world;
 
-    public void removeFromWorld()
-    {
-        world = null;
-    }
-
-    public void addToWorld(WorldScene world)
-    {
-        this.world = world;
-    }
-
     public WorldScene getWorld()
     {
         return world;
+    }
+
+    public void setWorld(WorldScene world)
+    {
+        this.world = world;
     }
 
     public void update() {}
