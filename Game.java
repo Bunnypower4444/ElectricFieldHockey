@@ -3,7 +3,8 @@ import java.util.Stack;
 
 import javax.swing.Timer;
 import javax.swing.JPanel;
-
+import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
@@ -28,28 +29,29 @@ public class Game extends JPanel implements ActionListener, MouseListener
 
     private static final float FPS = 60;
 
-    public static final int WIDTH = 1200;
-    public static final int HEIGHT = 900;
-    public static final float RELATIVE_SCALE = HEIGHT / 900;
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 600;
+    public static final float RELATIVE_SCALE = HEIGHT / 900f;
 
     private Game()
     {
+        instance = this;
         timer = new Timer((int)(1000 / FPS), this);
 
         addMouseListener(this);
 
-        pushScene(new TitleScene());
-
         timer.start();
         lastFrameTimeMillis = System.currentTimeMillis();
+
+        pushScene(new TitleScene());
     }
 
     public static void createGame()
     {
-        if (instance == null)
+        if (instance != null)
             throw new IllegalStateException("Game has already been created");
 
-        instance = new Game();
+        new Game();
     }
 
     public static Game instance()
@@ -102,24 +104,48 @@ public class Game extends JPanel implements ActionListener, MouseListener
         return mousePressed;
     }
 
+    private Vector2 getRelativeMousePosition()
+    {
+        Vector2 pos = new Vector2(MouseInfo.getPointerInfo().getLocation());
+        Container c = this;
+        while (true)
+        {
+            pos = pos.sub(new Vector2(c.getLocation()));
+            if (c instanceof ElectricFieldHockey)
+                break;
+            c = c.getParent();
+        }
+
+        return pos;
+    }
+
     public void actionPerformed(ActionEvent e)
     {
         long currentTimeMillis = System.currentTimeMillis();
         deltaTime = (currentTimeMillis - lastFrameTimeMillis) / 1000f;
 
-        mousePos = new Vector2(MouseInfo.getPointerInfo().getLocation());
+        mousePos = getRelativeMousePosition();
+
+        boolean pMouseClicked = mouseClicked;
+        boolean pMousePressed = mousePressed;
         
         getCurrentScene().update();
 
-        mouseClicked = false;
-        mousePressed = false;
+        if (pMouseClicked)
+            mouseClicked = false;
+        if (pMousePressed)
+            mousePressed = false;
 
         lastFrameTimeMillis = currentTimeMillis;
+
+        repaint();
     }
 
-    public void paintComponent(Graphics2D g)
+    @Override
+    public void paintComponent(Graphics g)
     {
-        getCurrentScene().render(g);
+        super.paintComponent(g);
+        getCurrentScene().render((Graphics2D)g);
     }
 
     private Scene getCurrentScene()
@@ -132,10 +158,7 @@ public class Game extends JPanel implements ActionListener, MouseListener
     }
 
     @Override
-    public void mouseClicked(MouseEvent e)
-    {
-        mouseClicked = true;
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
     public void mousePressed(MouseEvent e)
@@ -148,6 +171,7 @@ public class Game extends JPanel implements ActionListener, MouseListener
     public void mouseReleased(MouseEvent e)
     {
         mouseDown = false;
+        mouseClicked = true;
     }
 
     @Override
