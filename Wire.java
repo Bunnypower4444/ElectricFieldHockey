@@ -9,7 +9,7 @@ import java.awt.Point;
  */
 public class Wire extends Actor implements HasBField, RequireReset
 {
-    private static final float LINE_WIDTH = 15;
+    private static final float LINE_WIDTH = 15 * Game.RELATIVE_SCALE;
     private static final Color CURRENT_ON = new Color(214, 180, 11);
     private static final Color CURRENT_OFF = Color.DARK_GRAY;
 
