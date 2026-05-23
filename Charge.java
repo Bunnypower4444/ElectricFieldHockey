@@ -1,5 +1,7 @@
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 /**
@@ -12,6 +14,8 @@ public class Charge extends Actor implements HasEField
     private static final Color NEGATIVE = Color.BLUE;
     private static final Color NEUTRAL = Color.DARK_GRAY;
 
+    public static final float ELEMENTARY_CHARGE = 1.602176634E-19f;
+
     private float charge;
     private Vector2 position;
     private boolean fixed;
@@ -22,6 +26,11 @@ public class Charge extends Actor implements HasEField
         this.charge = charge;
         this.position = position;
         this.fixed = fixed;
+    }
+
+    public boolean isFixed()
+    {
+        return fixed;
     }
 
     @Override
@@ -38,17 +47,32 @@ public class Charge extends Actor implements HasEField
         if (!getWorld().gameStarted()
             && dragOffset != null && Game.instance().mouseDown())
             position = Game.instance().mousePos().add(dragOffset);
-        else
+        else if (dragOffset != null)
+        {
             dragOffset = null;
+
+            // remove this charge if the mouse is released over a ChargeBag
+            if (getWorld().getActorsOfType(ChargeBag.class).get(0)
+                .positionInBounds(Game.instance().mousePos()))
+                getWorld().removeActor(this);
+        }
     }
 
     @Override
     public void render(Graphics2D g)
     {
         g.setColor(getColor());
-        DrawUtil.drawCircle(g, position.toPoint(), RADIUS);
-        
+        DrawUtil.fillCircle(g, position.toPoint(), RADIUS);
+
+        if (fixed)
+        {
+            g.setStroke(new BasicStroke(3 * Game.RELATIVE_SCALE));
+            g.setColor(Color.BLACK);
+            DrawUtil.drawCircle(g, position.toPoint(), RADIUS);
+        }
+
         g.setColor(Color.WHITE);
+        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(0.85 * RADIUS)));
         DrawUtil.drawText(g, position, getText(), new Vector2(0.5f, 0.5f));
     }
 
