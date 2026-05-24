@@ -28,8 +28,8 @@ public class Wire extends Actor implements HasBField, RequireReset
         Vector2[] renderPoints = DrawUtil.getInfiniteLineEndpoints(position, this.current);
         if (renderPoints != null)
         {
-            renderPoint1 = DrawUtil.processVector(renderPoints[0]).toPoint();
-            renderPoint2 = DrawUtil.processVector(renderPoints[1]).toPoint();
+            renderPoint1 = DrawUtil.worldToScreen(renderPoints[0]).toPoint();
+            renderPoint2 = DrawUtil.worldToScreen(renderPoints[1]).toPoint();
         }
     }
 
@@ -51,7 +51,7 @@ public class Wire extends Actor implements HasBField, RequireReset
 
     public Color getColor()
     {
-        return (enabled && !current.equals(Vector2.zero()))
+        return (enabled && !current.equals(Vector2.zero))
             ? CURRENT_ON : CURRENT_OFF;
     }
 

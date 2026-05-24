@@ -21,7 +21,7 @@ public class Game extends JPanel implements ActionListener, MouseListener
     private Timer timer;
     private long lastFrameTimeMillis;
     private float deltaTime = 0;
-    private Vector2 mousePos = Vector2.zero();
+    private Vector2 mousePos = Vector2.zero;
     private boolean mouseDown = false;
     private boolean mouseClicked = false;
     private boolean mousePressed = false;

@@ -25,7 +25,7 @@ public class ElectricFieldHockey extends JFrame
         EFH.setDefaultCloseOperation(EXIT_ON_CLOSE);
         EFH.setVisible(true);
 
-        Vector2 gamePanelOffset = Vector2.zero();
+        Vector2 gamePanelOffset = Vector2.zero;
         Container c = Game.instance();
         while (true)
         {

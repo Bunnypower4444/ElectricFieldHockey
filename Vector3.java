@@ -34,10 +34,10 @@ public class Vector3
             (float)(length * Math.sin(phi)));
     }
 
-    public static Vector3 zero()
-    {
-        return new Vector3(0, 0, 0);
-    }
+    public static final Vector3 zero = new Vector3(0, 0, 0);
+    public static final Vector3 unitX = new Vector3(1, 0, 0);
+    public static final Vector3 unitY = new Vector3(0, 1, 0);
+    public static final Vector3 unitZ = new Vector3(0, 0, 1);
 
     public float x()
     {
@@ -141,7 +141,7 @@ public class Vector3
 
     public Vector3 normalize()
     {
-        return equals(Vector3.zero()) ? Vector3.zero() : div(length());
+        return equals(Vector3.zero) ? Vector3.zero : div(length());
     }
 
     @Override

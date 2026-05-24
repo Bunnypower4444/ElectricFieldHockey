@@ -154,7 +154,7 @@ public class WorldScene extends Scene
                 Game.HEIGHT - 100 * Game.RELATIVE_SCALE),
             "Attempts: " + attempts, new Vector2(0, 0));
 
-        DrawUtil.drawText(g, Vector2.zero(), Game.instance().mousePos().toString(), new Vector2(0, 0));
+        DrawUtil.drawText(g, Vector2.zero, Game.instance().mousePos().toString(), new Vector2(0, 0));
 
         if (gameState == GameState.Failed || gameState == GameState.Won)
         {

@@ -38,7 +38,7 @@ public class Calc
         // x = (point.y - line.y + (dir.y / dir.x) * line.x + (dir.x / dir.y) * point.x) / (dir.y / dir.x + dir.x / dir.y)
 
         // edge cases where line is horizontal, vertical, or if direction vector is 0
-        if (lineDirection.equals(Vector2.zero()))
+        if (lineDirection.equals(Vector2.zero))
             throw new IllegalArgumentException("Line direction cannot be the zero vector");
 
         if (lineDirection.x() == 0)

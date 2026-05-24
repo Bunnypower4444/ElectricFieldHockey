@@ -25,10 +25,9 @@ public class Vector2
         return new Vector2((float)(length * Math.cos(angle)), (float)(length * Math.sin(angle)));
     }
 
-    public static Vector2 zero()
-    {
-        return new Vector2(0, 0);
-    }
+    public static final Vector2 zero = new Vector2(0, 0);
+    public static final Vector2 unitX = new Vector2(1, 0);
+    public static final Vector2 unitY = new Vector2(0, 1);
 
     public float x()
     {
@@ -107,7 +106,7 @@ public class Vector2
 
     public Vector2 normalize()
     {
-        return equals(Vector2.zero()) ? Vector2.zero() : div(length());
+        return equals(Vector2.zero) ? Vector2.zero : div(length());
     }
 
     public Point toPoint()
