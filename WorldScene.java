@@ -14,6 +14,11 @@ import java.util.Queue;
  */
 public class WorldScene extends Scene
 {
+    private static final int TOOLBAR_HEIGHT = (int)(80 * Game.RELATIVE_SCALE);
+
+    public static final int WIDTH = Game.WIDTH;
+    public static final int HEIGHT = Game.HEIGHT - TOOLBAR_HEIGHT;
+
     private ArrayList<Actor> actors = new ArrayList<>();
     private HashMap<Class<?>, LinkedList<Actor>> trackedActors = new HashMap<>();
     private float globalTimer = 0;
@@ -24,60 +29,42 @@ public class WorldScene extends Scene
     
     private GameState gameState = GameState.Initial;
     
+    private static final int BUTTON_HEIGHT = TOOLBAR_HEIGHT / 2;
+    private static final int BUTTON_WIDTH = (int)(100 * Game.RELATIVE_SCALE);
+    private static final int TOOLBAR_MARGIN = (int)(100 * Game.RELATIVE_SCALE);
+    private static final int BUTTON_PADDING = (int)(25 * Game.RELATIVE_SCALE);
     private static final Color BUTTON_COLOR = new Color(220, 220, 220);
 
     private LinkedList<UIButton> buttons = new LinkedList<>();
-    private UIButton playButton, nextLevelButton;
+    private UIButton playButton, resetButton, clearButton, nextLevelButton;
     
     private int attempts = 0;
     private int charges = 0;
     private int levelNum;
+
+    private int statsXPos = TOOLBAR_MARGIN;
 
     public WorldScene(int levelNum)
     {
         this.levelNum = levelNum;
 
         // play
-        playButton = new UIButton(new Rectangle(
-                (int)(200 * Game.RELATIVE_SCALE),
-                Game.HEIGHT - (int)(125 * Game.RELATIVE_SCALE),
-
-                (int)(100 * Game.RELATIVE_SCALE),
-                (int)(50 * Game.RELATIVE_SCALE)
-
-            ), "Play", BUTTON_COLOR,
-            this::togglePaused);
-        buttons.add(playButton);
+        playButton = addToolbarButton("Play", this::togglePaused);
 
         // reset
-        buttons.add(new UIButton(new Rectangle(
-                (int)(325 * Game.RELATIVE_SCALE),
-                Game.HEIGHT - (int)(125 * Game.RELATIVE_SCALE),
-
-                (int)(100 * Game.RELATIVE_SCALE),
-                (int)(50 * Game.RELATIVE_SCALE)
-
-            ), "Reset", BUTTON_COLOR,
-            this::reset));
+        resetButton = addToolbarButton("Reset", this::reset);
+        resetButton.setEnabled(false);
 
         // clear
-        buttons.add(new UIButton(new Rectangle(
-                (int)(450 * Game.RELATIVE_SCALE),
-                Game.HEIGHT - (int)(125 * Game.RELATIVE_SCALE),
-
-                (int)(100 * Game.RELATIVE_SCALE),
-                (int)(50 * Game.RELATIVE_SCALE)
-
-            ), "Clear", BUTTON_COLOR,
-            this::clearCharges));
+        clearButton = addToolbarButton("Clear", this::clearCharges);
 
         // back
         buttons.add(new UIButton(new Rectangle(
                 (int)(20 * Game.RELATIVE_SCALE),
                 (int)(25 * Game.RELATIVE_SCALE),
 
-                (int)(100 * Game.RELATIVE_SCALE),
-                (int)(50 * Game.RELATIVE_SCALE)
+                BUTTON_WIDTH,
+                BUTTON_HEIGHT
 
             ), "Back", BUTTON_COLOR,
             Game.instance()::popScene));
@@ -85,10 +72,10 @@ public class WorldScene extends Scene
         // next level
         nextLevelButton = new UIButton(new Rectangle(
                 Game.WIDTH / 2 - (int)(50 * Game.RELATIVE_SCALE),
-                Game.HEIGHT / 2 + (int)(25 * Game.RELATIVE_SCALE),
+                Game.HEIGHT / 2 + BUTTON_HEIGHT / 2,
 
-                (int)(100 * Game.RELATIVE_SCALE),
-                (int)(50 * Game.RELATIVE_SCALE)
+                BUTTON_WIDTH,
+                BUTTON_HEIGHT
 
             ), "Next", BUTTON_COLOR,
             this::nextLevel);
@@ -107,17 +94,31 @@ public class WorldScene extends Scene
         processActorChanges();
     }
 
+    private UIButton addToolbarButton(String name, Runnable action)
+    {
+        UIButton button = new UIButton(new Rectangle(
+                statsXPos,
+                Game.HEIGHT - TOOLBAR_HEIGHT / 2 - BUTTON_HEIGHT / 2,
+
+                BUTTON_WIDTH,
+                BUTTON_HEIGHT
+
+            ), name, BUTTON_COLOR,
+            action);
+        
+        buttons.add(button);
+        statsXPos += BUTTON_WIDTH + BUTTON_PADDING;
+
+        return button;
+    }
+
     @Override
     public void update()
     {
         globalTimer += deltaTime();
 
-        if (Game.instance().mouseClicked())
-        {
             for (UIButton b : buttons)
-                if (b.mouseOver(Game.instance().mousePos()))
-                    b.click();
-        }
+            b.update();
 
         for (Actor a : actors)
             a.update();
@@ -138,20 +139,20 @@ public class WorldScene extends Scene
         //#region UI
 
         g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(0, Game.HEIGHT - (int)(200 * Game.RELATIVE_SCALE), Game.WIDTH, (int)(200 * Game.RELATIVE_SCALE));
+        g.fillRect(0, Game.HEIGHT - TOOLBAR_HEIGHT, Game.WIDTH, TOOLBAR_HEIGHT);
 
         for (UIButton b : buttons)
             b.render(g);
 
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(30 * Game.RELATIVE_SCALE)));
+        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(0.5 * BUTTON_HEIGHT)));
         DrawUtil.drawText(g, new Vector2(
-                700 * Game.RELATIVE_SCALE,
-                Game.HEIGHT - 100 * Game.RELATIVE_SCALE),
+                statsXPos,
+                Game.HEIGHT - TOOLBAR_HEIGHT / 2),
             "Charges: " + charges, new Vector2(0, 1));
         DrawUtil.drawText(g, new Vector2(
-                700 * Game.RELATIVE_SCALE,
-                Game.HEIGHT - 100 * Game.RELATIVE_SCALE),
+                statsXPos,
+                Game.HEIGHT - TOOLBAR_HEIGHT / 2),
             "Attempts: " + attempts, new Vector2(0, 0));
 
         DrawUtil.drawText(g, Vector2.zero, Game.instance().mousePos().toString(), new Vector2(0, 0));
@@ -280,6 +281,17 @@ public class WorldScene extends Scene
         
         if (gameState != GameState.Won)
             nextLevelButton.setVisible(false);
+
+        if (!gameStarted())
+        {
+            resetButton.setEnabled(false);
+            clearButton.setEnabled(true);
+        }
+        else
+        {
+            resetButton.setEnabled(true);
+            clearButton.setEnabled(false);
+        }
 
         if (gameState == GameState.Unpaused)
             playButton.setText("Pause");
