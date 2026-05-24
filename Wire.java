@@ -66,4 +66,10 @@ public class Wire extends Actor implements HasBField, RequireReset
     {
         enabled = true;
     }
+
+    @Override
+    public int getZIndex()
+    {
+        return 110;
+    }
 }

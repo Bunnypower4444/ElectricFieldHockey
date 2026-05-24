@@ -30,4 +30,10 @@ public class Switch extends Actor implements RequireReset
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'reset'");
     }
+
+    @Override
+    public int getZIndex()
+    {
+        return 100;
+    }
 }

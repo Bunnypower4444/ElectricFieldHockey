@@ -15,4 +15,9 @@ public class UniformEField extends Actor implements HasEField
         return vector; /*FIX THIS */
     }
 
+    @Override
+    public int getZIndex()
+    {
+        return 10;
+    }
 }

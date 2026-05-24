@@ -19,4 +19,10 @@ public class Wall extends Actor
         boolean bool = false;
         return bool; /*FIX THIS */
     }
+
+    @Override
+    public int getZIndex()
+    {
+        return 210;
+    }
 }

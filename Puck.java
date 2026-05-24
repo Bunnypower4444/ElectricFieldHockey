@@ -9,7 +9,10 @@ public class Puck extends Actor implements RequireReset
     private float charge;
     private static final float MASS = 1;
     private static final int RADIUS = 1;
-    private Vector2 position;
+    private static final Color COLOR = Color.BLACK;
+
+    private float charge;
+    private Vector2 screenPos;
     private Vector2 initialPosition;
 
     //Initializes the charge, and position
@@ -18,7 +21,7 @@ public class Puck extends Actor implements RequireReset
 
         initialPosition = position;
         this.charge = charge;
-        this.position = position;
+        this.screenPos = position;
     }
 
     @Override
@@ -30,8 +33,8 @@ public class Puck extends Actor implements RequireReset
     //Creates a box around the puck for detecting collision
     public Rectangle collisionBox()
     {
-        int startX = (int)position.x();
-        int startY = (int)position.y();
+        int startX = (int)screenPos.x();
+        int startY = (int)screenPos.y();
         Rectangle box = new Rectangle(startX - RADIUS, startY - RADIUS, 2*RADIUS, 2*RADIUS);
         return(box);
     }
@@ -39,6 +42,12 @@ public class Puck extends Actor implements RequireReset
     @Override
     public void reset()
     {
-        position = initialPosition;
+        screenPos = initialPosition;
+    }
+
+    @Override
+    public int getZIndex()
+    {
+        return 300;
     }
 }

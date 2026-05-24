@@ -43,4 +43,10 @@ public class Goal extends Actor
         return(false);
 
     } 
+
+    @Override
+    public int getZIndex()
+    {
+        return 200;
+    }
 }

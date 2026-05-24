@@ -54,4 +54,10 @@ public class ChargeBag extends Actor
 
         // TODO: add images
     }
+
+    @Override
+    public int getZIndex()
+    {
+        return 120;
+    }
 }

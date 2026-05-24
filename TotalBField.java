@@ -15,4 +15,10 @@ public class TotalBField extends Actor implements HasBField
         Vector3 vector = new Vector3();
         return vector; /*FIX THIS */
     }
+
+    @Override
+    public int getZIndex()
+    {
+        return 21;
+    }
 }

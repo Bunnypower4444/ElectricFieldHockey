@@ -15,4 +15,10 @@ public class UniformBField extends Actor implements HasBField
         Vector3 vector = strength;
         return vector; /*FIX THIS */
     }
+
+    @Override
+    public int getZIndex()
+    {
+        return 11;
+    }
 }

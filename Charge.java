@@ -17,14 +17,14 @@ public class Charge extends Actor implements HasEField
     public static final float ELEMENTARY_CHARGE = 1.602176634E-19f;
 
     private float charge;
-    private Vector2 position;
+    private Vector2 screenPos;
     private boolean fixed;
     private Vector2 dragOffset = null;
 
     public Charge(float charge, Vector2 position, boolean fixed)
     {
         this.charge = charge;
-        this.position = position;
+        this.screenPos = position;
         this.fixed = fixed;
     }
 
@@ -42,11 +42,11 @@ public class Charge extends Actor implements HasEField
         if (!getWorld().gameStarted()
             && Game.instance().mousePressed()
             && mouseOver(Game.instance().mousePos()))
-            dragOffset = position.sub(Game.instance().mousePos());
+            dragOffset = screenPos.sub(Game.instance().mousePos());
         
         if (!getWorld().gameStarted()
             && dragOffset != null && Game.instance().mouseDown())
-            position = Game.instance().mousePos().add(dragOffset);
+            screenPos = Game.instance().mousePos().add(dragOffset);
         else if (dragOffset != null)
         {
             dragOffset = null;
@@ -62,23 +62,23 @@ public class Charge extends Actor implements HasEField
     public void render(Graphics2D g)
     {
         g.setColor(getColor());
-        DrawUtil.fillCircle(g, position.toPoint(), RADIUS);
+        DrawUtil.fillCircle(g, screenPos.toPoint(), RADIUS);
 
         if (fixed)
         {
             g.setStroke(new BasicStroke(3 * Game.RELATIVE_SCALE));
             g.setColor(Color.BLACK);
-            DrawUtil.drawCircle(g, position.toPoint(), RADIUS);
+            DrawUtil.drawCircle(g, screenPos.toPoint(), RADIUS);
         }
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(0.85 * RADIUS)));
-        DrawUtil.drawText(g, position, getText(), new Vector2(0.5f, 0.5f));
+        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(2 * RADIUS)));
+        DrawUtil.drawText(g, screenPos, getText(), new Vector2(0.5f, 0.5f));
     }
 
     private boolean mouseOver(Vector2 pos)
     {
-        return pos.sub(position).lengthSq() <= RADIUS * RADIUS;
+        return pos.sub(screenPos).lengthSq() <= RADIUS * RADIUS;
     }
 
     private Color getColor()
@@ -102,6 +102,12 @@ public class Charge extends Actor implements HasEField
     @Override
     public Vector2 getFieldAt(Vector2 position)
     {
-        return Calc.coulombLawField(this.position, charge, position);
+        return Calc.coulombLawField(DrawUtil.screenToWorld(this.screenPos), charge, position);
+    }
+
+    @Override
+    public int getZIndex()
+    {
+        return 130;
     }
 }
