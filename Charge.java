@@ -9,7 +9,7 @@ import java.awt.Graphics2D;
  */
 public class Charge extends Actor implements HasEField
 {
-    private static final int RADIUS = (int)(20 * Game.RELATIVE_SCALE);
+    private static final int RADIUS = (int)(10 * Game.RELATIVE_SCALE);
     private static final Color POSITIVE = Color.RED;
     private static final Color NEGATIVE = Color.BLUE;
     private static final Color NEUTRAL = Color.DARK_GRAY;

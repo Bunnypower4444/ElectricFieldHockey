@@ -1,4 +1,7 @@
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 /**
@@ -6,9 +9,8 @@ import java.awt.Rectangle;
  */
 public class Puck extends Actor implements RequireReset
 {
-    private float charge;
     private static final float MASS = 1;
-    private static final int RADIUS = 1;
+    private static final int RADIUS = (int)(10 * Game.RELATIVE_SCALE);
     private static final Color COLOR = Color.BLACK;
 
     private float charge;
@@ -37,6 +39,26 @@ public class Puck extends Actor implements RequireReset
         int startY = (int)screenPos.y();
         Rectangle box = new Rectangle(startX - RADIUS, startY - RADIUS, 2*RADIUS, 2*RADIUS);
         return(box);
+    }
+
+    @Override
+    public void render(Graphics2D g)
+    {
+        g.setColor(COLOR);
+        DrawUtil.fillCircle(g, screenPos.toPoint(), RADIUS);
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(2 * RADIUS)));
+        DrawUtil.drawText(g, screenPos, getText(), new Vector2(0.5f, 0.5f));
+    }
+
+    private String getText()
+    {
+        if (charge > 0)
+            return "+";
+        if (charge < 0)
+            return "-";
+        return "";
     }
 
     @Override

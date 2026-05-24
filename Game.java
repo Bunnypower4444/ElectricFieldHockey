@@ -29,8 +29,8 @@ public class Game extends JPanel implements ActionListener, MouseListener
 
     private static final float FPS = 60;
 
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 600;
+    public static final int WIDTH = 1000;
+    public static final int HEIGHT = 900;
     public static final float RELATIVE_SCALE = HEIGHT / 900f;
 
     private Game()
