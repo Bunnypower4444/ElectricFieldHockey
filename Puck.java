@@ -13,7 +13,7 @@ import java.util.LinkedList;
 public class Puck extends Actor implements RequireReset, LateUpdate
 {
     private static final float MASS = 3; // 1.67262192595E-27F;
-    private static final int RADIUS = (int)(10 * Game.RELATIVE_SCALE);
+    private static final int RADIUS = 13;
     private static final Color COLOR = Color.BLACK;
     private static final Color VELOCITY_COLOR = new Color(6, 120, 36);
     private static final float FORCE_DISPLAY_FACTOR = 0.03f;
@@ -209,11 +209,13 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         Vector2 screenPos = WorldScene.worldToScreenPoint(position);
         Point screenPosPoint = screenPos.toPoint();
 
+        int drawRadius = (int)(RADIUS * WorldScene.FIELD_WIDTH / WorldScene.WORLD_DIMENSIONS.x());
+
         for (Color c : electricFields.keySet())
         {
             for (Vector2 v : electricFields.get(c))
             {
-                DrawUtil.drawMagnitudeVector(g, screenPosPoint, v, c, RADIUS, 30);
+                DrawUtil.drawMagnitudeVector(g, screenPosPoint, v, c, drawRadius, 30);
             }
         }
 
@@ -221,17 +223,17 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         {
             for (Vector2 v : magneticForces.get(c))
             {
-                DrawUtil.drawMagnitudeVector(g, screenPosPoint, v, c, RADIUS, 10);
+                DrawUtil.drawMagnitudeVector(g, screenPosPoint, v, c, drawRadius, 10);
             }
         }
 
-        DrawUtil.drawMagnitudeVector(g, screenPosPoint, velocity.mult(VELOCITY_DISPLAY_FACTOR), VELOCITY_COLOR, RADIUS / 2, 10);
+        DrawUtil.drawMagnitudeVector(g, screenPosPoint, velocity.mult(VELOCITY_DISPLAY_FACTOR), VELOCITY_COLOR, drawRadius / 2, 10);
 
         g.setColor(COLOR);
-        DrawUtil.fillCircle(g, screenPosPoint, RADIUS);
+        DrawUtil.fillCircle(g, screenPosPoint, drawRadius);
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(2 * RADIUS)));
+        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(2 * drawRadius)));
         DrawUtil.drawText(g, screenPos, getText(), new Vector2(0.5f, 0.5f));
     }
 
