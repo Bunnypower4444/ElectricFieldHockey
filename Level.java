@@ -10,17 +10,16 @@ import java.util.HashMap;
 /**
  * Stores the data for a single level: a list of objects/obstacles and their
  * properties, parsed from a level file. Each object is one HashMap of
- * attribute name -> value, and {@link #loadLevel} turns those into Actors in a
+ * attribute name -> value, and turns those into Actors in a
  * WorldScene.
  *
  */
 public class Level {
-    private HashMap<String, String>[] objects;
+    private ArrayList<HashMap<String, String>> objects = new ArrayList<>();
 
     // Parses the level data into a list of objects and their attributes
     public Level(InputStream data)
     {
-        ArrayList<HashMap<String, String>> parsed = new ArrayList<>();
         HashMap<String, String> current = null;
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(data)))
@@ -35,7 +34,7 @@ public class Level {
                 {
                     if (current != null)
                     {
-                        parsed.add(current);
+                        objects.add(current);
                         current = null;
                     }
                     continue;
@@ -62,10 +61,8 @@ public class Level {
         }
 
         if (current != null)
-            parsed.add(current);
+            objects.add(current);
 
-        HashMap<String, String>[] array = parsed.toArray(new HashMap[0]);
-        objects = array;
     }
 
     //Loads the given world scene with a level
