@@ -13,4 +13,4 @@ type=Wall
 bounds=700,340,10,260
 
 type=Goal
-bounds=1080,360,50,100
+bounds=900,360,50,100

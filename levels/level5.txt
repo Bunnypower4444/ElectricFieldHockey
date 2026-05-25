@@ -1,0 +1,16 @@
+# Level 5 - Magnetism demo: a current-carrying wire bends the puck's path.
+# The puck starts at rest, so place a positive charge just to its left to push
+# it toward the goal. As it crosses the vertical wire, the wire's magnetic
+# field curves its path (the magnetic force is perpendicular to its velocity).
+
+type=Puck
+charge=1.0
+position=240,400
+
+type=Wire
+current=8.0
+point1=560,200
+point2=560,600
+
+type=Goal
+bounds=900,360,50,100
