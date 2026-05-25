@@ -106,7 +106,10 @@ public class WorldScene extends Scene
         addActor(new Wire(1, new Vector2(200, 10), new Vector2(200, 410)));
         addActor(new Wire(1, new Vector2(100, 410), new Vector2(200, 410))); */
 
-        addActor(new Wire(25000000000f, new Vector2(100, 410), new Vector2(200, 410)));
+        Wire w;
+        addActor(w = new Wire(25000000000f, new Vector2(100, 410), new Vector2(200, 410)));
+
+        addActor(new Switch(w, new Vector2(150, 750), 50));
 
         addActor(new Puck(Charge.ELEMENTARY_CHARGE, new Vector2(150f, 500f), Vector2.zero));
 

@@ -12,8 +12,9 @@ import java.util.LinkedList;
  */
 public class Puck extends Actor implements RequireReset, LateUpdate
 {
+    public static final int RADIUS = 13;
+
     private static final float MASS = 3; // 1.67262192595E-27F;
-    private static final int RADIUS = 13;
     private static final Color COLOR = Color.BLACK;
     private static final Color VELOCITY_COLOR = new Color(6, 120, 36);
     private static final float FORCE_DISPLAY_FACTOR = 0.03f;
@@ -41,6 +42,17 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         this.charge = charge;
         this.position = position;
         velocity = initialVelocity;
+    }
+
+    @Override
+    public void update()
+    {
+        // check for activating switches
+        for (Switch s : getWorld().getActorsOfType(Switch.class))
+        {
+            if (s.collision(this))
+                s.activate();
+        }
     }
 
     @Override

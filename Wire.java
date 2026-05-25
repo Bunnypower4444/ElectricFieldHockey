@@ -60,7 +60,7 @@ public class Wire extends Actor implements HasBField, RequireReset
     @Override
     public Vector3 getFieldAt(Vector2 position)
     {
-        return Calc.ampereCircuitalLaw(this.position, current, position);
+        return enabled ? Calc.ampereCircuitalLaw(this.position, current, position) : Vector3.zero;
     }
 
     @Override
