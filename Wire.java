@@ -12,6 +12,8 @@ public class Wire extends Actor implements HasBField, RequireReset
     private static final float LINE_WIDTH = 5 * Game.RELATIVE_SCALE;
     private static final Color CURRENT_ON = new Color(214, 180, 11);
     private static final Color CURRENT_OFF = Color.DARK_GRAY;
+    private static final float CURRENT_ANIM_1S = 25_000_000_000f;
+    private static final float ARROW_SPACING = 200 * Game.RELATIVE_SCALE;
 
     private Vector2 current;
     private Vector2 position;
@@ -49,9 +51,29 @@ public class Wire extends Actor implements HasBField, RequireReset
         g.setStroke(new BasicStroke(LINE_WIDTH));
         g.setColor(getColor());
         g.drawLine(renderPoint1.x, renderPoint1.y, renderPoint2.x, renderPoint2.y);
+
+        if (enabled)
+        {
+            Vector2 direction = new Vector2(renderPoint2.x - renderPoint1.x, renderPoint2.y - renderPoint1.y).normalize();
+
+            float animTime = animTime();
+            float t = (getWorld().globalTimer() % animTime) / animTime;
+
+            for (Vector2 point = new Vector2(renderPoint1).add(direction.mult(ARROW_SPACING * t));
+                DrawUtil.pointOnScreen(point);
+                point = point.add(direction.mult(ARROW_SPACING)))
+            {
+                DrawUtil.fillEqTriangle(g, point.toPoint(), current.angle(), (int)(LINE_WIDTH * 2));
+            }
+        }
     }
 
-    public Color getColor()
+    private float animTime()
+    {
+        return CURRENT_ANIM_1S / current.length();
+    }
+
+    private Color getColor()
     {
         return (enabled && !current.equals(Vector2.zero))
             ? CURRENT_ON : CURRENT_OFF;

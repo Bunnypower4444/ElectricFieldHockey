@@ -80,6 +80,29 @@ public class DrawUtil
         return result;
     }
 
+    private static Polygon calculateEqTrianglePolygon(float length)
+    {
+        double altitude = length * Math.sqrt(3) / 2;
+
+        int[] x = new int[] { (int)(-altitude / 2), (int)(altitude / 2), (int)(-altitude / 2) };
+        int[] y = new int[] { (int)(-length / 2), 0, (int)(length / 2)};
+
+        return new Polygon(x, y, x.length);
+    }
+
+    public static void fillEqTriangle(Graphics2D g, Point position, float angle, float length)
+    {
+
+        Polygon arrow = calculateEqTrianglePolygon(length);
+        arrow.translate(position.x, position.y);
+        
+        g.rotate(-angle, position.x, position.y);
+
+        g.drawPolygon(arrow);
+
+        g.rotate(angle, position.x, position.y);
+    }
+
     private static Polygon calculateArrowPolygon(int length, int width)
     {
         // arrow tip will be an equilateral triangle with side length [2 * width]
@@ -231,5 +254,11 @@ public class DrawUtil
         size.y = -size.y;
         point.y -= size.y;
         g.fillRect(point.x, point.y, size.x, size.y);
+    }
+
+    public static boolean pointOnScreen(Vector2 point)
+    {
+        return point.x() >= 0 && point.y() >= 0
+            && point.x() <= WorldScene.FIELD_WIDTH && point.y() <= WorldScene.FIELD_HEIGHT;
     }
 }
