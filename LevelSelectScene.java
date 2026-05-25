@@ -15,22 +15,18 @@ public class LevelSelectScene extends Scene
     private static final int BUTTON_GAP = 20;
     private static final int TOP_MARGIN = 120;
 
-    private Level[] levels;
     private Rectangle[] buttons;
-    // For every level loads the assets
+    // Lays out a button for each available level
     public LevelSelectScene()
     {
         int count = Assets.levelCount();
-        levels = new Level[count];
         buttons = new Rectangle[count];
 
         int gridWidth = COLUMNS * BUTTON_SIZE + (COLUMNS - 1) * BUTTON_GAP;
-        int startX = (ElectricFieldHockey.WIDTH - gridWidth) / 2;
+        int startX = (Game.WIDTH - gridWidth) / 2;
 
         for (int i = 0; i < count; i++)
         {
-            levels[i] = Assets.getLevel(i + 1);
-
             int col = i % COLUMNS;
             int row = i / COLUMNS;
             int x = startX + col * (BUTTON_SIZE + BUTTON_GAP);
@@ -39,22 +35,36 @@ public class LevelSelectScene extends Scene
         }
     }
 
+    // Opens the clicked level. Input is polled from Game (the same model the
+    // WorldScene and Charge use), since Game only dispatches update()/render().
     @Override
     public void update()
     {
+        if (!Game.instance().mouseClicked())
+            return;
+
+        Vector2 mouse = Game.instance().mousePos();
+        for (int i = 0; i < buttons.length; i++)
+        {
+            if (buttons[i].contains((int)mouse.x(), (int)mouse.y()))
+            {
+                Game.instance().pushScene(new WorldScene(i + 1));
+                return;
+            }
+        }
     }
     // Render the 2D graphics on the screen
     @Override
     public void render(Graphics2D g)
     {
         g.setColor(new Color(20, 24, 40));
-        g.fillRect(0, 0, ElectricFieldHockey.WIDTH, ElectricFieldHockey.HEIGHT);
+        g.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("SansSerif", Font.BOLD, 48));
         String title = "Select a Level";
         int titleWidth = g.getFontMetrics().stringWidth(title);
-        g.drawString(title, (ElectricFieldHockey.WIDTH - titleWidth) / 2, 70);
+        g.drawString(title, (Game.WIDTH - titleWidth) / 2, 70);
 
         g.setFont(new Font("SansSerif", Font.BOLD, 36));
         for (int i = 0; i < buttons.length; i++)
@@ -71,20 +81,6 @@ public class LevelSelectScene extends Scene
             int lw = g.getFontMetrics().stringWidth(label);
             int lh = g.getFontMetrics().getAscent();
             g.drawString(label, b.x + (b.width - lw) / 2, b.y + (b.height + lh) / 2 - 4);
-        }
-    }
-    // Handles what to do when the mouse is clicked
-    public void mouseClicked(int x, int y)
-    {
-        for (int i = 0; i < buttons.length; i++)
-        {
-            if (buttons[i].contains(x, y))
-            {
-                Level level = levels[i];
-                if (level != null)
-                    Game.instance().pushScene(new WorldScene(i + 1));
-                return;
-            }
         }
     }
 }

@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 /**
- * 
+ *
  */
 public class Goal extends Actor
 {
@@ -10,6 +10,8 @@ public class Goal extends Actor
     private Rectangle goalBounds;
     private Rectangle[] wallBounds;
     private static final int WIDTH = 10;
+    private static final Color POST_COLOR = new Color(0, 140, 0);
+    private static final Color ZONE_COLOR = new Color(0, 200, 0, 60);
 
     public static enum Orientation { Left, Up, Right, Down }
 
@@ -73,6 +75,25 @@ public class Goal extends Actor
 
         return(false);
     } 
+
+    // Draws the win zone and the three goal posts (top, bottom, right), matching
+    // the geometry used by goalCollision()/wallCollision(). The goal opens to the left.
+    @Override
+    public void render(Graphics2D g)
+    {
+        int x = (int)bounds.getX();
+        int y = (int)bounds.getY();
+        int w = (int)bounds.getWidth();
+        int h = (int)bounds.getHeight();
+
+        g.setColor(ZONE_COLOR);
+        g.fillRect(x, y, w - WIDTH, h);
+
+        g.setColor(POST_COLOR);
+        g.fillRect(x, y, w, WIDTH);                     // top post
+        g.fillRect(x, y + h - WIDTH, w, WIDTH);         // bottom post
+        g.fillRect(x + w - WIDTH, y, WIDTH, h);         // right (back) post
+    }
 
     @Override
     public void render(Graphics2D g)
