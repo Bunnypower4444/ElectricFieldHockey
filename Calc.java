@@ -7,13 +7,14 @@ public class Calc
     public static final double COULOMB_CONSTANT = 8.987_551_785_972E9;
     public static final double VACUUM_PERMEABILITY = 1.256_637_061_27E-6;
 
-    private static final double MAX_FORCE_DIST = 25;
+    private static final double CHARGE_FIELD_MIN_DIST = 25;
+    private static final double WIRE_FIELD_MIN_DIST = 1;
 
     public static Vector2 coulombLawField(Vector2 sourcePos, float charge, Vector2 testPoint)
     {
         Vector2 r = testPoint.sub(sourcePos);
         double rSq = r.lengthSq();
-        rSq = Math.max(rSq, MAX_FORCE_DIST * MAX_FORCE_DIST);
+        rSq = Math.max(rSq, CHARGE_FIELD_MIN_DIST * CHARGE_FIELD_MIN_DIST);
         double magnitude = COULOMB_CONSTANT * charge / rSq;
         return r.normalize().mult((float)magnitude);
     }
@@ -22,7 +23,7 @@ public class Calc
     {
         Vector2 r = testPoint.sub(closestPointOnLine(wirePoint, current, testPoint));
         double rMag = r.length();
-        rMag = Math.max(rMag, MAX_FORCE_DIST);
+        rMag = Math.max(rMag, WIRE_FIELD_MIN_DIST);
         Vector3 dir = new Vector3(current).cross(new Vector3(r)).normalize();
         double magnitude = VACUUM_PERMEABILITY * current.length() / (2 * Math.PI * rMag);
 

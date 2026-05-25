@@ -107,7 +107,7 @@ public class WorldScene extends Scene
         addActor(new Wire(1, new Vector2(100, 410), new Vector2(200, 410))); */
 
         Wire w;
-        addActor(w = new Wire(10000000000f, new Vector2(100, 410), new Vector2(200, 600)));
+        addActor(w = new Wire(10000000000f, new Vector2(100, 410), new Vector2(600, 600)));
 
         addActor(new Switch(w, new Vector2(150, 750), 50));
 
