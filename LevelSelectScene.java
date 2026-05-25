@@ -74,7 +74,6 @@ public class LevelSelectScene extends Scene
         }
     }
     // Handles what to do when the mouse is clicked
-    @Override
     public void mouseClicked(int x, int y)
     {
         for (int i = 0; i < buttons.length; i++)
@@ -83,7 +82,7 @@ public class LevelSelectScene extends Scene
             {
                 Level level = levels[i];
                 if (level != null)
-                    Game.instance().pushScene(new WorldScene(level));
+                    Game.instance().pushScene(new WorldScene(i + 1));
                 return;
             }
         }

@@ -1,8 +1,0 @@
-# Level 1 - Practice: open field, no obstacles
-
-type=Puck
-charge=1.0
-position=240,380
-
-type=Goal
-bounds=1080,320,50,100

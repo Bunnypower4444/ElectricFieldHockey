@@ -1,5 +1,11 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 
@@ -7,8 +13,8 @@ import java.awt.image.BufferedImage;
 
 public class Assets
 {
-    private static final String LEVELS_DIR = "assets/levels";
-    private static final String IMAGES_DIR = "assets/images";
+    private static final String LEVELS_DIR = "Assets/Levels";
+    private static final String IMAGES_DIR = "Assets/Images";
 
     private static Level[] levels = new Level[0];
     private static HashMap<String, BufferedImage> images = new HashMap<>();
