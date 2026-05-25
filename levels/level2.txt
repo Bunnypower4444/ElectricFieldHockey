@@ -1,0 +1,11 @@
+# Level 2 - Difficulty 1: one vertical wall in the middle
+
+type=Puck
+charge=1.0
+position=240,400
+
+type=Wall
+bounds=560,230,10,300
+
+type=Goal
+bounds=1080,360,50,100
