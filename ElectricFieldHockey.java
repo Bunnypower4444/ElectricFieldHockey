@@ -19,6 +19,8 @@ public class ElectricFieldHockey extends JFrame
 
     public static void main(String[] args)
     {
+        Assets.load();
+
         ElectricFieldHockey EFH = new ElectricFieldHockey();
         EFH.setBounds(300, 300, Game.WIDTH, Game.HEIGHT);
 
@@ -28,16 +30,18 @@ public class ElectricFieldHockey extends JFrame
         Vector2 gamePanelOffset = Vector2.zero;
         Container c = Game.instance();
         while (true)
-        {
-            if (c instanceof ElectricFieldHockey)
-                break;
+            {
+                if (c instanceof ElectricFieldHockey)
+                    break;
+                
+                gamePanelOffset = gamePanelOffset.add(new Vector2(c.getLocation()));
+                
+                c = c.getParent();
+            }
             
-            gamePanelOffset = gamePanelOffset.add(new Vector2(c.getLocation()));
-
-            c = c.getParent();
-        }
-
         Point windowSize = new Vector2(Game.WIDTH, Game.HEIGHT).add(gamePanelOffset).toPoint();
         EFH.setSize(windowSize.x, windowSize.y);
+        
+        Game.instance().start();
     }
 }

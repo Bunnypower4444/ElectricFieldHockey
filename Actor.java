@@ -20,8 +20,6 @@ public abstract class Actor
     }
 
     public void update() {}
-
-    public void lateUpdate() {}
     
     public void render(Graphics2D g) {}
     
@@ -41,11 +39,11 @@ public abstract class Actor
      *  <li>21: TotalBField
      *  <li>100: Switch
      *  <li>110: Wire
-     *  <li>120: ChargeBag
-     *  <li>130: Charge
      *  <li>200: Goal
      *  <li>210: Wall
-     *  <li>300: Puck
+     *  <li>300: ChargeBag
+     *  <li>310: Charge
+     *  <li>400: Puck
      * </ul>
      * @return Z-index of the actor
      */

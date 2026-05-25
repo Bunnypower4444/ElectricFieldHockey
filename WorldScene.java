@@ -15,13 +15,21 @@ import java.util.Queue;
 public class WorldScene extends Scene
 {
     private static final int TOOLBAR_HEIGHT = (int)(80 * Game.RELATIVE_SCALE);
+    
+    public static final Color FIELD_COLOR = new Color(0xEEEEEE);
+    public static final int FIELD_WIDTH = Game.WIDTH;
+    public static final int FIELD_HEIGHT = Game.HEIGHT - TOOLBAR_HEIGHT;
 
-    public static final int WIDTH = Game.WIDTH;
-    public static final int HEIGHT = Game.HEIGHT - TOOLBAR_HEIGHT;
+    public static final float WORLD_WIDTH_HEIGHT_RATIO = 1.250f;
+    public static final Vector2 WORLD_DIMENSIONS = new Vector2(1000 * WORLD_WIDTH_HEIGHT_RATIO, 1000);
+    private static final Vector2 SCALE_FACTOR = new Vector2(FIELD_WIDTH, FIELD_HEIGHT).div(WORLD_DIMENSIONS);
 
     private ArrayList<Actor> actors = new ArrayList<>();
     private HashMap<Class<?>, LinkedList<Actor>> trackedActors = new HashMap<>();
     private float globalTimer = 0;
+
+    public boolean eFieldUpdated = false;
+    public boolean bFieldUpdated = false;
 
     private Queue<Actor> addingActors = new LinkedList<>(), removingActors = new LinkedList<>();
     
@@ -82,7 +90,7 @@ public class WorldScene extends Scene
         nextLevelButton.setVisible(false);
         buttons.add(nextLevelButton);
 
-        Assets.getLevel(levelNum).loadLevel(this);
+        // Assets.getLevel(levelNum).loadLevel(this);
 
         addActor(new ChargeBag(new Rectangle(
             Game.WIDTH - (int)(175 * Game.RELATIVE_SCALE),
@@ -91,6 +99,29 @@ public class WorldScene extends Scene
             (int)(75 * Game.RELATIVE_SCALE)
         )));
 
+        /* addActor(new Wire(1, new Vector2(100, 10), new Vector2(200, 410)));
+        addActor(new Wire(1, new Vector2(400, 10), new Vector2(200, 410)));
+        addActor(new Wire(1, new Vector2(100, 10), new Vector2(700, 410)));
+        addActor(new Wire(1, new Vector2(100, 10), new Vector2(100, 410)));
+        addActor(new Wire(1, new Vector2(200, 10), new Vector2(200, 410)));
+        addActor(new Wire(1, new Vector2(100, 410), new Vector2(200, 410))); */
+
+        addActor(new Wire(25000000000f, new Vector2(100, 410), new Vector2(200, 410)));
+
+        addActor(new Puck(Charge.ELEMENTARY_CHARGE, new Vector2(150f, 500f), Vector2.zero));
+
+        addActor(new Wall(new Rectangle(615, 350, 20, 300)));
+        addActor(new Goal(new Rectangle(975, 450, 50, 100)));
+
+        addActor(new UniformEField(new Rectangle(500, 475, 250, 175), new Vector2(-100000, -100000)));
+        
+        addActor(new UniformBField(new Rectangle(500, 350, 250, 175), new Vector3(0, 0, -100)));
+
+        addActor(new TotalEField());
+        addActor(new TotalBField());
+
+        eFieldUpdated = true;
+        bFieldUpdated = true;
         processActorChanges();
     }
 
@@ -117,13 +148,19 @@ public class WorldScene extends Scene
     {
         globalTimer += deltaTime();
 
-            for (UIButton b : buttons)
+        for (UIButton b : buttons)
             b.update();
 
         for (Actor a : actors)
             a.update();
-        for (Actor a : actors)
+
+        processActorChanges();
+
+        for (LateUpdate a : getActorsOfType(LateUpdate.class))
             a.lateUpdate();
+
+        eFieldUpdated = false;
+        bFieldUpdated = false;
 
         processActorChanges();
     }
@@ -131,7 +168,8 @@ public class WorldScene extends Scene
     @Override
     public void render(Graphics2D g)
     {
-        g.setBackground(Color.WHITE);
+        g.setBackground(FIELD_COLOR);
+        g.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
 
         for (Actor a : actors)
             a.render(g);
@@ -155,12 +193,33 @@ public class WorldScene extends Scene
                 Game.HEIGHT - TOOLBAR_HEIGHT / 2),
             "Attempts: " + attempts, new Vector2(0, 0));
 
-        DrawUtil.drawText(g, Vector2.zero, Game.instance().mousePos().toString(), new Vector2(0, 0));
+        int line = 0;
+        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
+            "Screen: " + Game.instance().mousePos(),
+            new Vector2(0, 0));
+        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
+            "World: " + screenToWorldPoint(Game.instance().mousePos()),
+            new Vector2(0, 0));
+        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
+            "Position: " + getActorsOfType(Puck.class).get(0).getPosition(),
+            new Vector2(0, 0));
+        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
+            "Velocity: " + getActorsOfType(Puck.class).get(0).getVelocity(),
+            new Vector2(0, 0));
+        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
+            "Acceleration: " + getActorsOfType(Puck.class).get(0).getAcceleration(),
+            new Vector2(0, 0));
+        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
+            "t: " + globalTimer,
+            new Vector2(0, 0));
+        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
+            "FPS: " + String.format("%.2f", (1 / Game.instance().deltaTime())),
+            new Vector2(0, 0));
 
         if (gameState == GameState.Failed || gameState == GameState.Won)
         {
             String text = gameState == GameState.Failed ? "Collision!" : "Goal!";
-            Color textColor = gameState == GameState.Failed ? Color.RED : Color.GREEN;
+            Color textColor = gameState == GameState.Failed ? Color.RED : new Color(38, 173, 75);
 
             g.setFont(new Font("Monospaced", Font.PLAIN, (int)(100 * Game.RELATIVE_SCALE)));
             g.setColor(textColor);
@@ -178,7 +237,7 @@ public class WorldScene extends Scene
 
     public float deltaTime()
     {
-        return Game.instance().deltaTime();
+        return getPaused() ? 0 : 1 / Game.UpdateFPS;
     }
 
     public void addActor(Actor actor)
@@ -277,6 +336,9 @@ public class WorldScene extends Scene
         if (state == gameState)
             return;
 
+        if (gameState == GameState.Initial)
+            globalTimer = 0;
+
         gameState = state;
         
         if (gameState != GameState.Won)
@@ -354,14 +416,8 @@ public class WorldScene extends Scene
         {
             setState(GameState.Won);
 
-            try
-            {
-                Assets.getLevel(levelNum + 1);
-
+            if (Assets.getLevel(levelNum + 1) != null)
                 nextLevelButton.setVisible(true);
-            }
-            catch (Exception e)
-            {}
         }
     }
 
@@ -374,5 +430,25 @@ public class WorldScene extends Scene
     {
         if (gameState != GameState.Won)
             setState(GameState.Failed);
+    }
+
+    public static Vector2 worldToScreenPoint(Vector2 point)
+    {
+        return point.withY(WORLD_DIMENSIONS.y() - point.y()).mult(SCALE_FACTOR);
+    }
+
+    public static Vector2 worldToScreenVector(Vector2 vector)
+    {
+        return vector.withY(-vector.y()).mult(SCALE_FACTOR);
+    }
+
+    public static Vector2 screenToWorldPoint(Vector2 point)
+    {
+        return point.withY(FIELD_HEIGHT - point.y()).div(SCALE_FACTOR);
+    }
+
+    public static Vector2 screenToWorldVector(Vector2 vector)
+    {
+        return vector.withY(- vector.y()).div(SCALE_FACTOR);
     }
 }

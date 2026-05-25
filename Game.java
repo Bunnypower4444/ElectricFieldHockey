@@ -18,7 +18,8 @@ import java.awt.event.MouseListener;
 public class Game extends JPanel implements ActionListener, MouseListener
 {
     private Stack<Scene> scenes = new Stack<>();
-    private Timer timer;
+    private Timer updateTimer;
+    private Timer renderTimer;
     private long lastFrameTimeMillis;
     private float deltaTime = 0;
     private Vector2 mousePos = Vector2.zero;
@@ -27,23 +28,22 @@ public class Game extends JPanel implements ActionListener, MouseListener
     private boolean mousePressed = false;
     private static Game instance;
 
-    private static final float FPS = 60;
+    public static final float UpdateFPS = 300;
+    public static final float FPS = 60;
 
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 900;
+    public static final int HEIGHT = 720;
+    public static final int WIDTH = (int)(WorldScene.FIELD_HEIGHT * WorldScene.WORLD_WIDTH_HEIGHT_RATIO);
     public static final float RELATIVE_SCALE = HEIGHT / 900f;
 
     private Game()
     {
         instance = this;
-        timer = new Timer((int)(1000 / FPS), this);
+        updateTimer = new Timer((int)(1000 / UpdateFPS), this);
+        renderTimer = new Timer((int)(1000 / FPS), this);
 
         addMouseListener(this);
 
-        timer.start();
-        lastFrameTimeMillis = System.currentTimeMillis();
-
-        pushScene(new TitleScene());
+        pushScene(new WorldScene(1));
     }
 
     public static void createGame()
@@ -60,6 +60,13 @@ public class Game extends JPanel implements ActionListener, MouseListener
             return Game.instance;
 
         throw new IllegalStateException("Game has not been created with createGame()");
+    }
+
+    public void start()
+    {
+        updateTimer.start();
+        renderTimer.start();
+        lastFrameTimeMillis = System.currentTimeMillis();
     }
 
     public void pushScene(Scene s)
@@ -99,9 +106,29 @@ public class Game extends JPanel implements ActionListener, MouseListener
         return mouseClicked;
     }
 
+    public boolean consumeClick()
+    {
+        if (mouseClicked)
+        {
+            mouseClicked = false;
+            return true;
+        }
+        return false;
+    }
+
     public boolean mousePressed()
     {
         return mousePressed;
+    }
+
+    public boolean consumePress()
+    {
+        if (mousePressed)
+        {
+            mousePressed = false;
+            return true;
+        }
+        return false;
     }
 
     private Vector2 getRelativeMousePosition()
@@ -121,6 +148,16 @@ public class Game extends JPanel implements ActionListener, MouseListener
 
     public void actionPerformed(ActionEvent e)
     {
+        Timer source = (Timer)e.getSource();
+
+        if (source == updateTimer)
+            update();
+        else if (source == renderTimer)
+            repaint();
+    }
+
+    private void update()
+    {
         long currentTimeMillis = System.currentTimeMillis();
         deltaTime = (currentTimeMillis - lastFrameTimeMillis) / 1000f;
 
@@ -137,8 +174,6 @@ public class Game extends JPanel implements ActionListener, MouseListener
             mousePressed = false;
 
         lastFrameTimeMillis = currentTimeMillis;
-
-        repaint();
     }
 
     @Override

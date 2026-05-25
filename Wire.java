@@ -25,16 +25,18 @@ public class Wire extends Actor implements HasBField, RequireReset
         this.position = point1;
         enabled = true;
 
-        Vector2[] renderPoints = DrawUtil.getInfiniteLineEndpoints(position, this.current);
+        Vector2[] renderPoints = DrawUtil.getInfiniteLineEndpoints(position, this.current, WorldScene.WORLD_DIMENSIONS);
         if (renderPoints != null)
         {
-            renderPoint1 = DrawUtil.worldToScreen(renderPoints[0]).toPoint();
-            renderPoint2 = DrawUtil.worldToScreen(renderPoints[1]).toPoint();
+            renderPoint1 = WorldScene.worldToScreenPoint(renderPoints[0]).toPoint();
+            renderPoint2 = WorldScene.worldToScreenPoint(renderPoints[1]).toPoint();
         }
     }
 
     public void setEnabled(boolean enabled)
     {
+        if (enabled != this.enabled)
+            getWorld().bFieldUpdated = true;
         this.enabled = enabled;
     }
 
@@ -64,6 +66,8 @@ public class Wire extends Actor implements HasBField, RequireReset
     @Override
     public void reset()
     {
+        if (!enabled)
+            getWorld().bFieldUpdated = true;
         enabled = true;
     }
 

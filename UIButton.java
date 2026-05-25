@@ -44,7 +44,7 @@ public class UIButton
 
         if (!positionInBounds(Game.instance().mousePos()))
             state = PressedState.Depressed;
-        else if (Game.instance().mouseClicked())
+        else if (Game.instance().consumeClick())
         {
             state = PressedState.Depressed;
             action.run();

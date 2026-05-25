@@ -7,18 +7,24 @@ public class Calc
     public static final double COULOMB_CONSTANT = 8.987_551_785_972E9;
     public static final double VACUUM_PERMEABILITY = 1.256_637_061_27E-6;
 
+    private static final double MAX_FORCE_DIST = 25;
+
     public static Vector2 coulombLawField(Vector2 sourcePos, float charge, Vector2 testPoint)
     {
-        Vector2 diffVector = testPoint.sub(sourcePos);
-        double magnitude = COULOMB_CONSTANT * charge / diffVector.lengthSq();
-        return diffVector.normalize().mult((float)magnitude);
+        Vector2 r = testPoint.sub(sourcePos);
+        double rSq = r.lengthSq();
+        rSq = Math.max(rSq, MAX_FORCE_DIST * MAX_FORCE_DIST);
+        double magnitude = COULOMB_CONSTANT * charge / rSq;
+        return r.normalize().mult((float)magnitude);
     }
 
     public static Vector3 ampereCircuitalLaw(Vector2 wirePoint, Vector2 current, Vector2 testPoint)
     {
-        Vector2 diffVector = testPoint.sub(closestPointOnLine(wirePoint, current, testPoint));
-        Vector3 dir = new Vector3(current).cross(new Vector3(diffVector)).normalize();
-        double magnitude = VACUUM_PERMEABILITY * current.length() / (2 * Math.PI * diffVector.length());
+        Vector2 r = testPoint.sub(closestPointOnLine(wirePoint, current, testPoint));
+        double rMag = r.length();
+        rMag = Math.max(rMag, MAX_FORCE_DIST);
+        Vector3 dir = new Vector3(current).cross(new Vector3(r)).normalize();
+        double magnitude = VACUUM_PERMEABILITY * current.length() / (2 * Math.PI * rMag);
 
         return dir.mult((float)magnitude);
     }
@@ -54,5 +60,28 @@ public class Calc
         double y = linePoint.y() + lineSlope * (x - linePoint.x());
 
         return new Vector2((float)x, (float)y);
+    }
+
+    public static Vector2 electricForce(float charge, Vector2 electricField)
+    {
+        return electricField.mult(charge);
+    }
+
+    public static Vector3 magneticForce(float charge, Vector2 velocity, Vector3 magneticField)
+    {
+        return new Vector3(velocity).cross(magneticField).mult(charge);
+    }
+
+    /**
+     * F = q(E + v x B)
+     * @param charge
+     * @param electricField
+     * @param velocity
+     * @param magneticField
+     * @return
+     */
+    public static Vector3 lorentzForce(float charge, Vector2 electricField, Vector2 velocity, Vector3 magneticField)
+    {
+        return new Vector3(electricField).add(new Vector3(velocity).cross(magneticField)).mult(charge);
     }
 }

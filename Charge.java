@@ -14,7 +14,7 @@ public class Charge extends Actor implements HasEField
     private static final Color NEGATIVE = Color.BLUE;
     private static final Color NEUTRAL = Color.DARK_GRAY;
 
-    public static final float ELEMENTARY_CHARGE = 1.602176634E-19f;
+    public static final float ELEMENTARY_CHARGE = 1E-1f; // 1.602176634E-19f;
 
     private float charge;
     private Vector2 screenPos;
@@ -28,9 +28,25 @@ public class Charge extends Actor implements HasEField
         this.fixed = fixed;
     }
 
+    @Override
+    public void setWorld(WorldScene world)
+    {
+        if (getWorld() != null && getWorld() != world)
+            getWorld().eFieldUpdated = true;
+        if (world != null)
+            world.eFieldUpdated = true;
+
+        super.setWorld(world);
+    }
+
     public boolean isFixed()
     {
         return fixed;
+    }
+
+    public float getCharge()
+    {
+        return charge;
     }
 
     @Override
@@ -40,16 +56,21 @@ public class Charge extends Actor implements HasEField
             return;
 
         if (!getWorld().gameStarted()
-            && Game.instance().mousePressed()
-            && mouseOver(Game.instance().mousePos()))
+            && mouseOver(Game.instance().mousePos())
+            && Game.instance().consumePress())
             dragOffset = screenPos.sub(Game.instance().mousePos());
         
         if (!getWorld().gameStarted()
             && dragOffset != null && Game.instance().mouseDown())
+        {
             screenPos = Game.instance().mousePos().add(dragOffset);
+            getWorld().eFieldUpdated = true;
+        }
         else if (dragOffset != null)
         {
             dragOffset = null;
+
+            getWorld().eFieldUpdated = true;
 
             // remove this charge if the mouse is released over a ChargeBag
             if (getWorld().getActorsOfType(ChargeBag.class).get(0)
@@ -81,7 +102,7 @@ public class Charge extends Actor implements HasEField
         return pos.sub(screenPos).lengthSq() <= RADIUS * RADIUS;
     }
 
-    private Color getColor()
+    public Color getColor()
     {
         if (charge > 0)
             return POSITIVE;
@@ -102,12 +123,12 @@ public class Charge extends Actor implements HasEField
     @Override
     public Vector2 getFieldAt(Vector2 position)
     {
-        return Calc.coulombLawField(DrawUtil.screenToWorld(this.screenPos), charge, position);
+        return Calc.coulombLawField(WorldScene.screenToWorldPoint(this.screenPos), charge, position);
     }
 
     @Override
     public int getZIndex()
     {
-        return 130;
+        return 310;
     }
 }

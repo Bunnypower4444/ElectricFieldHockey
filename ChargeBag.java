@@ -58,6 +58,6 @@ public class ChargeBag extends Actor
     @Override
     public int getZIndex()
     {
-        return 120;
+        return 300;
     }
 }
