@@ -120,7 +120,7 @@ public class UIButton
         g.setStroke(new BasicStroke(2 * Game.RELATIVE_SCALE));
         g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
-        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(0.5 * bounds.height)));
+        g.setFont(Assets.getFont("JosefinSans", Font.ITALIC, (int)(0.5 * bounds.height)));
 
         DrawUtil.drawText(g, new Vector2((float)bounds.getCenterX(), (float)bounds.getCenterY()), text, new Vector2(0.5f, 0.5f));
 

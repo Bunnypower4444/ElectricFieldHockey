@@ -186,7 +186,7 @@ public class WorldScene extends Scene
             b.render(g);
 
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Monospaced", Font.PLAIN, (int)(0.5 * BUTTON_HEIGHT)));
+        g.setFont(Assets.getFont("JosefinSans", Font.ITALIC, BUTTON_HEIGHT / 2));
         DrawUtil.drawText(g, new Vector2(
                 statsXPos,
                 Game.HEIGHT - TOOLBAR_HEIGHT / 2),
@@ -222,9 +222,9 @@ public class WorldScene extends Scene
         if (gameState == GameState.Failed || gameState == GameState.Won)
         {
             String text = gameState == GameState.Failed ? "Collision!" : "Goal!";
-            Color textColor = gameState == GameState.Failed ? Color.RED : new Color(38, 173, 75);
+            Color textColor = gameState == GameState.Failed ? Color.RED : new Color(44, 222, 92);
 
-            g.setFont(new Font("Monospaced", Font.PLAIN, (int)(100 * Game.RELATIVE_SCALE)));
+            g.setFont(Assets.getFont("AvenueX", Font.PLAIN, (int)(130 * Game.RELATIVE_SCALE)));
             g.setColor(textColor);
 
             DrawUtil.drawText(g, new Vector2(Game.WIDTH / 2, Game.HEIGHT / 2), text, new Vector2(0.5f, 1));

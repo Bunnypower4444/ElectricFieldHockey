@@ -41,6 +41,7 @@ public class ElectricFieldHockey extends JFrame
             
         Point windowSize = new Vector2(Game.WIDTH, Game.HEIGHT).add(gamePanelOffset).toPoint();
         EFH.setSize(windowSize.x, windowSize.y);
+        EFH.setResizable(false);
         
         Game.instance().start();
     }

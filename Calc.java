@@ -32,6 +32,7 @@ public class Calc
 
     public static Vector2 closestPointOnLine(Vector2 linePoint, Vector2 lineDirection, Vector2 testPoint)
     {
+        // ORIGINAL IMPLEMENTATION
         // find intersection point of the line and a line perpendicular to it that passes through testPoint
         // direction of that line will be Vector2(-lineDirection.y, lineDirection.x) (rotated 90 degrees)
 
@@ -48,7 +49,13 @@ public class Calc
         if (lineDirection.equals(Vector2.zero))
             throw new IllegalArgumentException("Line direction cannot be the zero vector");
 
-        if (lineDirection.x() == 0)
+        // new implementation using vector projection
+        Vector2 u = testPoint.sub(linePoint);
+        float t = u.dot(lineDirection) / lineDirection.lengthSq();
+        return linePoint.add(lineDirection.mult(t));
+
+        // ORIGINAL IMPLEMENTATION
+        /* if (lineDirection.x() == 0)
             return new Vector2(linePoint.x(), testPoint.y());
 
         if (lineDirection.y() == 0)
@@ -60,7 +67,7 @@ public class Calc
         double x = (testPoint.y() - linePoint.y() + lineSlope * linePoint.x() + invSlope * testPoint.x()) / (lineSlope + invSlope);
         double y = linePoint.y() + lineSlope * (x - linePoint.x());
 
-        return new Vector2((float)x, (float)y);
+        return new Vector2((float)x, (float)y); */
     }
 
     public static Vector2 electricForce(float charge, Vector2 electricField)

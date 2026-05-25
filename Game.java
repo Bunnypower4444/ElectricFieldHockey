@@ -9,13 +9,15 @@ import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
  * 
  */
-public class Game extends JPanel implements ActionListener, MouseListener
+public class Game extends JPanel implements ActionListener, MouseListener, KeyListener
 {
     private Stack<Scene> scenes = new Stack<>();
     private Timer updateTimer;
@@ -42,6 +44,9 @@ public class Game extends JPanel implements ActionListener, MouseListener
         renderTimer = new Timer((int)(1000 / FPS), this);
 
         addMouseListener(this);
+        addKeyListener(this);
+
+        setFocusable(true);
 
         pushScene(new WorldScene(1));
     }
@@ -150,10 +155,19 @@ public class Game extends JPanel implements ActionListener, MouseListener
     {
         Timer source = (Timer)e.getSource();
 
-        if (source == updateTimer)
-            update();
-        else if (source == renderTimer)
-            repaint();
+        try
+        {
+            if (source == updateTimer)
+                update();
+            else if (source == renderTimer)
+                repaint();
+        }
+        catch (Exception exception)
+        {
+            System.err.println("ERROR: " + exception);
+            updateTimer.stop();
+            renderTimer.stop();
+        }
     }
 
     private void update()
@@ -214,4 +228,17 @@ public class Game extends JPanel implements ActionListener, MouseListener
 
     @Override
     public void mouseExited(MouseEvent e) {}
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+
+    @Override
+    public void keyPressed(KeyEvent e)
+    {
+        if (e.isAltDown() && e.getKeyChar() == 'r')
+            Assets.load();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
 }
