@@ -111,7 +111,7 @@ public class WorldScene extends Scene
         addActor(new Puck(Charge.ELEMENTARY_CHARGE, new Vector2(150f, 500f), Vector2.zero));
 
         addActor(new Wall(new Rectangle(615, 350, 20, 300)));
-        addActor(new Goal(new Rectangle(975, 450, 50, 100)));
+        addActor(new Goal(new Rectangle(975, 450, 50, 100), Goal.Orientation.Left));
 
         addActor(new UniformEField(new Rectangle(500, 475, 250, 175), new Vector2(-100000, -100000)));
         

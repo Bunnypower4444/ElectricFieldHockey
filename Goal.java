@@ -18,10 +18,9 @@ public class Goal extends Actor
     public Goal(Rectangle bounds, Orientation orientation)
     {
         this.bounds = bounds;
-        goalBounds = calculateGoalBounds(bounds);
-        wallBounds = calculateWallBounds(bounds);
-
         this.orientation = orientation;
+        goalBounds = calculateGoalBounds();
+        wallBounds = calculateWallBounds();
     }
 
     //Initializes the boundary for goal
@@ -30,27 +29,69 @@ public class Goal extends Actor
         this(bounds, Orientation.Left);
     }
 
-    private static Rectangle calculateGoalBounds(Rectangle bounds)
+    private Rectangle calculateGoalBounds()
     {
-        int x = (int)bounds.getX();
-        int y = (int)bounds.getY() + WIDTH;
+        int x;
+        int y;
+
+        switch (orientation)
+        {
+            case Up:
+                x = bounds.x + WIDTH;
+                y = bounds.y;
+                break;
+                
+            case Right:
+                x = bounds.x + WIDTH;
+                y = bounds.y + WIDTH;
+                break;
+                
+            case Down:
+                x = bounds.x + WIDTH;
+                y = bounds.y + WIDTH;
+                break;
+
+            default:
+                x = bounds.x;
+                y = bounds.y + WIDTH;
+        }
+
         int width = (int)bounds.getWidth() - WIDTH;
         int height = (int)bounds.getHeight() - 2*WIDTH;
+
+        if (orientation == Orientation.Up || orientation == Orientation.Down)
+        {
+            int t = width;
+            width = height;
+            height = t;
+        }
+
         Rectangle goal = new Rectangle(x, y, width, height);
         
         return goal;
     }
     
-    private static Rectangle[] calculateWallBounds(Rectangle bounds)
+    private Rectangle[] calculateWallBounds()
     {
-        Rectangle top = new Rectangle((int)bounds.getX(), (int)bounds.getY(), (int)bounds.getWidth(), 
-                        WIDTH);
-        Rectangle bottom = new Rectangle((int)bounds.getX(), (int)bounds.getY() + (int)bounds.getHeight()-WIDTH,
-                        (int)bounds.getWidth(), WIDTH);
-        Rectangle side = new Rectangle((int)bounds.getX()+(int)bounds.getWidth()-WIDTH,(int)bounds.getY(),
-                            WIDTH, (int)bounds.getHeight());
+        Rectangle top = new Rectangle(bounds.x, bounds.y, bounds.width, WIDTH);
+        Rectangle bottom = new Rectangle(bounds.x, bounds.y + bounds.height - WIDTH, bounds.width, WIDTH);
+        Rectangle right = new Rectangle(bounds.x + bounds.width - WIDTH, bounds.y, WIDTH, bounds.height);
+        Rectangle left = new Rectangle(bounds.x, bounds.y, WIDTH, bounds.height);
         
-        return new Rectangle[] { top, side, bottom };
+        switch (orientation)
+        {
+            case Up:
+                return new Rectangle[] { left, right, bottom };
+                
+            case Right:
+                return new Rectangle[] { left, top, bottom };
+                
+            case Down:
+                return new Rectangle[] { left, top , right };
+
+            default:
+                return new Rectangle[] { top, right, bottom };
+        }
     }
     
     //Checks if the puck is inside the goal
