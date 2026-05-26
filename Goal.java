@@ -31,39 +31,36 @@ public class Goal extends Actor
 
     private Rectangle calculateGoalBounds()
     {
-        int x;
-        int y;
+        int x, y, width, height;
 
         switch (orientation)
         {
             case Up:
                 x = bounds.x + WIDTH;
-                y = bounds.y;
+                y = bounds.y + WIDTH;
+                width = bounds.width - 2 * WIDTH;
+                height = bounds.height - WIDTH;
                 break;
                 
             case Right:
                 x = bounds.x + WIDTH;
                 y = bounds.y + WIDTH;
+                width = bounds.width - WIDTH;
+                height = bounds.height - 2 * WIDTH;
                 break;
                 
             case Down:
                 x = bounds.x + WIDTH;
-                y = bounds.y + WIDTH;
+                y = bounds.y;
+                width = bounds.width - 2 * WIDTH;
+                height = bounds.height - WIDTH;
                 break;
 
             default:
                 x = bounds.x;
                 y = bounds.y + WIDTH;
-        }
-
-        int width = (int)bounds.getWidth() - WIDTH;
-        int height = (int)bounds.getHeight() - 2*WIDTH;
-
-        if (orientation == Orientation.Up || orientation == Orientation.Down)
-        {
-            int t = width;
-            width = height;
-            height = t;
+                width = bounds.width - WIDTH;
+                height = bounds.height - 2 * WIDTH;
         }
 
         Rectangle goal = new Rectangle(x, y, width, height);
@@ -73,8 +70,8 @@ public class Goal extends Actor
     
     private Rectangle[] calculateWallBounds()
     {
-        Rectangle top = new Rectangle(bounds.x, bounds.y, bounds.width, WIDTH);
-        Rectangle bottom = new Rectangle(bounds.x, bounds.y + bounds.height - WIDTH, bounds.width, WIDTH);
+        Rectangle bottom = new Rectangle(bounds.x, bounds.y, bounds.width, WIDTH);
+        Rectangle top = new Rectangle(bounds.x, bounds.y + bounds.height - WIDTH, bounds.width, WIDTH);
         Rectangle right = new Rectangle(bounds.x + bounds.width - WIDTH, bounds.y, WIDTH, bounds.height);
         Rectangle left = new Rectangle(bounds.x, bounds.y, WIDTH, bounds.height);
         

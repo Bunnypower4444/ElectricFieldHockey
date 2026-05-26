@@ -137,7 +137,7 @@ public class Level {
             case "goal":
                 Goal.Orientation facing = Goal.Orientation.Left;
 
-                if (attrs.containsKey("orientation"))
+                if (attrs.containsKey("facing"))
                 {
                     String facingStr = attrs.get("facing");
                     facingStr = facingStr.substring(0, 1).toUpperCase()

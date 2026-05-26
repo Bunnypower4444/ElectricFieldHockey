@@ -1,9 +1,9 @@
 # Level 0 - Sandbox
-!name=Sandbox
+!name = Sandbox
 
-type=Puck
-charge=1.0
-position=150,500
+type = Puck
+charge = 1.0
+position = 150, 500
 
-type=Goal
-bounds=1000,500,50,100
+type = Goal
+bounds = 1000, 500, 50, 100
