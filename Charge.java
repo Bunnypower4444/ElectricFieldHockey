@@ -24,7 +24,7 @@ public class Charge extends Actor implements HasEField
     public Charge(float charge, Vector2 position, boolean fixed)
     {
         this.charge = charge;
-        this.screenPos = position;
+        this.screenPos = WorldScene.worldToScreenPoint(position);
         this.fixed = fixed;
     }
 
