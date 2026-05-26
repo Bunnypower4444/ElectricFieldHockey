@@ -21,6 +21,8 @@ public class Level {
     private int negativeLimit = -1;
     private String name = null;
 
+    private Wire lastWire = null;
+
     // Parses the level data into a list of objects and their attributes
     public Level(InputStream data)
     {
@@ -156,8 +158,11 @@ public class Level {
                 return new Charge(parseFloat(attrs.get("charge")) * Charge.ELEMENTARY_CHARGE, parseVector(attrs.get("position")), true);
 
             case "wire":
-                return new Wire(parseFloat(attrs.get("current")),
+                return lastWire = new Wire(parseFloat(attrs.get("current")),
                         parseVector(attrs.get("point1")), parseVector(attrs.get("point2")));
+
+            case "switch":
+                return new Switch(lastWire, parseVector(attrs.get("position")), parseFloat(attrs.get("radius")));
 
             case "uniformefield":
                 return new UniformEField(parseRect(attrs.get("bounds")), parseVector(attrs.get("strength")));
