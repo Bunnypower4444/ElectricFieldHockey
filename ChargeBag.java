@@ -46,13 +46,14 @@ public class ChargeBag extends Actor
         g.setStroke(new BasicStroke(5 * Game.RELATIVE_SCALE));
         g.setColor(Color.BLACK);
 
+        g.drawImage(Assets.getImage("plusBag"), bounds.x, bounds.y, bounds.width / 2, bounds.height, Game.instance());
+        g.drawImage(Assets.getImage("minusBag"), bounds.x + bounds.width / 2, bounds.y, bounds.width / 2, bounds.height, Game.instance());
+
         g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
         g.drawLine(
             (int)bounds.getCenterX(), (int)bounds.getMinY(),
             (int)bounds.getCenterX(), (int)bounds.getMaxY());
-
-        // TODO: add images
     }
 
     @Override
