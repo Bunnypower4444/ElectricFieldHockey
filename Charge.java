@@ -132,6 +132,8 @@ public class Charge extends Actor implements HasEField
     @Override
     public int getZIndex()
     {
-        return 310;
+        if (fixed)
+            return 310;
+        return 311;
     }
 }
