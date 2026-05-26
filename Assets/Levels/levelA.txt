@@ -1,5 +1,6 @@
 # Level 1 - Difficulty 1: one vertical wall in the middle
 # PhET Level 1
+!name=Hello World
 
 type=Puck
 charge=1.0

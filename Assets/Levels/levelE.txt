@@ -1,4 +1,5 @@
 # Level 5 - Introduce fixed charges
+!name=Fixed Charges
 
 type=Puck
 charge=1.0

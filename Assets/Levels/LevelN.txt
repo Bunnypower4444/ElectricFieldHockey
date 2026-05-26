@@ -1,0 +1,19 @@
+# Level 14 - Introduce switches
+!name=Wires and Switches
+
+type=Puck
+charge=1.0
+position=350,800
+
+type=Goal
+bounds=150,200,50,100
+facing=right
+
+type=Wire
+current=25000000000
+point1=250,0
+point2=250,1000
+
+type=Switch
+position=1100,500
+radius=50

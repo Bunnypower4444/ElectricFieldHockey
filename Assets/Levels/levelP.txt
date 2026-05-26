@@ -1,0 +1,59 @@
+# Level 16 - putting it all together
+!name=Putting It All Together
+!negativeLimit=4
+!positiveLimit=5
+
+type=Puck
+charge=1.0
+position=150,150
+
+type=Goal
+bounds=1050,800,50,100
+facing=right
+
+type=UniformBField
+bounds=1025,750,225,250
+strength=400
+
+type=UniformEField
+bounds=330,900,695,100
+strength=400000,0
+
+type=Wall
+bounds=925,730,325,20
+
+# diagonal wire
+type=Wire
+current=75000000000
+point1=1250,300
+point2=950,0
+
+# horizontal wire
+type=Wire
+current=25000000000
+point1=1250,500
+point2=0,500
+
+type=switch
+position=1100,300
+radius=50
+
+# vertical wire
+type=Wire
+current=50000000000
+point1=300,0
+point2=300,1000
+
+type=switch
+position=150,300
+radius=50
+
+type=Wall
+bounds=0,460,280,20
+
+type=Wall
+bounds=330,0,20,300
+
+type=Charge
+charge=-1.0
+position=340,300

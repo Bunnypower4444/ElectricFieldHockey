@@ -1,0 +1,15 @@
+# Level 10 - Introduce external magnetic field
+!name=Magnetic Fields
+!chargeLimit=4
+
+type=Puck
+charge=1.0
+position=150,500
+velocity=300,0
+
+type=Goal
+bounds=1100,500,50,100
+
+type=UniformBField
+bounds=0,0,1250,1000
+strength=100

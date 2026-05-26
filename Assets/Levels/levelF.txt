@@ -1,7 +1,7 @@
 # Level 6 - Introduce charge limits
-!PositiveLimit=1
-!NegativeLimit=0
-!ChargeLimit=1
+!name=Charge Limits
+!positiveLimit=1
+!negativeLimit=0
 
 type=Puck
 charge=1.0

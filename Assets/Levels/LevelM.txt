@@ -1,0 +1,19 @@
+# Level 13 - Introduce wires
+!name=Current-carrying Wires
+!chargeLimit=1
+
+type=Puck
+charge=1.0
+position=150,500
+
+type=Goal
+bounds=1100,500,100,50
+facing=down
+
+type=Wall
+bounds=605,325,20,350
+
+type=Wire
+current=25000000000
+point1=1250,150
+point2=0,150

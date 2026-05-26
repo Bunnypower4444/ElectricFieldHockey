@@ -1,5 +1,6 @@
 # Level 7 - Dipole
-!ChargeLimit=6
+!name=Electric Dipole
+!chargeLimit=6
 
 type=Puck
 charge=1.0

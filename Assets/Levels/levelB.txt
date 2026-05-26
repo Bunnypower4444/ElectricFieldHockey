@@ -1,5 +1,6 @@
 # Level 2 - Difficulty 2: two staggered vertical walls
 # PhET Level 2
+!name=Walls
 
 type=Puck
 charge=1.0

@@ -1,0 +1,37 @@
+# Level 11 - external electric and magnetic fields at same time
+!name=Electric and Magnetic Fields
+
+type=Puck
+charge=1.0
+position=150,500
+
+type=Goal
+bounds=1100,500,50,100
+
+type=Wall
+bounds=385,300,20,400
+
+type=Wall
+bounds=805,300,20,400
+
+type=Wall
+bounds=385,280,440,20
+
+type=Wall
+bounds=385,700,440,20
+
+type=UniformBField
+bounds=0,0,605,550
+strength=-100
+
+type=UniformEField
+bounds=0,450,605,550
+strength=70712,-70712
+
+type=UniformBField
+bounds=605,450,625,550
+strength=100
+
+type=UniformEField
+bounds=605,0,625,550
+strength=-70712,70712

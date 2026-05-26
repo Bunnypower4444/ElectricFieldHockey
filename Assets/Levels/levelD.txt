@@ -1,5 +1,6 @@
 # Level 4 - Difficulty 3: three T-shaped wall obstacles
 # Phet Level 3
+!name=Snake
 
 type=Puck
 charge=1.0

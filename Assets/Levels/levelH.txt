@@ -1,5 +1,6 @@
 # Level 8 - Introduce initial velocity
-!ChargeLimit=8
+!name=Parallel Plates
+!chargeLimit=8
 
 type=Puck
 charge=1.0

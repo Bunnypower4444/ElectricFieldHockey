@@ -1,0 +1,14 @@
+# Level 9 - Introduce external electric field
+!name=Electric Fields
+!chargeLimit=1
+
+type=Puck
+charge=1.0
+position=150,500
+
+type=Goal
+bounds=1100,500,50,100
+
+type=UniformEField
+bounds=0,0,1250,1000
+strength=0,-100000

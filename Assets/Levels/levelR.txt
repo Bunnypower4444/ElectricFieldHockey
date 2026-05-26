@@ -1,0 +1,58 @@
+# Level 18 - mass spectrometer
+!name=Mass Spectrometer
+
+type=Puck
+charge=1.0
+position=250,100
+
+type=Goal
+bounds=1000,525,100,50
+facing=up
+
+# left wall
+type=Wall
+bounds=0,0,20,1000
+
+# top wall
+type=Wall
+bounds=0,980,1250,20
+
+# left slit
+type=Wall
+bounds=0,490,225,20
+
+# right slit
+type=Wall
+bounds=275,490,975,20
+
+# velocity selector bottom left
+type=Wall
+bounds=0,0,225,20
+
+# velocity selector bottom right
+type=Wall
+bounds=275,0,225,20
+
+# velocity selector right
+type=Wall
+bounds=490,0,20,500
+
+# mass spectrometer right
+type=Wall
+bounds=1230,500,20,500
+
+# velocity selector
+
+type=UniformBField
+bounds=0,0,500,500
+strength=128
+
+type=UniformEField
+bounds=0,0,500,500
+strength=-128000,0
+
+# mass spectrometer
+
+type=UniformBField
+bounds=0,500,1250,500
+strength=128
