@@ -6,4 +6,4 @@ charge=1.0
 position=150,500
 
 type=Goal
-bounds=975,450,50,100
+bounds=1000,500,50,100

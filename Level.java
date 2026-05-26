@@ -146,7 +146,7 @@ public class Level {
                     facing = Goal.Orientation.valueOf(facingStr);
                 }
 
-                return new Goal(parseRect(attrs.get("bounds")), facing);
+                return new Goal(parseRectCentered(attrs.get("bounds")), facing);
 
             case "wall":
                 return new Wall(parseRect(attrs.get("bounds")));
@@ -198,5 +198,13 @@ public class Level {
             (int)Float.parseFloat(parts[1].trim()),
             (int)Float.parseFloat(parts[2].trim()),
             (int)Float.parseFloat(parts[3].trim()));
+    }
+
+    private static Rectangle parseRectCentered(String value)
+    {
+        Rectangle rect = parseRect(value);
+        rect.x -= rect.width / 2;
+        rect.y -= rect.height / 2;
+        return rect;
     }
 }

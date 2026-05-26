@@ -5,7 +5,7 @@ charge=1.0
 position=150,500
 
 type=Goal
-bounds=975,450,50,100
+bounds=1000,500,50,100
 
 # First T: vertical bar from top to bottom, with a horizontal cross-bar near the top
 type=Wall
