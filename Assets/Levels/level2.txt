@@ -1,16 +1,17 @@
 # Level 2 - Difficulty 2: two staggered vertical walls
+# PhET Level 2
 
 type=Puck
 charge=1.0
 position=150,500
 
 type=Goal
-bounds=1000,500,50,100
+bounds=1100,500,50,100
 
 # Upper wall, left side
 type=Wall
-bounds=470,180,10,260
+bounds=455,450,20,350
 
 # Lower wall, right side
 type=Wall
-bounds=700,340,10,260
+bounds=755,200,20,350

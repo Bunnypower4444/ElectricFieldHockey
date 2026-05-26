@@ -1,0 +1,20 @@
+# Level 7 - Dipole
+!ChargeLimit=6
+
+type=Puck
+charge=1.0
+position=150,500
+
+type=Goal
+bounds=1100,500,50,100
+
+type=Wall
+bounds=605,325,20,350
+
+type=Charge
+charge=1.0
+position=615,675
+
+type=Charge
+charge=-1.0
+position=615,325

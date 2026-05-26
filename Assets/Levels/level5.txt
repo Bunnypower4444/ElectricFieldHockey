@@ -1,0 +1,12 @@
+# Level 5 - Introduce fixed charges
+
+type=Puck
+charge=1.0
+position=150,500
+
+type=Goal
+bounds=1100,500,50,100
+
+type=Charge
+charge=1.0
+position=600,500

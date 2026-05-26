@@ -1,22 +1,36 @@
-# Level 3 - Difficulty 3: two T-shaped wall obstacles
+# Level 3 - lo then hi
 
 type=Puck
 charge=1.0
 position=150,500
 
 type=Goal
-bounds=1000,500,50,100
+bounds=1100,500,50,100
 
-# First T: vertical bar from top to bottom, with a horizontal cross-bar near the top
+# left side lo
 type=Wall
-bounds=395,40,10,620
-
-type=Wall
-bounds=305,265,180,10
-
-# Second T: vertical bar from middle to bottom, with a horizontal cross-bar
-type=Wall
-bounds=580,275,10,385
+bounds=430,0,20,275
 
 type=Wall
-bounds=500,355,180,10
+bounds=365,255,150,20
+
+type=Wall
+bounds=430,425,20,575
+
+type=Wall
+bounds=365,425,150,20
+
+
+
+# right side hi
+type=Wall
+bounds=780,0,20,575
+
+type=Wall
+bounds=715,555,150,20
+
+type=Wall
+bounds=780,725,20,275
+
+type=Wall
+bounds=715,725,150,20
