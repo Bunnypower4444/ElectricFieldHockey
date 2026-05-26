@@ -53,7 +53,7 @@ public class ChargeBag extends Actor
 
             numCharges++;
 
-            c = new Charge(chargeValue, mousePos, false);
+            c = new Charge(chargeValue, WorldScene.screenToWorldPoint(mousePos), false);
             getWorld().addActor(c);
             c.update();
         }
