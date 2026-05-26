@@ -205,13 +205,13 @@ public class DrawUtil
         g.setStroke(VECTOR_STROKE);
 
         drawCircle(g, position, CIRCLE_RADIUS);
-        drawKnotCross(g, position, CIRCLE_RADIUS * Math.signum(z));
+        drawDotCross(g, position, CIRCLE_RADIUS * Math.signum(z));
 
         g.setColor(pColor);
         g.setStroke(pStroke);
     }
 
-    public static void drawKnotCross(Graphics2D g, Point point, float radius)
+    public static void drawDotCross(Graphics2D g, Point point, float radius)
     {
         // scaling shenanigans so that the result isn't confined to larger pixels
         if (radius > 0)

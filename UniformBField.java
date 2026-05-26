@@ -56,7 +56,7 @@ public class UniformBField extends Actor implements HasBField
         for (int x = topLeft.x + VECTOR_SPACING / 2; x < bottomRight.x + VECTOR_RADIUS; x += VECTOR_SPACING)
         for (int y = topLeft.y + VECTOR_SPACING / 2; y < bottomRight.y + VECTOR_RADIUS; y += VECTOR_SPACING)
         {
-            DrawUtil.drawKnotCross(g, new Point(x, y), Math.signum(strength.z()) * radius);
+            DrawUtil.drawDotCross(g, new Point(x, y), Math.signum(strength.z()) * radius);
         }
         
         g.setClip(null);
