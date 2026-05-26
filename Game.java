@@ -48,7 +48,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
 
         setFocusable(true);
 
-        pushScene(new WorldScene(1));
+        pushScene(new TitleScene());
     }
 
     public static void createGame()

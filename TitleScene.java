@@ -15,7 +15,7 @@ public class TitleScene extends Scene
     {
         Rectangle bounds = new Rectangle(300, 300, 200, 50);
         Runnable action = () -> Game.instance().pushScene(new LevelSelectScene());
-        levelSelectButton = new UIButton(bounds, "Level Select", Color.WHITE, action);
+        levelSelectButton = new UIButton(bounds, "Level Select", action);
     }
 
     @Override

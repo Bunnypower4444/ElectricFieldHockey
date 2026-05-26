@@ -10,7 +10,6 @@ public class UIButton
 {
     private Rectangle bounds;
     private String text;
-    private Color color;
     private Runnable action;
     private boolean visible = true;
     private boolean enabled = true;
@@ -18,11 +17,12 @@ public class UIButton
     private static enum PressedState { Depressed, Hover, Pressed, Disabled }
     private PressedState state = PressedState.Depressed;
 
-    public UIButton(Rectangle bounds, String text, Color color, Runnable action)
+    private static final Color BUTTON_COLOR = new Color(220, 220, 220);
+
+    public UIButton(Rectangle bounds, String text, Runnable action)
     {
         this.bounds = bounds;
         this.text = text;
-        this.color = color;
         this.action = action;
     }
 
@@ -97,10 +97,10 @@ public class UIButton
         switch (state)
         {
             case Pressed:
-                c = color.darker();
+                c = BUTTON_COLOR.darker();
                 break;
             default:
-                c = color;
+                c = BUTTON_COLOR;
                 break;
         }
 

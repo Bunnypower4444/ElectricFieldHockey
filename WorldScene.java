@@ -31,17 +31,18 @@ public class WorldScene extends Scene
     public boolean eFieldUpdated = false;
     public boolean bFieldUpdated = false;
 
+    private static boolean debug = false;
+
     private Queue<Actor> addingActors = new LinkedList<>(), removingActors = new LinkedList<>();
     
     private static enum GameState { Initial, Paused, Unpaused, Failed, Won };
     
     private GameState gameState = GameState.Initial;
     
-    private static final int BUTTON_HEIGHT = TOOLBAR_HEIGHT / 2;
-    private static final int BUTTON_WIDTH = (int)(100 * Game.RELATIVE_SCALE);
+    public static final int BUTTON_HEIGHT = TOOLBAR_HEIGHT / 2;
+    public static final int BUTTON_WIDTH = (int)(100 * Game.RELATIVE_SCALE);
     private static final int TOOLBAR_MARGIN = (int)(100 * Game.RELATIVE_SCALE);
     private static final int BUTTON_PADDING = (int)(25 * Game.RELATIVE_SCALE);
-    private static final Color BUTTON_COLOR = new Color(220, 220, 220);
 
     private LinkedList<UIButton> buttons = new LinkedList<>();
     private UIButton playButton, resetButton, clearButton, nextLevelButton;
@@ -74,7 +75,7 @@ public class WorldScene extends Scene
                 BUTTON_WIDTH,
                 BUTTON_HEIGHT
 
-            ), "Back", BUTTON_COLOR,
+            ), "Back",
             Game.instance()::popScene));
 
         // next level
@@ -85,12 +86,12 @@ public class WorldScene extends Scene
                 BUTTON_WIDTH,
                 BUTTON_HEIGHT
 
-            ), "Next", BUTTON_COLOR,
+            ), "Next",
             this::nextLevel);
         nextLevelButton.setVisible(false);
         buttons.add(nextLevelButton);
 
-        // Assets.getLevel(levelNum).loadLevel(this);
+        Assets.getLevel(levelNum).loadLevel(this);
 
         addActor(new ChargeBag(new Rectangle(
             Game.WIDTH - (int)(175 * Game.RELATIVE_SCALE),
@@ -99,6 +100,8 @@ public class WorldScene extends Scene
             (int)(75 * Game.RELATIVE_SCALE)
         )));
 
+        // testing stuff
+
         /* addActor(new Wire(1, new Vector2(100, 10), new Vector2(200, 410)));
         addActor(new Wire(1, new Vector2(400, 10), new Vector2(200, 410)));
         addActor(new Wire(1, new Vector2(100, 10), new Vector2(700, 410)));
@@ -106,7 +109,7 @@ public class WorldScene extends Scene
         addActor(new Wire(1, new Vector2(200, 10), new Vector2(200, 410)));
         addActor(new Wire(1, new Vector2(100, 410), new Vector2(200, 410))); */
 
-        Wire w;
+        /* Wire w;
         addActor(w = new Wire(10000000000f, new Vector2(100, 410), new Vector2(600, 600)));
 
         addActor(new Switch(w, new Vector2(150, 750), 50));
@@ -121,7 +124,7 @@ public class WorldScene extends Scene
         addActor(new UniformBField(new Rectangle(500, 350, 250, 175), new Vector3(0, 0, -100)));
 
         addActor(new TotalEField());
-        addActor(new TotalBField());
+        addActor(new TotalBField()); */
 
         eFieldUpdated = true;
         bFieldUpdated = true;
@@ -137,7 +140,7 @@ public class WorldScene extends Scene
                 BUTTON_WIDTH,
                 BUTTON_HEIGHT
 
-            ), name, BUTTON_COLOR,
+            ), name,
             action);
         
         buttons.add(button);
@@ -196,6 +199,27 @@ public class WorldScene extends Scene
                 Game.HEIGHT - TOOLBAR_HEIGHT / 2),
             "Attempts: " + attempts, new Vector2(0, 0));
 
+        if (gameState == GameState.Failed || gameState == GameState.Won)
+        {
+            String text = gameState == GameState.Failed ? "Collision!" : "Goal!";
+            Color textColor = gameState == GameState.Failed ? Color.RED : new Color(44, 222, 92);
+
+            g.setFont(Assets.getFont("AvenueX", Font.PLAIN, (int)(130 * Game.RELATIVE_SCALE)));
+            g.setColor(textColor);
+
+            DrawUtil.drawText(g, new Vector2(Game.WIDTH / 2, Game.HEIGHT / 2), text, new Vector2(0.5f, 1));
+        }
+
+        //#endregion
+
+        //#region Debug
+
+        if (!debug)
+            return;
+
+        g.setColor(Color.BLACK);
+        g.setFont(Assets.getFont("JosefinSans", Font.ITALIC, BUTTON_HEIGHT / 2));
+
         int line = 0;
         DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
             "Screen: " + Game.instance().mousePos(),
@@ -218,17 +242,6 @@ public class WorldScene extends Scene
         DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
             "FPS: " + String.format("%.2f", (1 / Game.instance().deltaTime())),
             new Vector2(0, 0));
-
-        if (gameState == GameState.Failed || gameState == GameState.Won)
-        {
-            String text = gameState == GameState.Failed ? "Collision!" : "Goal!";
-            Color textColor = gameState == GameState.Failed ? Color.RED : new Color(44, 222, 92);
-
-            g.setFont(Assets.getFont("AvenueX", Font.PLAIN, (int)(130 * Game.RELATIVE_SCALE)));
-            g.setColor(textColor);
-
-            DrawUtil.drawText(g, new Vector2(Game.WIDTH / 2, Game.HEIGHT / 2), text, new Vector2(0.5f, 1));
-        }
 
         //#endregion
     }
