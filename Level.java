@@ -100,11 +100,11 @@ public class Level {
                         parseVector(attrs.get("point1")), parseVector(attrs.get("point2")));
 
             case "UniformEField":
-                return new UniformEField(parseVector(attrs.get("strength")));
+                return new UniformEField(parseRect(attrs.get("bounds")), parseVector(attrs.get("strength")));
 
             // Magnetic fields are restricted to the z-axis to keep the game 2D
             case "UniformBField":
-                return new UniformBField(new Vector3(0, 0, parseFloat(attrs.get("strength"))));
+                return new UniformBField(parseRect(attrs.get("bounds")),new Vector3(0, 0, parseFloat(attrs.get("strength"))));
 
             default:
                 return null;
