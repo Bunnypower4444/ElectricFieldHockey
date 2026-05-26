@@ -1,12 +1,12 @@
 # Level 1 - Difficulty 1: one vertical wall in the middle
-!name=testtesttest
+# PhET Level 1
 
 type=Puck
 charge=1.0
 position=150,500
 
 type=Goal
-bounds=1000,500,50,100
+bounds=1100,500,50,100
 
 type=Wall
-bounds=560,230,20,300
+bounds=605,325,20,350

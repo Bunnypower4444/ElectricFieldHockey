@@ -1,0 +1,23 @@
+# Level 6 - Introduce charge limits
+!PositiveLimit=1
+!NegativeLimit=0
+!ChargeLimit=1
+
+type=Puck
+charge=1.0
+position=150,500
+
+type=Goal
+bounds=1100,500,50,100
+
+type=Charge
+charge=-1.0
+position=615,500
+
+type=Charge
+charge=1.0
+position=590,850
+
+type=Charge
+charge=1.0
+position=640,850

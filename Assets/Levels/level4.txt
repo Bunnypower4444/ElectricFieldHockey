@@ -1,0 +1,34 @@
+# Level 4 - Difficulty 3: three T-shaped wall obstacles
+# Phet Level 3
+
+type=Puck
+charge=1.0
+position=150,500
+
+type=Goal
+bounds=1100,500,50,100
+
+# First T: left side, extends to bottom
+type=Wall
+bounds=405,0,20,600
+
+type=Wall
+bounds=365,580,100,20
+
+
+
+# Second T: middle, extends to top
+type=Wall
+bounds=605,400,20,600
+
+type=Wall
+bounds=565,400,100,20
+
+
+
+# Third T: right side, extends to bottom
+type=Wall
+bounds=805,0,20,600
+
+type=Wall
+bounds=765,580,100,20
