@@ -72,10 +72,13 @@ public class Charge extends Actor implements HasEField
 
             getWorld().eFieldUpdated = true;
 
+            ChargeBag bag = getWorld().getActorsOfType(ChargeBag.class).get(0);
             // remove this charge if the mouse is released over a ChargeBag
-            if (getWorld().getActorsOfType(ChargeBag.class).get(0)
-                .positionInBounds(Game.instance().mousePos()))
+            if (bag.positionInBounds(Game.instance().mousePos()))
+            {
                 getWorld().removeActor(this);
+                bag.chargeRemoved(this);
+            }
         }
     }
 

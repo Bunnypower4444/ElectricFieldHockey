@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 
 /**
  * The screen that lets the player choose which level to play. Renders a grid
@@ -22,7 +21,7 @@ public class LevelSelectScene extends Scene
     // Lays out a button for each available level
     public LevelSelectScene()
     {
-        int count = Assets.levelCount();
+        int count = Assets.levelCount() - 1;
         buttons = new Rectangle[count];
 
         int gridWidth = COLUMNS * BUTTON_SIZE + (COLUMNS - 1) * BUTTON_GAP;
@@ -53,9 +52,11 @@ public class LevelSelectScene extends Scene
     @Override
     public void update()
     {
+        backButton.update();
+
         if (!Game.instance().mouseClicked())
             return;
-
+        
         Vector2 mouse = Game.instance().mousePos();
         for (int i = 0; i < buttons.length; i++)
         {
@@ -65,10 +66,8 @@ public class LevelSelectScene extends Scene
                 return;
             }
         }
-
-        backButton.update();
     }
-    
+
     // Render the 2D graphics on the screen
     @Override
     public void render(Graphics2D g)

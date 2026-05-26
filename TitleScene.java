@@ -8,32 +8,52 @@ import java.awt.Rectangle;
  */
 public class TitleScene extends Scene
 {
+    private UIButton[] buttons;
 
-    private UIButton levelSelectButton;
+    private static final int BUTTON_WIDTH = (int)(250 * Game.RELATIVE_SCALE);
 
     public TitleScene()
     {
-        Rectangle bounds = new Rectangle(300, 300, 200, 50);
-        Runnable action = () -> Game.instance().pushScene(new LevelSelectScene());
-        levelSelectButton = new UIButton(bounds, "Level Select", action);
+        buttons = new UIButton[2];
+
+        buttons[0] = new UIButton(
+            new Rectangle(
+                Game.WIDTH / 2 - BUTTON_WIDTH / 2, Game.HEIGHT / 2 + WorldScene.BUTTON_PADDING,
+                BUTTON_WIDTH, WorldScene.BUTTON_HEIGHT
+                ),
+            "Level Select",
+            () -> Game.instance().pushScene(new LevelSelectScene()));
+        
+        buttons[1] = new UIButton(
+            new Rectangle(
+                Game.WIDTH / 2 - BUTTON_WIDTH / 2, Game.HEIGHT / 2 + WorldScene.BUTTON_HEIGHT + 2 * WorldScene.BUTTON_PADDING,
+                BUTTON_WIDTH, WorldScene.BUTTON_HEIGHT
+                ),
+            "Sandbox",
+            () -> Game.instance().pushScene(new WorldScene(0)));
     }
 
     @Override
     public void update()
     {
-        levelSelectButton.update();
+        for (UIButton b : buttons)
+            b.update();
     }
 
     @Override
     public void render(Graphics2D g)
     {
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(20, 24, 40));
         g.fillRect(0, 0, Game.instance().getWidth(), Game.instance().getHeight());
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 48));
-        g.drawString("Electric Field Hockey", 100, 150);
+        g.setFont(Assets.getFont("AvenueX", Font.PLAIN, (int)(130 * Game.RELATIVE_SCALE)));
+        DrawUtil.drawText(g, new Vector2(Game.WIDTH / 2, Game.HEIGHT / 2 - g.getFont().getSize()),
+            "Electric Field", new Vector2(0.5f, 1));
+        DrawUtil.drawText(g, new Vector2(Game.WIDTH / 2, Game.HEIGHT / 2),
+            "Hockey", new Vector2(0.5f, 1));
 
-        levelSelectButton.render(g);
+        for (UIButton b : buttons)
+            b.render(g);
     }
 }

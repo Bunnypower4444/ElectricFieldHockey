@@ -32,7 +32,7 @@ public class Assets
     //Gets all the info for a given level
     public static Level getLevel(int num)
     {
-        int index = num - 1;
+        int index = num;
         if (index < 0 || index >= levels.size())
             return null;
         return levels.get(index);

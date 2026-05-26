@@ -41,8 +41,9 @@ public class WorldScene extends Scene
     
     public static final int BUTTON_HEIGHT = TOOLBAR_HEIGHT / 2;
     public static final int BUTTON_WIDTH = (int)(100 * Game.RELATIVE_SCALE);
+    public static final int BUTTON_PADDING = (int)(25 * Game.RELATIVE_SCALE);
+
     private static final int TOOLBAR_MARGIN = (int)(100 * Game.RELATIVE_SCALE);
-    private static final int BUTTON_PADDING = (int)(25 * Game.RELATIVE_SCALE);
 
     private LinkedList<UIButton> buttons = new LinkedList<>();
     private UIButton playButton, resetButton, clearButton, nextLevelButton;
@@ -91,14 +92,16 @@ public class WorldScene extends Scene
         nextLevelButton.setVisible(false);
         buttons.add(nextLevelButton);
 
-        Assets.getLevel(levelNum).loadLevel(this);
+        Level level = Assets.getLevel(levelNum);
+        level.loadLevel(this);
 
-        addActor(new ChargeBag(new Rectangle(
-            Game.WIDTH - (int)(175 * Game.RELATIVE_SCALE),
-            (int)(25 * Game.RELATIVE_SCALE),
-            (int)(150 * Game.RELATIVE_SCALE),
-            (int)(75 * Game.RELATIVE_SCALE)
-        )));
+        addActor(new ChargeBag(
+            new Rectangle(
+                Game.WIDTH - (int)(175 * Game.RELATIVE_SCALE),
+                (int)(25 * Game.RELATIVE_SCALE),
+                (int)(150 * Game.RELATIVE_SCALE),
+                (int)(75 * Game.RELATIVE_SCALE)
+            ), level.getChargeLimit(), level.getPositiveLimit(), level.getNegativeLimit()));
 
         // testing stuff
 
@@ -123,8 +126,10 @@ public class WorldScene extends Scene
         
         addActor(new UniformBField(new Rectangle(500, 350, 250, 175), new Vector3(0, 0, -100)));
 
+        */
+
         addActor(new TotalEField());
-        addActor(new TotalBField()); */
+        addActor(new TotalBField());
 
         eFieldUpdated = true;
         bFieldUpdated = true;
@@ -198,6 +203,11 @@ public class WorldScene extends Scene
                 statsXPos,
                 Game.HEIGHT - TOOLBAR_HEIGHT / 2),
             "Attempts: " + attempts, new Vector2(0, 0));
+
+        DrawUtil.drawText(g, new Vector2(
+                Game.WIDTH - TOOLBAR_MARGIN,
+                Game.HEIGHT - TOOLBAR_HEIGHT / 2),
+            levelNum == 0 ? "Sandbox" : ("Level " + levelNum), new Vector2(1, 0.5f));
 
         if (gameState == GameState.Failed || gameState == GameState.Won)
         {
@@ -432,7 +442,8 @@ public class WorldScene extends Scene
         {
             setState(GameState.Won);
 
-            if (Assets.getLevel(levelNum + 1) != null)
+            // only show option for next if it is not sandbox and if next level exists
+            if (levelNum != 0 && Assets.getLevel(levelNum + 1) != null)
                 nextLevelButton.setVisible(true);
         }
     }

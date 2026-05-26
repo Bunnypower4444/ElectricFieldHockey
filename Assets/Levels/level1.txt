@@ -1,8 +1,11 @@
-# Level 1 - Practice: open field, no obstacles
+# Level 2 - Difficulty 1: one vertical wall in the middle
 
 type=Puck
 charge=1.0
-position=240,380
+position=150,500
 
 type=Goal
-bounds=900,320,50,100
+bounds=975,450,50,100
+
+type=Wall
+bounds=560,230,10,300

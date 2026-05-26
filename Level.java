@@ -16,6 +16,9 @@ import java.util.HashMap;
  */
 public class Level {
     private ArrayList<HashMap<String, String>> objects = new ArrayList<>();
+    private int chargeLimit = -1;
+    private int positiveLimit = -1;
+    private int negativeLimit = -1;
 
     // Parses the level data into a list of objects and their attributes
     public Level(InputStream data)
@@ -47,8 +50,26 @@ public class Level {
                 if (eq < 0)
                     continue;
 
-                String key = line.substring(0, eq).trim();
+                String key = line.substring(0, eq).trim().toLowerCase();
                 String value = line.substring(eq + 1).trim();
+                
+                // global info about the level
+                if (line.startsWith("!"))
+                {
+                    switch(key.substring(1))
+                    {
+                        case "chargelimit":
+                            chargeLimit = parseInt(value);
+                            break;
+                        case "positivelimit":
+                            positiveLimit = parseInt(value);
+                            break;
+                        case "negativelimit":
+                            negativeLimit = parseInt(value);
+                            break;
+                    }
+                    continue;
+                }
 
                 if (current == null)
                     current = new HashMap<>();
@@ -63,6 +84,21 @@ public class Level {
         if (current != null)
             objects.add(current);
 
+    }
+
+    public int getChargeLimit()
+    {
+        return chargeLimit;
+    }
+
+    public int getPositiveLimit()
+    {
+        return positiveLimit;
+    }
+
+    public int getNegativeLimit()
+    {
+        return negativeLimit;
     }
 
     //Loads the given world scene with a level
@@ -82,33 +118,53 @@ public class Level {
             return null;
 
         switch(objType){
-            case "Puck":
-                return new Puck(parseFloat(attrs.get("charge")), parseVector(attrs.get("position")), Vector2.zero);
+            case "puck":
+                Vector2 velocity = Vector2.zero;
+                if (attrs.containsKey("velocity"))
+                    velocity = parseVector(attrs.get("velocity"));
 
-            case "Goal":
-                return new Goal(parseRect(attrs.get("bounds")));
+                return new Puck(parseFloat(attrs.get("charge")) * Charge.ELEMENTARY_CHARGE, parseVector(attrs.get("position")), velocity);
 
-            case "Wall":
+            case "goal":
+                Goal.Orientation facing = Goal.Orientation.Left;
+
+                if (attrs.containsKey("orientation"))
+                {
+                    String facingStr = attrs.get("facing");
+                    facingStr = facingStr.substring(0, 1).toUpperCase()
+                        + facingStr.substring(1).toLowerCase();
+
+                    facing = Goal.Orientation.valueOf(facingStr);
+                }
+
+                return new Goal(parseRect(attrs.get("bounds")), facing);
+
+            case "wall":
                 return new Wall(parseRect(attrs.get("bounds")));
 
             // Pre-placed charges from a level are fixed (cannot be moved by the player)
-            case "Charge":
-                return new Charge(parseFloat(attrs.get("charge")), parseVector(attrs.get("position")), true);
+            case "charge":
+                return new Charge(parseFloat(attrs.get("charge")) * Charge.ELEMENTARY_CHARGE, parseVector(attrs.get("position")), true);
 
-            case "Wire":
+            case "wire":
                 return new Wire(parseFloat(attrs.get("current")),
                         parseVector(attrs.get("point1")), parseVector(attrs.get("point2")));
 
-            case "UniformEField":
+            case "uniformefield":
                 return new UniformEField(parseRect(attrs.get("bounds")), parseVector(attrs.get("strength")));
 
             // Magnetic fields are restricted to the z-axis to keep the game 2D
-            case "UniformBField":
+            case "uniformbfield":
                 return new UniformBField(parseRect(attrs.get("bounds")),new Vector3(0, 0, parseFloat(attrs.get("strength"))));
 
             default:
                 return null;
         }
+    }
+
+    private static int parseInt(String value)
+    {
+        return Integer.parseInt(value.trim());
     }
 
     // "1.5" -> 1.5f

@@ -1,0 +1,8 @@
+# Level 0 - Sandbox
+
+type=Puck
+charge=1.0
+position=150,500
+
+type=Goal
+bounds=975,450,50,100

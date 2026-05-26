@@ -1,11 +1,16 @@
-# Level 2 - Difficulty 1: one vertical wall in the middle
+# Level 3 - Difficulty 2: two staggered vertical walls
 
 type=Puck
 charge=1.0
-position=240,400
-
-type=Wall
-bounds=560,230,10,300
+position=150,500
 
 type=Goal
-bounds=900,360,50,100
+bounds=975,450,50,100
+
+# Upper wall, left side
+type=Wall
+bounds=470,180,10,260
+
+# Lower wall, right side
+type=Wall
+bounds=700,340,10,260
