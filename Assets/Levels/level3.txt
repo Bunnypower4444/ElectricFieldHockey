@@ -1,4 +1,4 @@
-# Level 4 - Difficulty 3: two T-shaped wall obstacles
+# Level 3 - Difficulty 3: two T-shaped wall obstacles
 
 type=Puck
 charge=1.0

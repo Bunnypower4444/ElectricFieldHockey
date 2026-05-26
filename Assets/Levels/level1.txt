@@ -1,4 +1,5 @@
-# Level 2 - Difficulty 1: one vertical wall in the middle
+# Level 1 - Difficulty 1: one vertical wall in the middle
+!name=testtesttest
 
 type=Puck
 charge=1.0

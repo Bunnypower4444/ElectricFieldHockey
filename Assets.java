@@ -52,6 +52,8 @@ public class Assets
     //Loads data for all the levels
     private static void loadLevels()
     {
+        levels.clear();
+
         File dir = new File(LEVELS_DIR);
         if (!dir.isDirectory())
         {

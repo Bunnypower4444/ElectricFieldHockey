@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -25,6 +26,7 @@ public class WorldScene extends Scene
     private static final Vector2 SCALE_FACTOR = new Vector2(FIELD_WIDTH, FIELD_HEIGHT).div(WORLD_DIMENSIONS);
 
     private ArrayList<Actor> actors = new ArrayList<>();
+    private HashSet<Actor> actorSet = new HashSet<>();
     private HashMap<Class<?>, LinkedList<Actor>> trackedActors = new HashMap<>();
     private float globalTimer = 0;
 
@@ -51,6 +53,7 @@ public class WorldScene extends Scene
     private int attempts = 0;
     private int charges = 0;
     private int levelNum;
+    private Level level;
 
     private int statsXPos = TOOLBAR_MARGIN;
 
@@ -92,7 +95,7 @@ public class WorldScene extends Scene
         nextLevelButton.setVisible(false);
         buttons.add(nextLevelButton);
 
-        Level level = Assets.getLevel(levelNum);
+        level = Assets.getLevel(levelNum);
         level.loadLevel(this);
 
         addActor(new ChargeBag(
@@ -204,10 +207,34 @@ public class WorldScene extends Scene
                 Game.HEIGHT - TOOLBAR_HEIGHT / 2),
             "Attempts: " + attempts, new Vector2(0, 0));
 
-        DrawUtil.drawText(g, new Vector2(
+        // level has name and is not sandbox
+        if (level.getName() != null && levelNum != 0)
+        {
+            DrawUtil.drawText(g, new Vector2(
                 Game.WIDTH - TOOLBAR_MARGIN,
                 Game.HEIGHT - TOOLBAR_HEIGHT / 2),
-            levelNum == 0 ? "Sandbox" : ("Level " + levelNum), new Vector2(1, 0.5f));
+                "Level " + levelNum, new Vector2(1, 1f));
+            DrawUtil.drawText(g, new Vector2(
+                Game.WIDTH - TOOLBAR_MARGIN,
+                Game.HEIGHT - TOOLBAR_HEIGHT / 2),
+                level.getName(), new Vector2(1, 0));
+        }
+        // sandbox
+        else if (levelNum == 0)
+        {
+            DrawUtil.drawText(g, new Vector2(
+                Game.WIDTH - TOOLBAR_MARGIN,
+                Game.HEIGHT - TOOLBAR_HEIGHT / 2),
+                level.getName(), new Vector2(1, 0.5f));
+        }
+        // level has no name
+        else
+        {
+            DrawUtil.drawText(g, new Vector2(
+                Game.WIDTH - TOOLBAR_MARGIN,
+                Game.HEIGHT - TOOLBAR_HEIGHT / 2),
+                "Level " + levelNum, new Vector2(1, 0.5f));
+        }
 
         if (gameState == GameState.Failed || gameState == GameState.Won)
         {
@@ -268,7 +295,7 @@ public class WorldScene extends Scene
 
     public void addActor(Actor actor)
     {
-        if (actors.contains(actor) || addingActors.contains(actor))
+        if (actorSet.contains(actor) || addingActors.contains(actor))
             throw new IllegalStateException("Actor is already added to the WorldScene");
 
         addingActors.add(actor);
@@ -289,6 +316,7 @@ public class WorldScene extends Scene
                 index = -(index + 1);
 
             actors.add(index, actor);
+            actorSet.add(actor);
 
             for (Class<?> type : trackedActors.keySet())
             {
@@ -311,6 +339,8 @@ public class WorldScene extends Scene
 
             if (actors.remove(actor) && actor instanceof Charge && !((Charge)actor).isFixed())
                 charges--;
+
+            actorSet.remove(actor);
 
             actor.setWorld(null);
 

@@ -19,6 +19,7 @@ public class Level {
     private int chargeLimit = -1;
     private int positiveLimit = -1;
     private int negativeLimit = -1;
+    private String name = null;
 
     // Parses the level data into a list of objects and their attributes
     public Level(InputStream data)
@@ -67,6 +68,9 @@ public class Level {
                         case "negativelimit":
                             negativeLimit = parseInt(value);
                             break;
+                        case "name":
+                            name = value;
+                            break;
                     }
                     continue;
                 }
@@ -99,6 +103,11 @@ public class Level {
     public int getNegativeLimit()
     {
         return negativeLimit;
+    }
+
+    public String getName()
+    {
+        return name;
     }
 
     //Loads the given world scene with a level

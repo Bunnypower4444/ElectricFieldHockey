@@ -1,4 +1,5 @@
 # Level 0 - Sandbox
+!name=Sandbox
 
 type=Puck
 charge=1.0
