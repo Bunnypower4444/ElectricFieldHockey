@@ -459,10 +459,14 @@ public class WorldScene extends Scene
         if (gameStarted())
             return;
 
+        ChargeBag bag = getActorsOfType(ChargeBag.class).get(0);
         for (Charge c : getActorsOfType(Charge.class))
         {
             if (!c.isFixed())
+            {
                 removeActor(c);
+                bag.chargeRemoved(c);
+            }
         }
     }
 
