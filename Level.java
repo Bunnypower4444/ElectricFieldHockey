@@ -113,7 +113,7 @@ public class Level {
 
    // Creates the actors in the world scene
     private Actor createActor(HashMap<String, String> attrs) {
-        String objType = attrs.get("type");
+        String objType = attrs.get("type").toLowerCase();
         if (objType == null)
             return null;
 
