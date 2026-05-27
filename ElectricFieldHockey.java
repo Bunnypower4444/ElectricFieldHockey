@@ -4,10 +4,16 @@ import java.awt.Point;
 import javax.swing.JFrame;
 
 /**
+ * The main entry-point class for the application, which creates the window containing the game.
  * 
+ * @author  Evan Guo
+ * @version 5/25/26
  */
 public class ElectricFieldHockey extends JFrame
 {
+    /**
+     * Creates a new instance of the window and instantiates and adds the Game
+     */
     public ElectricFieldHockey()
     {
         super("Electric Field Hockey");
@@ -17,6 +23,11 @@ public class ElectricFieldHockey extends JFrame
         add(Game.instance());
     }
 
+    /**
+     * Runs the game, creating a new window with the size given by constants in the Game class,
+     * and adjusting the size to account for the size of the title of the window.
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args)
     {
         Assets.load();
@@ -30,14 +41,14 @@ public class ElectricFieldHockey extends JFrame
         Vector2 gamePanelOffset = Vector2.zero;
         Container c = Game.instance();
         while (true)
-            {
-                if (c instanceof ElectricFieldHockey)
-                    break;
-                
-                gamePanelOffset = gamePanelOffset.add(new Vector2(c.getLocation()));
-                
-                c = c.getParent();
-            }
+        {
+            if (c instanceof ElectricFieldHockey)
+                break;
+            
+            gamePanelOffset = gamePanelOffset.add(new Vector2(c.getLocation()));
+            
+            c = c.getParent();
+        }
             
         Point windowSize = new Vector2(Game.WIDTH, Game.HEIGHT).add(gamePanelOffset).toPoint();
         EFH.setSize(windowSize.x, windowSize.y);

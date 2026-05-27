@@ -5,7 +5,11 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 /**
+ * An actor representing a point charge, which produces an electric field. Charges can be fixed
+ * or movable, and the player mainly controls the motion of the puck by placing charges.
  * 
+ * @author  Evan Guo
+ * @version 5/26/26
  */
 public class Charge extends Actor implements HasEField
 {
@@ -14,6 +18,10 @@ public class Charge extends Actor implements HasEField
     private static final Color NEGATIVE = Color.BLUE;
     private static final Color NEUTRAL = Color.DARK_GRAY;
 
+    /**
+     * The elementary charge, e, of the world, in coulombs. Note that this is
+     * not the actual value of e.
+     */
     public static final float ELEMENTARY_CHARGE = 1E-1f; // 1.602176634E-19f;
 
     private float charge;
@@ -21,6 +29,12 @@ public class Charge extends Actor implements HasEField
     private boolean fixed;
     private Vector2 dragOffset = null;
 
+    /**
+     * Creates a point charge with a given charge at a position.
+     * @param charge The charge of the point charge, in coulombs
+     * @param position The world space position of the charge, in meters
+     * @param fixed Whether or not the charge is pre-placed (cannot be moved by the player)
+     */
     public Charge(float charge, Vector2 position, boolean fixed)
     {
         this.charge = charge;
@@ -31,6 +45,8 @@ public class Charge extends Actor implements HasEField
     @Override
     public void setWorld(WorldScene world)
     {
+        // mark the world as having to update its electric field when the charge
+        // is added or removed
         if (getWorld() != null && getWorld() != world)
             getWorld().eFieldUpdated = true;
         if (world != null)
@@ -39,11 +55,19 @@ public class Charge extends Actor implements HasEField
         super.setWorld(world);
     }
 
+    /**
+     * Gets whether or not the charge is pre-placed (cannot be moved by the player).
+     * @return true if the charge is fixed; false otherwise
+     */
     public boolean isFixed()
     {
         return fixed;
     }
 
+    /**
+     * Gets the charge on the point charge.
+     * @return The charge in coulombs
+     */
     public float getCharge()
     {
         return charge;
@@ -105,7 +129,7 @@ public class Charge extends Actor implements HasEField
         return pos.sub(screenPos).lengthSq() <= RADIUS * RADIUS;
     }
 
-    public Color getColor()
+    private Color getColor()
     {
         if (charge > 0)
             return POSITIVE;

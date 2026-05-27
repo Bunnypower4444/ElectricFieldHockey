@@ -22,7 +22,7 @@ public class Wall extends Actor
     public void render(Graphics2D g)
     {
         g.setColor(COLOR);
-        DrawUtil.drawWorldRectangle(g, bounds);
+        DrawUtil.fillWorldRectangle(g, bounds);
     }
 
     public boolean collision(Puck puck)

@@ -5,6 +5,13 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+/**
+ * An actor representing the "charge bag" from which players drag new charges and drop unwanted charges.
+ * This actor also handles charge limits set for a level.
+ * 
+ * @author  Evan Guo
+ * @version 5/25/26
+ */
 public class ChargeBag extends Actor
 {
     private Rectangle bounds;
@@ -13,6 +20,13 @@ public class ChargeBag extends Actor
 
     private static final int TEXT_PADDING = (int)(10 * Game.RELATIVE_SCALE);
 
+    /**
+     * Creates a new ChargeBag at the given screen-space bounds, with the given charge limits.
+     * @param bounds The screen-space bounds of the clickable "bag" portion of the ChargeBag
+     * @param chargeLimit The maximum number of total player-placed charges allowed
+     * @param positiveLimit The maximum number of positive player-placed charges allowed
+     * @param negativeLimit The maximum number of negative player-placed charges allowed
+     */
     public ChargeBag(Rectangle bounds, int chargeLimit, int positiveLimit, int negativeLimit)
     {
         this.bounds = bounds;
@@ -21,6 +35,11 @@ public class ChargeBag extends Actor
         this.negativeLimit = negativeLimit;
     }
 
+    /**
+     * Checks if a given point is within the bag portion of the ChargeBag
+     * @param pos The screen-space position of the point
+     * @return true if the point is in the bounds; false otherwise
+     */
     public boolean positionInBounds(Vector2 pos)
     {
         return bounds.contains(pos.toPoint());
@@ -59,6 +78,12 @@ public class ChargeBag extends Actor
         }
     }
 
+    /**
+     * Adjusts the number of charges used accordingly based on a charge that has
+     * been removed by the player. This method should be used to signify a charge
+     * removing event.
+     * @param c The charge that has been removed
+     */
     public void chargeRemoved(Charge c)
     {
         numCharges--;

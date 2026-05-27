@@ -116,13 +116,13 @@ public class Goal extends Actor
     public void render(Graphics2D g)
     {
         g.setColor(Color.GREEN);
-        DrawUtil.drawWorldRectangle(g, bounds);
+        DrawUtil.fillWorldRectangle(g, bounds);
 
         g.setColor(Wall.COLOR);
         
         for (Rectangle wall : wallBounds)
         {
-            DrawUtil.drawWorldRectangle(g, wall);
+            DrawUtil.fillWorldRectangle(g, wall);
         }
     }
 

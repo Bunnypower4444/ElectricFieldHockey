@@ -16,6 +16,9 @@ import java.awt.event.MouseListener;
 
 /**
  * 
+ * 
+ * @author  Evan Guo
+ * @version 5/25/26
  */
 public class Game extends JPanel implements ActionListener, MouseListener, KeyListener
 {

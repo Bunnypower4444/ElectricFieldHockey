@@ -29,7 +29,7 @@ public class UniformBField extends Actor implements HasBField
     public void render(Graphics2D g)
     {
         g.setColor(BG_COLOR);
-        DrawUtil.drawWorldRectangle(g, bounds);
+        DrawUtil.fillWorldRectangle(g, bounds);
 
         Point topLeft = WorldScene.worldToScreenPoint(new Vector2(bounds.x, bounds.y + bounds.height)).toPoint();
         Point bottomRight = WorldScene.worldToScreenPoint(new Vector2(bounds.x + bounds.width, bounds.y)).toPoint();
