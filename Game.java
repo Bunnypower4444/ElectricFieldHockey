@@ -30,15 +30,15 @@ import java.awt.event.MouseListener;
  */
 public class Game extends JPanel implements ActionListener, MouseListener, KeyListener
 {
-    private Stack<Scene> scenes = new Stack<>();
-    private Timer updateTimer;
-    private Timer renderTimer;
-    private long lastFrameTimeMillis;
-    private float deltaTime = 0;
-    private Vector2 mousePos = Vector2.zero;
-    private boolean mouseDown = false;
-    private boolean mouseClicked = false;
-    private boolean mousePressed = false;
+    private transient Stack<Scene> scenes = new Stack<>();
+    private transient Timer updateTimer;
+    private transient Timer renderTimer;
+    private transient long lastFrameTimeMillis;
+    private transient float deltaTime = 0;
+    private transient Vector2 mousePos = Vector2.zero;
+    private transient boolean mouseDown = false;
+    private transient boolean mouseClicked = false;
+    private transient boolean mousePressed = false;
     private static Game instance;
 
     /**
