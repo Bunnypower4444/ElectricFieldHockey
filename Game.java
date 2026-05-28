@@ -15,10 +15,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
+ * The main class that handles running and maintaining the game, i.e., the "engine,"
+ * running it within a JPanel.
+ * The Game class starts the update/render chain, and stores a stack of
+ * Scenes, using Timers to call the appropriate
+ * methods every frame. The Game class also provides a system for handling
+ * mouse input.
  * 
+ * The Game class is a singleton class, meaning there can only be one instance
+ * of it, which is accessed in a static way.
  * 
  * @author  Evan Guo
- * @version 5/25/26
+ * @version 5/27/26
  */
 public class Game extends JPanel implements ActionListener, MouseListener, KeyListener
 {
@@ -33,11 +41,29 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     private boolean mousePressed = false;
     private static Game instance;
 
+    /**
+     * The update (physics tick) frequency.
+     */
     public static final float UpdateFPS = 300;
+    /**
+     * The graphics refresh rate.
+     */
     public static final float FPS = 60;
 
+    /**
+     * The height that the Game JPanel should be at.
+     */
     public static final int HEIGHT = 720;
+    /**
+     * The width that the Game JPanel should be at, which is
+     * at a constant ratio to the height.
+     */
     public static final int WIDTH = (int)(WorldScene.FIELD_HEIGHT * WorldScene.WORLD_WIDTH_HEIGHT_RATIO);
+    /**
+     * A scale factor used to scale graphics to the given size of the
+     * window, so that elements maintain the same relative size when
+     * the size of the window changes.
+     */
     public static final float RELATIVE_SCALE = HEIGHT / 900f;
 
     private Game()
@@ -54,6 +80,12 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         pushScene(new TitleScene());
     }
 
+    /**
+     * Creates and runs the instance of the Game. This method is required
+     * to instantiate the Game, since there can only be one instance of the Game.
+     * @throws IllegalStateException if <code>createGame()</code> has already
+     * been run
+     */
     public static void createGame()
     {
         if (instance != null)
@@ -62,6 +94,11 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         new Game();
     }
 
+    /**
+     * Gets the current instance of the game.
+     * @return The current instance of the game.
+     * @throws IllegalStateException if the Game has not been created with <code>createGame()</code> yet
+     */
     public static Game instance()
     {
         if (Game.instance != null)
@@ -70,6 +107,9 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         throw new IllegalStateException("Game has not been created with createGame()");
     }
 
+    /**
+     * Starts the update and render cycles for the Game.
+     */
     public void start()
     {
         updateTimer.start();
@@ -77,43 +117,77 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         lastFrameTimeMillis = System.currentTimeMillis();
     }
 
+    /**
+     * Pushes a new Scene to the scene stack.
+     * @param s the new Scene
+     */
     public void pushScene(Scene s)
     {
         scenes.push(s);
     }
 
+    /**
+     * Pops the current Scene from the stack of scenes.
+     */
     public void popScene()
     {
         if (!scenes.isEmpty())
             scenes.pop();
     }
 
+    /**
+     * Pops the current Scene, then pushes the new Scene to the stack
+     * of scenes.
+     * @param s the new Scene
+     */
     public void switchScene(Scene s)
     {
         popScene();
         pushScene(s);
     }
 
+    /**
+     * Gets the amount of time, in seconds, between update (physics) ticks.
+     * @return
+     */
     public float deltaTime()
     {
         return deltaTime;
     }
 
+    /**
+     * Gets the screen coordinates of the mouse.
+     * @return A vector representing the position of the mouse
+     */
     public Vector2 mousePos()
     {
         return mousePos;
     }
 
+    /**
+     * Gets whether or not the mouse is currently pressed down.
+     * @return true if the mouse is pressed down; false otherwise
+     */
     public boolean mouseDown()
     {
         return mouseDown;
     }
 
+    /**
+     * Gets whether or not the mouse button has been clicked (released)
+     * in the current update tick. This value is cleared after every update tick.
+     * @return true if the mouse button was just released; false otherwise
+     */
     public boolean mouseClicked()
     {
         return mouseClicked;
     }
 
+    /**
+     * Gets whether or not not the mouse button has been clicked (released)
+     * in the current update tick, "using up" the click if true.
+     * @return true if the mouse button was just released; false otherwise
+     */
     public boolean consumeClick()
     {
         if (mouseClicked)
@@ -124,11 +198,21 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         return false;
     }
 
+    /**
+     * Gets whether or not the mouse button has been pressed
+     * in the current update tick. This value is cleared after every update tick.
+     * @return true if the mouse button was just pressed; false otherwise
+     */
     public boolean mousePressed()
     {
         return mousePressed;
     }
 
+    /**
+     * Gets whether or not not the mouse button has been pressed
+     * in the current update tick, "using up" the press if true.
+     * @return true if the mouse button was just pressed; false otherwise
+     */
     public boolean consumePress()
     {
         if (mousePressed)
@@ -154,6 +238,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         return pos;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e)
     {
         Timer source = (Timer)e.getSource();

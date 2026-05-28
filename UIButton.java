@@ -6,6 +6,13 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 
+/**
+ * A utility class that allows for easily creating, updating,
+ * and rendering responsive clickable buttons.
+ * 
+ * @author Evan Guo
+ * @version 5/25/26
+ */
 public class UIButton
 {
     private Rectangle bounds;
@@ -19,6 +26,13 @@ public class UIButton
 
     private static final Color BUTTON_COLOR = new Color(220, 220, 220);
 
+    /**
+     * Creates a new UIButton with the specified bounds, text label,
+     * and <code>Runnable</code> action to be invoked when clicked.
+     * @param bounds The rectangular bounds of the button
+     * @param text The text label to be displayed on the button
+     * @param action The action to be run when the button is clicked
+     */
     public UIButton(Rectangle bounds, String text, Runnable action)
     {
         this.bounds = bounds;
@@ -31,6 +45,12 @@ public class UIButton
         return bounds.contains(mousePos.toPoint());
     }
 
+    /**
+     * Updates the state of the button for the update tick. This includes
+     * detecting whether the mouse is hovering over or pressing down on
+     * the button (which causes the button to be rendered differently),
+     * and invoking the button's associated action when clicked.
+     */
     public void update()
     {
         if (!visible)
@@ -55,36 +75,75 @@ public class UIButton
             state = PressedState.Hover;
     }
 
+    /**
+     * Gets the text label on the button.
+     * @return The text label
+     */
     public String getText()
     {
         return text;
     }
 
+    /**
+     * Sets the text label on the button
+     * @param text The new text label
+     */
     public void setText(String text)
     {
         this.text = text;
     }
 
+    /**
+     * Gets whether or not the button is visible and will be rendered
+     * @return true if the button is visible; false if the button
+     * is hidden
+     */
     public boolean getVisible()
     {
         return visible;
     }
 
+    /**
+     * Sets the visibility state of the button. If the
+     * button is turned invisible, it will not be drawn
+     * to the screen when the <code>render()</code> method is called,
+     * and it will also not detect clicks in <code>update</code>.
+     * @param visible true if the button should visible; false if
+     * the button should be hidden
+     */
     public void setVisible(boolean visible)
     {
         this.visible = visible;
     }
 
+    /**
+     * Gets whether the button is currently enabled and can be
+     * clicked.
+     * @return true if the button is enabled; false if the button
+     * is disabled
+     */
     public boolean getEnabled()
     {
         return enabled;
     }
 
+    /**
+     * Enables or disabled the button. Disabled buttons will
+     * not be able to be clicked, and they will always be
+     * rendered to look faded out.
+     * @param enabled true if the button should be enabled; false if the
+     * button should be disabled
+     */
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
     }
 
+    /**
+     * Draws the button to the specified Graphics2D object.
+     * If the button's visibility is set to false, it will not be drawn.
+     * @param g The Graphics2D to which to render the button
+     */
     public void render(Graphics2D g)
     {
         if (!visible)

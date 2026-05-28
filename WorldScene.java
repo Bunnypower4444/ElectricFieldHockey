@@ -11,18 +11,48 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
+ * The Scene of the main world, which handles UI elements of the
+ * simulation, running and displaying the Actors that make up the world, and
+ * handling winning and losing.
  * 
+ * @author  Evan Guo
+ * @version 5/26/26
  */
 public class WorldScene extends Scene
 {
     private static final int TOOLBAR_HEIGHT = (int)(80 * Game.RELATIVE_SCALE);
     
+    /**
+     * The color of the background of the playing field (not including the
+     * toolbar at the bottom)
+     */
     public static final Color FIELD_COLOR = new Color(0xEEEEEE);
+    /**
+     * The screen width of the playing field
+     */
     public static final int FIELD_WIDTH = Game.WIDTH;
+    /**
+     * The screen height of the playing field (not including the
+     * toolbar at the bottom)
+     */
     public static final int FIELD_HEIGHT = Game.HEIGHT - TOOLBAR_HEIGHT;
 
+    /**
+     * The ratio of the world's width to its height.
+     */
     public static final float WORLD_WIDTH_HEIGHT_RATIO = 1.250f;
+    /**
+     * A Vector2 containing the world (not screen) width and height, in meters of the
+     * playing field. World coordinates are used to calculate physics-based interactions,
+     * with the positive y-axis being up, while screen coordinates are used for rendering
+     * graphics, with the positive y-axis being down. Using a separate system for
+     * world coordinates allows the modification of the display size without affecting
+     * physics calculations, as well as allowing the actors to exist in a world
+     * where the positive y-axis is up, which preserves the right-hand rule for cross
+     * products.
+     */
     public static final Vector2 WORLD_DIMENSIONS = new Vector2(1000 * WORLD_WIDTH_HEIGHT_RATIO, 1000);
+    
     private static final Vector2 SCALE_FACTOR = new Vector2(FIELD_WIDTH, FIELD_HEIGHT).div(WORLD_DIMENSIONS);
 
     private ArrayList<Actor> actors = new ArrayList<>();
@@ -30,7 +60,19 @@ public class WorldScene extends Scene
     private HashMap<Class<?>, LinkedList<Actor>> trackedActors = new HashMap<>();
     private float globalTimer = 0;
 
+    /**
+     * Marks whether or not the there has been a change to the electric
+     * field. This value is reset to false at the end of every update tick,
+     * and is used by Actors that need to be up-to-date with the current
+     * state of the electric field.
+     */
     public boolean eFieldUpdated = false;
+    /**
+     * Marks whether or not the there has been a change to the magnetic
+     * field. This value is reset to false at the end of every update tick,
+     * and is used by Actors that need to be up-to-date with the current
+     * state of the magnetic field.
+     */
     public boolean bFieldUpdated = false;
 
     private static boolean debug = false;
@@ -41,8 +83,17 @@ public class WorldScene extends Scene
     
     private GameState gameState = GameState.Initial;
     
+    /**
+     * The height of a typical button.
+     */
     public static final int BUTTON_HEIGHT = TOOLBAR_HEIGHT / 2;
+    /**
+     * The width of a typical button.
+     */
     public static final int BUTTON_WIDTH = (int)(100 * Game.RELATIVE_SCALE);
+    /**
+     * The distance between the edges of buttons that are next to each other.
+     */
     public static final int BUTTON_PADDING = (int)(25 * Game.RELATIVE_SCALE);
 
     private static final int TOOLBAR_MARGIN = (int)(100 * Game.RELATIVE_SCALE);
@@ -57,6 +108,11 @@ public class WorldScene extends Scene
 
     private int statsXPos = TOOLBAR_MARGIN;
 
+    /**
+     * Creates a new WorldScene using the specified level number.
+     * @param levelNum The level number, used to get the corresponding level
+     * from the {@link Assets} class.
+     */
     public WorldScene(int levelNum)
     {
         this.levelNum = levelNum;
@@ -283,16 +339,38 @@ public class WorldScene extends Scene
         //#endregion
     }
 
+    /**
+     * A global timer that counts up as long as the simulation is not paused.
+     * This value will also count up when the simulation has not started
+     * yet, allowing for animations to play out as the player places charges.
+     * @return The current value of the timer
+     */
     public float globalTimer()
     {
         return globalTimer;
     }
 
+    /**
+     * Gets the duration of the time step between update ticks.
+     * If <code>getPaused()</code> is true, the value returned will be 0.
+     * Otherwise, the value returned will always be fixed to equal
+     * <code>1 / Game.UpdateFPS</code>, so that the physics always runs the same
+     * regardless of lag.
+     * @return The duration of the time step, in seconds, or 0 if the
+     * simulation is paused
+     */
     public float deltaTime()
     {
         return getPaused() ? 0 : 1 / Game.UpdateFPS;
     }
 
+    /**
+     * Queues an actor to be added to the world. Actors that have
+     * been queued will be added after the main update, as well
+     * as after the late update.
+     * @param actor The actor to be added
+     * @throws IllegalStateException if the actor is already added to the world
+     */
     public void addActor(Actor actor)
     {
         if (actorSet.contains(actor) || addingActors.contains(actor))
@@ -326,6 +404,12 @@ public class WorldScene extends Scene
         }
     }
 
+    /**
+     * Queues an actor to be removed from the world. Actors that have
+     * been queued will be removed after the main update, as well
+     * as after the late update.
+     * @param actor The actor to be removed
+     */
     public void removeActor(Actor actor)
     {
         removingActors.add(actor);
@@ -358,6 +442,15 @@ public class WorldScene extends Scene
         processRemovingActors();
     }
 
+    /**
+     * Gets all the actors that are assignable to a certain type.
+     * Once this method has been called for a certain type <code>T</code>,
+     * a list of all the actors assignable to that type will be maintained
+     * in a HashMap for quick future access.
+     * @param <T> The type of actor to get
+     * @param c A Class object representing the type of actor get
+     * @return A list of all actors assignable to the specified type
+     */
     public <T> LinkedList<T> getActorsOfType(Class<T> c)
     {
         if (trackedActors.keySet().contains(c))
@@ -417,12 +510,22 @@ public class WorldScene extends Scene
             playButton.setText("Play");
     }
 
+    /**
+     * Gets whether the game is in a paused state, which occurs when
+     * the pause button is clicked, or if the level is completed or failed.
+     * This does not include the initial state of the level during which
+     * the player can place charges.
+     * @return true if the game is paused; false otherwise
+     */
     public boolean getPaused()
     {
         return gameState == GameState.Paused
             || gameState == GameState.Failed || gameState == GameState.Won;
     }
 
+    /**
+     * Toggles between pausing and unpausing the game.
+     */
     public void togglePaused()
     {
         if (getPaused() || !gameStarted())
@@ -431,17 +534,29 @@ public class WorldScene extends Scene
             setPaused(true);
     }
 
+    /**
+     * Pauses or unpauses the game. This method will have no effect
+     * if the game is currently in the win or lose state.
+     * @param paused true if the game should be paused; false otherwise
+     */
     public void setPaused(boolean paused)
     {
         if (gameState != GameState.Failed && gameState != GameState.Won)
             setState(paused ? GameState.Paused : GameState.Unpaused);
     }
 
+    /**
+     * Gets whether or not the game is in the initial charge-placing state.
+     * @return true if the game is in the initial state; false otherwise
+     */
     public boolean gameStarted()
     {
         return gameState != GameState.Initial;
     }
 
+    /**
+     * Resets the game, increasing the attempt counter by one.
+     */
     public void reset()
     {
         globalTimer = 0;
@@ -454,6 +569,10 @@ public class WorldScene extends Scene
         }
     }
 
+    /**
+     * Removes all player-placed charges from the world and notifies
+     * the ChargeBag accordingly.
+     */
     public void clearCharges()
     {
         if (gameStarted())
@@ -470,6 +589,12 @@ public class WorldScene extends Scene
         }
     }
 
+    /**
+     * If the game is currently not in the level failed state, sets
+     * the state to the level completed state. If the level is not
+     * the sandbox level (level 0) and there is a next level,
+     * shows the button to continue to the next level.
+     */
     public void levelComplete()
     {
         if (gameState != GameState.Failed)
@@ -487,27 +612,67 @@ public class WorldScene extends Scene
         Game.instance().switchScene(new WorldScene(levelNum + 1));
     }
 
+    /**
+     * If the game is currently not in the level completed state, sets
+     * the state to the level failed state.
+     */
     public void levelFail()
     {
         if (gameState != GameState.Won)
             setState(GameState.Failed);
     }
 
+    /**
+     * Converts the given world-space position to its corresponding
+     * point in screen-space coordinates. This has the effect of
+     * multiplying the point by a scale factor, inverting the y-position,
+     * and adjusting the point so that the origin of the world space is in the correct spot.
+     * @param point The world-space position of the point, in meters
+     * @return The screen-space position of the point 
+     */
     public static Vector2 worldToScreenPoint(Vector2 point)
     {
         return point.withY(WORLD_DIMENSIONS.y() - point.y()).mult(SCALE_FACTOR);
     }
 
+    /**
+     * Converts the given world-space vector, representing
+     * a change in value rather than an absolute value, to its corresponding
+     * point in screen-space coordinates. This has the effect of
+     * multiplying the vector by a scale factor and inverting
+     * the y-component without adjusting it so
+     * that the origin of the world space is in the correct spot.
+     * @param vector The world-space vector
+     * @return The screen-space vector 
+     */
     public static Vector2 worldToScreenVector(Vector2 vector)
     {
         return vector.withY(-vector.y()).mult(SCALE_FACTOR);
     }
 
+    /**
+     * Converts the given screen-space position to its corresponding
+     * point in world-space coordinates. This has the effect of
+     * multiplying the point by a scale factor, inverting the y-position,
+     * and adjusting the point so that the origin of the screen space is in the correct spot.
+     * @param point The screen-space position of the point
+     * @return The world-space position of the point, in meters
+     */
     public static Vector2 screenToWorldPoint(Vector2 point)
     {
         return point.withY(FIELD_HEIGHT - point.y()).div(SCALE_FACTOR);
     }
 
+    /**
+     * Converts the given screen-space vector, representing
+     * a change in value rather than an absolute value, to its corresponding
+     * point in world-space coordinates. This has the effect of
+     * multiplying the vector by a scale factor and inverting
+     * the y-component without adjusting it so
+     * that the origin of the screen space is in the correct spot.
+     * @param vector The screen-space vector
+     * @return The world-space vector 
+     */
     public static Vector2 screenToWorldVector(Vector2 vector)
     {
         return vector.withY(- vector.y()).div(SCALE_FACTOR);

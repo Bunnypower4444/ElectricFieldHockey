@@ -5,8 +5,11 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 /**
- * An actor representing a point charge, which produces an electric field. Charges can be fixed
- * or movable, and the player mainly controls the motion of the puck by placing charges.
+ * An actor representing a point charge, which produces an electric field radially
+ * outward for positive charges and inward for negative charges. The strength
+ * of the electric field at a given point can be found using {@link Calc#coulombLawField(Vector2, float, Vector2) Coulomb's law}.
+ * Charges can be fixed or movable, and the player mainly controls the
+ * motion of the puck by placing charges.
  * 
  * @author  Evan Guo
  * @version 5/26/26
