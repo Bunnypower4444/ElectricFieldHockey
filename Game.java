@@ -147,8 +147,8 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     }
 
     /**
-     * Gets the amount of time, in seconds, between update (physics) ticks.
-     * @return
+     * Gets the amount of time between update (physics) ticks.
+     * @return The time between physics ticks, in seconds
      */
     public float deltaTime()
     {
