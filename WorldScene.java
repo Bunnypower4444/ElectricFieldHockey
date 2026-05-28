@@ -20,6 +20,8 @@ import java.util.Queue;
  */
 public class WorldScene extends Scene
 {
+    private static boolean debug = false;
+
     private static final int TOOLBAR_HEIGHT = (int)(80 * Game.RELATIVE_SCALE);
     
     /**
@@ -58,6 +60,8 @@ public class WorldScene extends Scene
     private ArrayList<Actor> actors = new ArrayList<>();
     private HashSet<Actor> actorSet = new HashSet<>();
     private HashMap<Class<?>, LinkedList<Actor>> trackedActors = new HashMap<>();
+    private Queue<Actor> addingActors = new LinkedList<>(), removingActors = new LinkedList<>();
+    
     private float globalTimer = 0;
 
     /**
@@ -74,10 +78,6 @@ public class WorldScene extends Scene
      * state of the magnetic field.
      */
     public boolean bFieldUpdated = false;
-
-    private static boolean debug = false;
-
-    private Queue<Actor> addingActors = new LinkedList<>(), removingActors = new LinkedList<>();
     
     private static enum GameState { Initial, Paused, Unpaused, Failed, Won };
     
