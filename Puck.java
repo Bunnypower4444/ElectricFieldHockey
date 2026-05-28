@@ -8,7 +8,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
- * 
+ * The charged puck the player tries to guide into a goal. Moves under the
+ * electric and magnetic fields in the world via the Lorentz force.
+ *
+ * @author  Adeline Krishna, Evan Guo
+ * @version 5/25/26
  */
 public class Puck extends Actor implements RequireReset, LateUpdate
 {
@@ -34,7 +38,13 @@ public class Puck extends Actor implements RequireReset, LateUpdate
     private HashMap<Color, LinkedList<Vector2>> electricFields = new HashMap<>();
     private HashMap<Color, LinkedList<Vector2>> magneticForces = new HashMap<>();
 
-    //Initializes the charge, and position
+    /**
+     * Initializes the charge, position and velocity.
+     *
+     * @param charge          the puck's charge
+     * @param position        the starting position
+     * @param initialVelocity the starting velocity
+     */
     public Puck(float charge, Vector2 position, Vector2 initialVelocity)
     {
         initialPosition = position;
@@ -44,6 +54,9 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         velocity = initialVelocity;
     }
 
+    /**
+     * Activates any switches the puck is currently touching.
+     */
     @Override
     public void update()
     {
@@ -55,6 +68,10 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         }
     }
 
+    /**
+     * Advances the puck's motion for one frame and checks for scoring,
+     * goal-wall collisions and wall collisions.
+     */
     @Override
     public void lateUpdate()
     {
@@ -120,6 +137,10 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         }
     }
 
+    /**
+     * @param e the electric field source
+     * @return the color used to draw that source's force vector
+     */
     private static Color getEForceColor(HasEField e)
     {
         if (e instanceof Charge)
@@ -129,6 +150,10 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         return Color.RED;
     }
 
+    /**
+     * @param e the magnetic field source
+     * @return the color used to draw that source's force vector
+     */
     private static Color getBForceColor(HasBField e)
     {
         if (e instanceof Wire)
@@ -138,6 +163,11 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         return Color.MAGENTA;
     }
 
+    /**
+     * Recomputes the per-source electric force vectors for display.
+     *
+     * @return the net electric field at the puck's position
+     */
     private Vector2 updateEFields()
     {
         electricFields.clear();
@@ -163,6 +193,11 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         return netEField;
     }
 
+    /**
+     * Recomputes the per-source magnetic force vectors for display.
+     *
+     * @return the net magnetic field at the puck's position
+     */
     private Vector3 updateBFields()
     {
         magneticForces.clear();
@@ -188,22 +223,35 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         return netBField;
     }
 
+    /**
+     * @return the puck's current position
+     */
     public Vector2 getPosition()
     {
         return position;
     }
 
+    /**
+     * @return the puck's current velocity
+     */
     public Vector2 getVelocity()
     {
         return velocity;
     }
 
+    /**
+     * @return the puck's current acceleration
+     */
     public Vector2 getAcceleration()
     {
         return acceleration;
     }
-    
-    //Creates a box around the puck for detecting collision
+
+    /**
+     * Creates a box around the puck for detecting collision.
+     *
+     * @return the puck's collision bounding box
+     */
     public Rectangle collisionBox()
     {
         int startX = (int)position.x();
@@ -215,6 +263,11 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         return(box);
     }
 
+    /**
+     * Draws the puck along with its force and velocity vectors.
+     *
+     * @param g the graphics context to draw with
+     */
     @Override
     public void render(Graphics2D g)
     {
@@ -249,6 +302,9 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         DrawUtil.drawText(g, screenPos, getText(), new Vector2(0.5f, 0.5f));
     }
 
+    /**
+     * @return "+" for a positive charge, "-" for a negative charge, or "" for neutral
+     */
     private String getText()
     {
         if (charge > 0)
@@ -258,6 +314,9 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         return "";
     }
 
+    /**
+     * Restores the puck to its initial position and velocity.
+     */
     @Override
     public void reset()
     {
@@ -267,6 +326,9 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         getWorld().bFieldUpdated = true;
     }
 
+    /**
+     * @return the draw order index
+     */
     @Override
     public int getZIndex()
     {

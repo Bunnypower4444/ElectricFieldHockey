@@ -11,6 +11,9 @@ import java.io.InputStream;
 
 /**
  * Loads the game's level files from disk 
+ *
+ * @author  Adeline Krishna
+ * @version 5/25/26
  */
 
 public class Assets
@@ -23,13 +26,22 @@ public class Assets
     private static HashMap<String, BufferedImage> images = new HashMap<>();
     private static HashMap<String, Font> fonts = new HashMap<>();
 
+    /**
+     * Loads all levels, images and fonts from disk.
+     */
     public static void load()
     {
         loadLevels();
         loadImages();
         loadFonts();
     }
-    //Gets all the info for a given level
+
+    /**
+     * Gets all the info for a given level.
+     *
+     * @param num the zero-based level index
+     * @return the level, or null if the index is out of range
+     */
     public static Level getLevel(int num)
     {
         int index = num;
@@ -37,19 +49,31 @@ public class Assets
             return null;
         return levels.get(index);
     }
-    // returns the number of levels
+
+    /**
+     * Returns the number of levels.
+     *
+     * @return the number of loaded levels
+     */
     public static int levelCount()
     {
         return levels.size();
     }
 
-    // Gets the image for a named object
+    /**
+     * Gets the image for a named object.
+     *
+     * @param name the image name (file name without extension)
+     * @return the image, or null if no image with that name is loaded
+     */
     public static BufferedImage getImage(String name)
     {
         return images.get(name);
     }
 
-    //Loads data for all the levels
+    /**
+     * Loads data for all the levels.
+     */
     private static void loadLevels()
     {
         levels.clear();
@@ -82,7 +106,9 @@ public class Assets
         }
 
     }
-    // Loads images for all the objects
+    /**
+     * Loads images for all the objects.
+     */
     private static void loadImages()
     {
         File dir = new File(IMAGES_DIR);
@@ -111,11 +137,23 @@ public class Assets
         }
     }
 
+    /**
+     * Gets a named font derived with the given style and size.
+     *
+     * @param name  the font name (file name without extension)
+     * @param style the font style (e.g. {@link Font#PLAIN}, {@link Font#BOLD})
+     * @param size  the point size
+     * @return the derived font
+     * @throws NullPointerException if no font with that name is loaded
+     */
     public static Font getFont(String name, int style, float size)
     {
         return fonts.get(name).deriveFont(style, size);
     }
 
+    /**
+     * Loads fonts for all the objects and registers them with the graphics environment.
+     */
     private static void loadFonts()
     {
         File dir = new File(FONTS_DIR);
@@ -148,7 +186,12 @@ public class Assets
         }
     }
 
-    // Removes file extension
+    /**
+     * Removes the file extension from a file name.
+     *
+     * @param fileName the file name
+     * @return the file name without its extension
+     */
     private static String stripExtension(String fileName)
     {
         int dot = fileName.lastIndexOf('.');

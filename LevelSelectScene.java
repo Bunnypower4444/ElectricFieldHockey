@@ -7,6 +7,9 @@ import java.awt.Rectangle;
  * The screen that lets the player choose which level to play. Renders a grid
  * of level buttons; clicking one pushes a new WorldScene for that level onto
  * the Game's scene stack.
+ *
+ * @author  Adeline Krishna
+ * @version 5/25/26
  */
 public class LevelSelectScene extends Scene
 {
@@ -18,7 +21,9 @@ public class LevelSelectScene extends Scene
     private Rectangle[] buttons;
     private UIButton backButton;
 
-    // Lays out a button for each available level
+    /**
+     * Lays out a button for each available level.
+     */
     public LevelSelectScene()
     {
         int count = Assets.levelCount() - 1;
@@ -47,8 +52,10 @@ public class LevelSelectScene extends Scene
             Game.instance()::popScene);
     }
 
-    // Opens the clicked level. Input is polled from Game (the same model the
-    // WorldScene and Charge use), since Game only dispatches update()/render().
+    /**
+     * Opens the clicked level. Input is polled from Game (the same model the
+     * WorldScene and Charge use), since Game only dispatches update()/render().
+     */
     @Override
     public void update()
     {
@@ -68,7 +75,11 @@ public class LevelSelectScene extends Scene
         }
     }
 
-    // Render the 2D graphics on the screen
+    /**
+     * Render the 2D graphics on the screen.
+     *
+     * @param g the graphics context to draw with
+     */
     @Override
     public void render(Graphics2D g)
     {
