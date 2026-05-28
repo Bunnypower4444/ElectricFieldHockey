@@ -13,6 +13,9 @@ import java.util.HashMap;
  * attribute name -> value, and turns those into Actors in a
  * WorldScene.
  *
+ * @author  Adeline Krishna
+ * @version 5/25/26
+ *
  */
 public class Level {
     private ArrayList<HashMap<String, String>> objects = new ArrayList<>();
@@ -23,7 +26,11 @@ public class Level {
 
     private Wire lastWire = null;
 
-    // Parses the level data into a list of objects and their attributes
+    /**
+     * Parses the level data into a list of objects and their attributes.
+     *
+     * @param data the input stream of the level file to read
+     */
     public Level(InputStream data)
     {
         HashMap<String, String> current = null;
@@ -92,27 +99,43 @@ public class Level {
 
     }
 
+    /**
+     * @return the total charge limit, or -1 if none is set
+     */
     public int getChargeLimit()
     {
         return chargeLimit;
     }
 
+    /**
+     * @return the positive charge limit, or -1 if none is set
+     */
     public int getPositiveLimit()
     {
         return positiveLimit;
     }
 
+    /**
+     * @return the negative charge limit, or -1 if none is set
+     */
     public int getNegativeLimit()
     {
         return negativeLimit;
     }
 
+    /**
+     * @return the level name, or null if none is set
+     */
     public String getName()
     {
         return name;
     }
 
-    //Loads the given world scene with a level
+    /**
+     * Loads the given world scene with a level.
+     *
+     * @param world the world scene to add this level's actors to
+     */
     public void loadLevel(WorldScene world)
     {
         for(HashMap<String, String> obj : objects){
@@ -122,7 +145,12 @@ public class Level {
         }
     }
 
-   // Creates the actors in the world scene
+    /**
+     * Creates the actor in the world scene for a single object.
+     *
+     * @param attrs the object's attribute name -> value map
+     * @return the created actor, or null if the type is unknown
+     */
     private Actor createActor(HashMap<String, String> attrs) {
         String objType = attrs.get("type").toLowerCase();
         if (objType == null)
@@ -176,25 +204,48 @@ public class Level {
         }
     }
 
+    /**
+     * @param value the text to parse
+     * @return the parsed integer
+     * @throws NumberFormatException if the value is not a valid integer
+     */
     private static int parseInt(String value)
     {
         return Integer.parseInt(value.trim());
     }
 
-    // "1.5" -> 1.5f
+    /**
+     * Parses a float, e.g. "1.5" -> 1.5f.
+     *
+     * @param value the text to parse
+     * @return the parsed float
+     * @throws NumberFormatException if the value is not a valid float
+     */
     private static float parseFloat(String value)
     {
         return Float.parseFloat(value.trim());
     }
 
-    // "x,y" -> Vector2
+    /**
+     * Parses a 2D vector, e.g. "x,y" -> Vector2.
+     *
+     * @param value the comma-separated "x,y" text
+     * @return the parsed vector
+     * @throws NumberFormatException if a component is not a valid float
+     */
     private static Vector2 parseVector(String value)
     {
         String[] parts = value.split(",");
         return new Vector2(Float.parseFloat(parts[0].trim()), Float.parseFloat(parts[1].trim()));
     }
 
-    // "x,y,w,h" -> Rectangle
+    /**
+     * Parses a rectangle, e.g. "x,y,w,h" -> Rectangle.
+     *
+     * @param value the comma-separated "x,y,w,h" text
+     * @return the parsed rectangle
+     * @throws NumberFormatException if a component is not a valid number
+     */
     private static Rectangle parseRect(String value)
     {
         String[] parts = value.split(",");
@@ -205,6 +256,14 @@ public class Level {
             (int)Float.parseFloat(parts[3].trim()));
     }
 
+    /**
+     * Parses a rectangle whose "x,y" is treated as its center rather than its
+     * top-left corner.
+     *
+     * @param value the comma-separated "x,y,w,h" text
+     * @return the parsed rectangle, repositioned so x,y is the center
+     * @throws NumberFormatException if a component is not a valid number
+     */
     private static Rectangle parseRectCentered(String value)
     {
         Rectangle rect = parseRect(value);

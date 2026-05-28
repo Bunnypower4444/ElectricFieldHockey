@@ -2,7 +2,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 /**
- * 
+ * The target the player guides the puck into. Has an open mouth (the scoring
+ * area) on one side and solid walls on the others.
+ *
+ * @author  Adeline Krishna
+ * @version 5/25/26
  */
 public class Goal extends Actor
 {
@@ -15,6 +19,10 @@ public class Goal extends Actor
 
     private Orientation orientation;
 
+    /**
+     * @param bounds      the overall bounds of the goal
+     * @param orientation the side the goal's open mouth faces
+     */
     public Goal(Rectangle bounds, Orientation orientation)
     {
         this.bounds = bounds;
@@ -23,12 +31,19 @@ public class Goal extends Actor
         wallBounds = calculateWallBounds();
     }
 
-    //Initializes the boundary for goal
+    /**
+     * Initializes the boundary for a goal facing left.
+     *
+     * @param bounds the overall bounds of the goal
+     */
     public Goal(Rectangle bounds)
     {
         this(bounds, Orientation.Left);
     }
 
+    /**
+     * @return the scoring area bounds for the current orientation
+     */
     private Rectangle calculateGoalBounds()
     {
         int x, y, width, height;
@@ -68,6 +83,9 @@ public class Goal extends Actor
         return goal;
     }
     
+    /**
+     * @return the three wall bounds for the current orientation (all sides except the open mouth)
+     */
     private Rectangle[] calculateWallBounds()
     {
         Rectangle bottom = new Rectangle(bounds.x, bounds.y, bounds.width, WIDTH);
@@ -91,13 +109,23 @@ public class Goal extends Actor
         }
     }
     
-    //Checks if the puck is inside the goal
+    /**
+     * Checks if the puck is inside the goal.
+     *
+     * @param puck the puck to test
+     * @return true if the puck is fully inside the scoring area
+     */
     public boolean goalCollision(Puck puck)
     {
         return goalBounds.contains(puck.collisionBox());
     }
 
-    // Checks is the puck collides with the wall's of the goal
+    /**
+     * Checks if the puck collides with the walls of the goal.
+     *
+     * @param puck the puck to test
+     * @return true if the puck hits a wall without scoring
+     */
     public boolean wallCollision(Puck puck)
     {
         if(goalCollision(puck)){
@@ -112,6 +140,11 @@ public class Goal extends Actor
         return(false);
     } 
 
+    /**
+     * Draws the goal area and its walls.
+     *
+     * @param g the graphics context to draw with
+     */
     @Override
     public void render(Graphics2D g)
     {
@@ -126,6 +159,9 @@ public class Goal extends Actor
         }
     }
 
+    /**
+     * @return the draw order index
+     */
     @Override
     public int getZIndex()
     {
