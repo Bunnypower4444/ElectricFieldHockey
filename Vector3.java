@@ -30,8 +30,8 @@ public class Vector3
     public static Vector3 createPolar(float theta, float phi, float length)
     {
         return new Vector3(
-            Vector2.createPolar(theta, (float)(length * Math.cos(phi))),
-            (float)(length * Math.sin(phi)));
+            Vector2.createPolar(theta, (float)(length * Math.sin(phi))),
+            (float)(length * Math.cos(phi)));
     }
 
     public static final Vector3 zero = new Vector3(0, 0, 0);
