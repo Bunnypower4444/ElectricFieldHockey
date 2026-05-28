@@ -4,7 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 /**
+ * An actor representing a circular button that when pressed by a Puck,
+ * can turn off a Wire.
  * 
+ * @author Aarohi Shah, Evan Guo
+ * @version 5/25/26
  */
 public class Switch extends Actor implements RequireReset
 {
@@ -17,6 +21,13 @@ public class Switch extends Actor implements RequireReset
     private static final float STROKE_WIDTH = 5 * Game.RELATIVE_SCALE;
     private static final float[] STROKE_DASH_PATTERN = new float[]{ 20 * Game.RELATIVE_SCALE, 30 * Game.RELATIVE_SCALE };
 
+    /**
+     * Creates a new Switch, linked to a specified Wire, at the specified position with a
+     * specified radius.
+     * @param wire The Wire that this Switch turns off
+     * @param position The world-space position of the center of the Switch, in meters
+     * @param radius The world-space radius of the switch, in meters
+     */
     public Switch(Wire wire, Vector2 position, float radius)
     {
         this.wire = wire;
@@ -24,12 +35,23 @@ public class Switch extends Actor implements RequireReset
         this.radius = radius;
     }
 
+    /**
+     * Checks if a given puck is colliding with this Switch. Note that as long
+     * as the puck is slightly overlapping with the Switch, the collision will be
+     * counted.
+     * @param puck The puck for which to check for collision
+     * @return true if the puck is overlapping with the Switch; false otherwise
+     */
     public boolean collision(Puck puck)
     {
         float minDist = radius + Puck.RADIUS;
         return puck.getPosition().sub(this.position).lengthSq() <= minDist * minDist;
     }
 
+    /**
+     * Activates the Switch, making it appear pressed (filled in rather than just an outline),
+     * and turning off the associated Wire.
+     */
     public void activate()
     {
         if (!pressed)

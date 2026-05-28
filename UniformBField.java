@@ -4,7 +4,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 /**
+ * An actor representing a rectangular region in which a uniform
+ * magnetic field is present.
  * 
+ * @author Aarohi Shah, Evan Guo
+ * @version 5/27/26
  */
 public class UniformBField extends Actor implements HasBField
 {
@@ -19,6 +23,11 @@ public class UniformBField extends Actor implements HasBField
     // The length of the vector such that it will take one second to animate
     private static final float VECTOR_LENGTH_ANIM_1S = 100;
 
+    /**
+     * Creates a new UniformBField with the specified bounds and vector strength.
+     * @param bounds The world-space bounds of the uniform field, in meters
+     * @param strength The 3-D vector representing the strength of the field, in teslas 
+     */
     public UniformBField(Rectangle bounds, Vector3 strength)
     {
         this.bounds = bounds;

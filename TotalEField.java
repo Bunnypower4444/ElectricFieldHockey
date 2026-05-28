@@ -4,7 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 
 /**
- * 
+ * An actor that calculates and visualizes the net electric field in the world
+ * due to Charges.
  */
 public class TotalEField extends Actor implements LateUpdate
 {
@@ -36,6 +37,11 @@ public class TotalEField extends Actor implements LateUpdate
             recalculateDisplays();
     }
     
+    /**
+     * Updates the values of the vectors at each point in the grid
+     * of vectors in the electric field visualization based on the current
+     * magnetic field due to Charges.
+     */
     public void recalculateDisplays()
     {
         for (int i = 0; i < fieldDisplayPoints.length; i++)

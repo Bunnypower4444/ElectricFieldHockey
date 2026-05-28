@@ -142,6 +142,8 @@ public class UIButton
     /**
      * Draws the button to the specified Graphics2D object.
      * If the button's visibility is set to false, it will not be drawn.
+     * <p>
+     * Postcondition: the state of the button will not be modified
      * @param g The Graphics2D to which to render the button
      */
     public void render(Graphics2D g)

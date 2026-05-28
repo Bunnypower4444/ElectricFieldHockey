@@ -5,7 +5,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 /**
+ * An actor representing a rectangular region in which a uniform
+ * electric field is present.
  * 
+ * @author Aarohi Shah, Evan Guo
+ * @version 5/27/26
  */
 public class UniformEField extends Actor implements HasEField
 {
@@ -21,6 +25,11 @@ public class UniformEField extends Actor implements HasEField
     // The length of the vector such that it will take one second to animate
     private static final float VECTOR_LENGTH_ANIM_1S = 100000;
 
+    /**
+     * Creates a new UniformEField with the specified bounds and vector strength.
+     * @param bounds The world-space bounds of the uniform field, in meters
+     * @param strength The vector representing the strength of the field, in N/C 
+     */
     public UniformEField(Rectangle bounds, Vector2 strength)
     {
         this.bounds = bounds;

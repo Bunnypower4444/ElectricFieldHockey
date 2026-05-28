@@ -4,7 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 /**
+ * The opening screen into the game, which allows the player to choose to
+ * go to the {@link LevelSelectScene level select screen} or the sandbox level.
  * 
+ * @author Aarohi Shah
+ * @version 5/25/26
  */
 public class TitleScene extends Scene
 {
@@ -12,6 +16,10 @@ public class TitleScene extends Scene
 
     private static final int BUTTON_WIDTH = (int)(250 * Game.RELATIVE_SCALE);
 
+    /**
+     * Creates a new TitleScene, instantiating the UIButtons that are present
+     * in the scene.
+     */
     public TitleScene()
     {
         buttons = new UIButton[2];

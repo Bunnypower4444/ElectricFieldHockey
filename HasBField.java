@@ -1,6 +1,9 @@
 
 /**
+ * An interface implemented by Actors that provide a magnetic (B) field.
  * 
+ * @author Aarohi Shah
+ * @version 5/12/26
  */
 public interface HasBField
 {

@@ -3,7 +3,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 
 /**
- * 
+ * An actor that calculates and visualizes the net magnetic field in the world
+ * due to Wires.
  */
 public class TotalBField extends Actor implements LateUpdate
 {
@@ -34,6 +35,11 @@ public class TotalBField extends Actor implements LateUpdate
             recalculateDisplays();
     }
     
+    /**
+     * Updates the values of the vectors at each point in the grid
+     * of vectors in the magnetic field visualization based on the current
+     * magnetic field due to Wires.
+     */
     public void recalculateDisplays()
     {
         for (int i = 0; i < fieldDisplayPoints.length; i++)

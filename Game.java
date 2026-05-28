@@ -86,6 +86,8 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     /**
      * Creates and runs the instance of the Game. This method is required
      * to instantiate the Game, since there can only be one instance of the Game.
+     * When the Game is created, a new TitleScene object will be pushed to the stack
+     * of scenes.
      * @throws IllegalStateException if <code>createGame()</code> has already
      * been run
      */

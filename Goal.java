@@ -5,7 +5,7 @@ import java.awt.Rectangle;
  * The target the player guides the puck into. Has an open mouth (the scoring
  * area) on one side and solid walls on the others.
  *
- * @author  Adeline Krishna
+ * @author  Adeline Krishna, Evan Guo
  * @version 5/25/26
  */
 public class Goal extends Actor
