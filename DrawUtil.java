@@ -47,8 +47,8 @@ public class DrawUtil
      * @param justify A vector representing the justify of the string, which defines
      * where in the text <code>position</code> refers to. Each component represents
      * the multiple of the text's size in that direction. For example, for the <code>position</code>
-     * to refer to the top left corner, the vector <0, 0> should be used; for the center,
-     * <0.5, 0.5>; for the bottom right corner, <1, 1>.
+     * to refer to the top left corner, the vector &lt;0, 0&gt; should be used; for the center,
+     * &lt;0.5, 0.5&gt;; for the bottom right corner, &lt;1, 1&gt;.
      */
     public static void drawText(Graphics2D g, Vector2 pos, String text, Vector2 justify)
     {

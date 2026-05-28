@@ -48,15 +48,15 @@ public class Vector2
 
     /**
      * A Vector2 object that has all of its components set to 0,
-     * <0, 0>.
+     * &lt;0, 0&gt;.
      */
     public static final Vector2 zero = new Vector2(0, 0);
     /**
-     * The unit vector in the positive x-direction, <1, 0>.
+     * The unit vector in the positive x-direction, &lt;1, 0&gt;.
      */
     public static final Vector2 unitX = new Vector2(1, 0);
     /**
-     * The unit vector in the positive y-direction, <0, 1>.
+     * The unit vector in the positive y-direction, &lt;0, 1&gt;.
      */
     public static final Vector2 unitY = new Vector2(0, 1);
 

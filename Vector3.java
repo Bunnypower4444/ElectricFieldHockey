@@ -69,19 +69,19 @@ public class Vector3
 
     /**
      * A Vector3 object that has all of its components set to 0,
-     * <0, 0, 0>.
+     * &lt;0, 0, 0&gt;.
      */
     public static final Vector3 zero = new Vector3(0, 0, 0);
     /**
-     * The unit vector in the positive x-direction, <1, 0, 0>.
+     * The unit vector in the positive x-direction, &lt;1, 0, 0&gt;.
      */
     public static final Vector3 unitX = new Vector3(1, 0, 0);
     /**
-     * The unit vector in the positive y-direction, <0, 1, 0>.
+     * The unit vector in the positive y-direction, &lt;0, 1, 0&gt;.
      */
     public static final Vector3 unitY = new Vector3(0, 1, 0);
     /**
-     * The unit vector in the positive z-direction, <0, 0, 1>.
+     * The unit vector in the positive z-direction, &lt;0, 0, 1&gt;.
      */
     public static final Vector3 unitZ = new Vector3(0, 0, 1);
 
