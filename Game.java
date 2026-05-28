@@ -30,6 +30,9 @@ import java.awt.event.MouseListener;
  */
 public class Game extends JPanel implements ActionListener, MouseListener, KeyListener
 {
+    // all these private fields are marked as transient to prevent serialization
+    // (since JPanel extends something that implements Serializable)
+    // (also so that javadoc stops yelling about adding comments for these)
     private transient Stack<Scene> scenes = new Stack<>();
     private transient Timer updateTimer;
     private transient Timer renderTimer;

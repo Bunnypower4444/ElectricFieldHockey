@@ -15,12 +15,35 @@ public class Goal extends Actor
     private Rectangle[] wallBounds;
     private static final int WIDTH = 10;
 
-    public static enum Orientation { Left, Up, Right, Down }
+    /**
+     * Enumeration of the four possible directions of the goal, with each
+     * direction corresponding to the side that the goal's open mouth faces
+     */
+    public static enum Orientation
+    {
+        /**
+         * A goal whose open mouth is on the left side
+         */
+        Left,
+        /**
+         * A goal whose open mouth is on the top side
+         */
+        Up,
+        /**
+         * A goal whose open mouth is on the right side
+         */
+        Right,
+        /**
+         * A goal whose open mouth is on the bottom side
+         */
+        Down
+    }
 
     private Orientation orientation;
 
     /**
-     * @param bounds      the overall bounds of the goal
+     * Creates a new Goal with the specified bounds and orientation.
+     * @param bounds      the overall bounds of the goal, in world space
      * @param orientation the side the goal's open mouth faces
      */
     public Goal(Rectangle bounds, Orientation orientation)
@@ -34,7 +57,7 @@ public class Goal extends Actor
     /**
      * Initializes the boundary for a goal facing left.
      *
-     * @param bounds the overall bounds of the goal
+     * @param bounds the overall bounds of the goal, in world space
      */
     public Goal(Rectangle bounds)
     {

@@ -16,6 +16,9 @@ import java.util.LinkedList;
  */
 public class Puck extends Actor implements RequireReset, LateUpdate
 {
+    /**
+     * The radius of the puck, in meters
+     */
     public static final int RADIUS = 13;
 
     private static final float MASS = 3; // 1.67262192595E-27F;
@@ -41,9 +44,9 @@ public class Puck extends Actor implements RequireReset, LateUpdate
     /**
      * Initializes the charge, position and velocity.
      *
-     * @param charge          the puck's charge
-     * @param position        the starting position
-     * @param initialVelocity the starting velocity
+     * @param charge          the puck's charge, in coulombs
+     * @param position        the world-space starting position, in meters
+     * @param initialVelocity the world-space starting velocity, in m/s
      */
     public Puck(float charge, Vector2 position, Vector2 initialVelocity)
     {
@@ -224,7 +227,8 @@ public class Puck extends Actor implements RequireReset, LateUpdate
     }
 
     /**
-     * @return the puck's current position
+     * Gets the world space position of the puck.
+     * @return the puck's current position, in meters
      */
     public Vector2 getPosition()
     {
@@ -232,7 +236,8 @@ public class Puck extends Actor implements RequireReset, LateUpdate
     }
 
     /**
-     * @return the puck's current velocity
+     * Gets the velocity of the puck.
+     * @return the puck's current velocity, in m/s
      */
     public Vector2 getVelocity()
     {
@@ -240,7 +245,8 @@ public class Puck extends Actor implements RequireReset, LateUpdate
     }
 
     /**
-     * @return the puck's current acceleration
+     * Gets the acceleration of the puck.
+     * @return the puck's current acceleration, in m/s²
      */
     public Vector2 getAcceleration()
     {
@@ -250,7 +256,7 @@ public class Puck extends Actor implements RequireReset, LateUpdate
     /**
      * Creates a box around the puck for detecting collision.
      *
-     * @return the puck's collision bounding box
+     * @return the puck's collision world-space bounding box
      */
     public Rectangle collisionBox()
     {

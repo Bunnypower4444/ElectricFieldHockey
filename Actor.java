@@ -70,7 +70,7 @@ public abstract class Actor
      *  <li>311: Charge (non-fixed)
      *  <li>400: Puck
      * </ul>
-     * @return Z-index of the actor
+     * @return The z-index of the actor
      */
     public int getZIndex()
     {
