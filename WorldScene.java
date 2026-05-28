@@ -64,6 +64,36 @@ public class WorldScene extends Scene
     
     private float globalTimer = 0;
 
+    private static enum GameState { Initial, Paused, Unpaused, Failed, Won };
+    
+    private GameState gameState = GameState.Initial;
+
+    private LinkedList<UIButton> buttons = new LinkedList<>();
+    private UIButton playButton, resetButton, clearButton, nextLevelButton;
+    
+    private int attempts = 0;
+    private int charges = 0;
+    private int levelNum;
+    private Level level;
+
+    private int statsXPos = TOOLBAR_MARGIN;
+
+
+    private static final int TOOLBAR_MARGIN = (int)(100 * Game.RELATIVE_SCALE);
+
+    /**
+     * The height of a typical button.
+     */
+    public static final int BUTTON_HEIGHT = TOOLBAR_HEIGHT / 2;
+    /**
+     * The width of a typical button.
+     */
+    public static final int BUTTON_WIDTH = (int)(100 * Game.RELATIVE_SCALE);
+    /**
+     * The distance between the edges of buttons that are next to each other.
+     */
+    public static final int BUTTON_PADDING = (int)(25 * Game.RELATIVE_SCALE);
+
     /**
      * Marks whether or not the there has been a change to the electric
      * field. This value is reset to false at the end of every update tick,
@@ -78,35 +108,6 @@ public class WorldScene extends Scene
      * state of the magnetic field.
      */
     public boolean bFieldUpdated = false;
-    
-    private static enum GameState { Initial, Paused, Unpaused, Failed, Won };
-    
-    private GameState gameState = GameState.Initial;
-    
-    /**
-     * The height of a typical button.
-     */
-    public static final int BUTTON_HEIGHT = TOOLBAR_HEIGHT / 2;
-    /**
-     * The width of a typical button.
-     */
-    public static final int BUTTON_WIDTH = (int)(100 * Game.RELATIVE_SCALE);
-    /**
-     * The distance between the edges of buttons that are next to each other.
-     */
-    public static final int BUTTON_PADDING = (int)(25 * Game.RELATIVE_SCALE);
-
-    private static final int TOOLBAR_MARGIN = (int)(100 * Game.RELATIVE_SCALE);
-
-    private LinkedList<UIButton> buttons = new LinkedList<>();
-    private UIButton playButton, resetButton, clearButton, nextLevelButton;
-    
-    private int attempts = 0;
-    private int charges = 0;
-    private int levelNum;
-    private Level level;
-
-    private int statsXPos = TOOLBAR_MARGIN;
 
     /**
      * Creates a new WorldScene using the specified level number.
