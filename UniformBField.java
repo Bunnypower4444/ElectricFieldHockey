@@ -33,6 +33,8 @@ public class UniformBField extends Actor implements HasBField
 
         Point topLeft = WorldScene.worldToScreenPoint(new Vector2(bounds.x, bounds.y + bounds.height)).toPoint();
         Point bottomRight = WorldScene.worldToScreenPoint(new Vector2(bounds.x + bounds.width, bounds.y)).toPoint();
+        int width = bottomRight.x - topLeft.x;
+        int height = bottomRight.y - topLeft.y;
 
         g.setClip(new Rectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y));
 
@@ -53,8 +55,20 @@ public class UniformBField extends Actor implements HasBField
         Color c = new Color(VECTOR_COLOR.getRed(), VECTOR_COLOR.getGreen(), VECTOR_COLOR.getBlue(), alpha);
         g.setColor(c);
 
-        for (int x = topLeft.x + VECTOR_SPACING / 2; x < bottomRight.x + VECTOR_RADIUS; x += VECTOR_SPACING)
-        for (int y = topLeft.y + VECTOR_SPACING / 2; y < bottomRight.y + VECTOR_RADIUS; y += VECTOR_SPACING)
+        int startX, startY;
+
+        if (width < VECTOR_SPACING)
+            startX = topLeft.x + width / 2;
+        else
+            startX = topLeft.x - VECTOR_SPACING / 2;
+
+        if (height < VECTOR_SPACING)
+            startY = topLeft.y + height / 2;
+        else
+            startY = topLeft.y - VECTOR_SPACING / 2;
+
+        for (int x = startX; x < bottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
+        for (int y = startY; y < bottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
         {
             DrawUtil.drawDotCross(g, new Point(x, y), Math.signum(strength.z()) * radius);
         }
