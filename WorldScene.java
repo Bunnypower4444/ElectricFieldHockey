@@ -505,6 +505,11 @@ public class WorldScene extends Scene
             clearButton.setEnabled(false);
         }
 
+        if (gameState == GameState.Won || gameState == GameState.Failed)
+            playButton.setEnabled(false);
+        else
+            playButton.setEnabled(true);
+
         if (gameState == GameState.Unpaused)
             playButton.setText("Pause");
         else
