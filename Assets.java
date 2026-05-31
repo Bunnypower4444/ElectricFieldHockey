@@ -24,7 +24,37 @@ public class Assets
 
     private static ArrayList<Level> levels = new ArrayList<>();
     private static HashMap<String, BufferedImage> images = new HashMap<>();
-    private static HashMap<String, Font> fonts = new HashMap<>();
+    private static HashMap<String, Font> baseFonts = new HashMap<>();
+
+    private static class FontParameters
+    {
+        private int style;
+        private float size;
+
+        public FontParameters(int style, float size)
+        {
+            this.style = style;
+            this.size = size;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (!(obj instanceof FontParameters))
+                return false;
+
+            FontParameters fp = (FontParameters)obj;
+            return style == fp.style && size == fp.size;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return style + Float.valueOf(size).hashCode();
+        }
+    }
+
+    private static HashMap<String, HashMap<FontParameters, Font>> cachedFonts = new HashMap<>();
 
     /**
      * Loads all levels, images and fonts from disk.
@@ -148,7 +178,17 @@ public class Assets
      */
     public static Font getFont(String name, int style, float size)
     {
-        return fonts.get(name).deriveFont(style, size);
+        FontParameters fp = new FontParameters(style, size);
+        if (cachedFonts.get(name).containsKey(fp))
+        {
+            return cachedFonts.get(name).get(fp);
+        }
+        else
+        {
+            Font derivedFont = baseFonts.get(name).deriveFont(style, size);
+            cachedFonts.get(name).put(fp, derivedFont);
+            return derivedFont;
+        }
     }
 
     /**
@@ -175,7 +215,13 @@ public class Assets
                 Font font = Font.createFont(Font.TRUETYPE_FONT, file);
                 if (font != null)
                 {
-                    fonts.put(stripExtension(file.getName()), font);
+                    String name = stripExtension(file.getName());
+                    baseFonts.put(name, font);
+
+                    HashMap<FontParameters, Font> fontCache = new HashMap<>();
+                    cachedFonts.put(name, fontCache);
+                    fontCache.put(new FontParameters(font.getStyle(), font.getSize()), font);
+
                     ge.registerFont(font);
                 }
             }
