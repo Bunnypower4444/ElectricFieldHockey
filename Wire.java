@@ -79,7 +79,7 @@ public class Wire extends Actor implements HasBField, RequireReset
             Vector2 direction = new Vector2(renderPoint2.x - renderPoint1.x, renderPoint2.y - renderPoint1.y).normalize();
 
             float animTime = animTime();
-            float t = (getWorld().globalTimer() % animTime) / animTime;
+            float t = (getWorld().globalAnimTimer() % animTime) / animTime;
 
             for (Vector2 point = new Vector2(renderPoint1).add(direction.mult(ARROW_SPACING * t));
                 DrawUtil.pointOnScreen(point);

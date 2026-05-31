@@ -48,7 +48,7 @@ public class UniformBField extends Actor implements HasBField
         g.setClip(new Rectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y));
 
         float animTime = animTime();
-        float t = (getWorld().globalTimer() % animTime) / animTime;
+        float t = (getWorld().globalAnimTimer() % animTime) / animTime;
         // if the z-component is negative (cross), make it get smaller over the animation
         // to make the cross appear to go into the screen
         if (strength.z() < 0)

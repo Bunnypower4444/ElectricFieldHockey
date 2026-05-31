@@ -39,6 +39,8 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     private transient Timer renderTimer;
     private transient long lastFrameTimeMillis;
     private transient float deltaTime = 0;
+    private transient long lastRenderFrameTimeMillis;
+    private transient float renderDeltaTime = 0;
     private transient Vector2 mousePos = Vector2.zero;
     private transient boolean mouseDown = false;
     private transient boolean mouseClicked = false;
@@ -121,6 +123,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         updateTimer.start();
         renderTimer.start();
         lastFrameTimeMillis = System.currentTimeMillis();
+        lastRenderFrameTimeMillis = System.currentTimeMillis();
     }
 
     /**
@@ -159,6 +162,15 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     public float deltaTime()
     {
         return deltaTime;
+    }
+
+    /**
+     * Gets the amount of time between render ticks/frames.
+     * @return The time between render ticks, in seconds
+     */
+    public float renderDeltaTime()
+    {
+        return renderDeltaTime;
     }
 
     /**
@@ -287,9 +299,14 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     @Override
     public void paintComponent(Graphics g)
     {
+        long currentTimeMillis = System.currentTimeMillis();
+        renderDeltaTime = (currentTimeMillis - lastRenderFrameTimeMillis) / 1000f;
+
         super.paintComponent(g);
         ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         getCurrentScene().render((Graphics2D)g);
+
+        lastRenderFrameTimeMillis = currentTimeMillis;
     }
 
     private Scene getCurrentScene()

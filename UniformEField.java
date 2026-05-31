@@ -50,7 +50,7 @@ public class UniformEField extends Actor implements HasEField
         g.setClip(new Rectangle(topLeft.x, topLeft.y, width, height));
         
         float animTime = animTime();
-        float t = (getWorld().globalTimer() % animTime) / animTime;
+        float t = (getWorld().globalAnimTimer() % animTime) / animTime;
 
         Vector2 displayVector = strength.normalize().mult(VECTOR_LENGTH);
         Point offset = WorldScene.worldToScreenVector(displayVector).mult(t - 0.5f).toPoint();

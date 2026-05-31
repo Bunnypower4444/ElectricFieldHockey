@@ -62,7 +62,7 @@ public class WorldScene extends Scene
     private HashMap<Class<?>, LinkedList<Actor>> trackedActors = new HashMap<>();
     private Queue<Actor> addingActors = new LinkedList<>(), removingActors = new LinkedList<>();
     
-    private float globalTimer = 0;
+    private float globalAnimTimer = 0;
 
     private static enum GameState { Initial, Paused, Unpaused, Failed, Won };
     
@@ -217,7 +217,8 @@ public class WorldScene extends Scene
     @Override
     public void update()
     {
-        globalTimer += deltaTime();
+        if (!getPaused())
+            globalAnimTimer += Game.instance().deltaTime();
 
         for (UIButton b : buttons)
             b.update();
@@ -331,10 +332,13 @@ public class WorldScene extends Scene
             "Acceleration: " + getActorsOfType(Puck.class).get(0).getAcceleration(),
             new Vector2(0, 0));
         DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
-            "t: " + globalTimer,
+            "t: " + globalAnimTimer,
             new Vector2(0, 0));
         DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
-            "FPS: " + String.format("%.2f", (1 / Game.instance().deltaTime())),
+            "Update FPS: " + String.format("%.2f", (1 / Game.instance().deltaTime())),
+            new Vector2(0, 0));
+        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
+            "Render FPS: " + String.format("%.2f", (1 / Game.instance().renderDeltaTime())),
             new Vector2(0, 0));
 
         //#endregion
@@ -346,9 +350,9 @@ public class WorldScene extends Scene
      * yet, allowing for animations to play out as the player places charges.
      * @return The current value of the timer
      */
-    public float globalTimer()
+    public float globalAnimTimer()
     {
-        return globalTimer;
+        return globalAnimTimer;
     }
 
     /**
@@ -487,7 +491,7 @@ public class WorldScene extends Scene
             return;
 
         if (gameState == GameState.Initial)
-            globalTimer = 0;
+            globalAnimTimer = 0;
 
         gameState = state;
         
@@ -565,7 +569,7 @@ public class WorldScene extends Scene
      */
     public void reset()
     {
-        globalTimer = 0;
+        globalAnimTimer = 0;
         setState(GameState.Initial);
         attempts++;
 
