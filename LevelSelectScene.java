@@ -83,25 +83,25 @@ public class LevelSelectScene extends Scene
     @Override
     public void render(Graphics2D g)
     {
-        g.setColor(new Color(20, 24, 40));
-        g.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+        g.setBackground(new Color(20, 24, 40));
+        g.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
 
         g.setColor(Color.WHITE);
-        g.setFont(Assets.getFont("JosefinSans", Font.BOLD | Font.ITALIC, 48));
+        g.setFont(Assets.getFont("JosefinSans", Font.BOLD | Font.ITALIC, 60 * Game.RELATIVE_SCALE));
         String title = "Select a Level";
         int titleWidth = g.getFontMetrics().stringWidth(title);
-        g.drawString(title, (Game.WIDTH - titleWidth) / 2, 70);
+        g.drawString(title, (Game.WIDTH - titleWidth) / 2, (int)(87.5 * Game.RELATIVE_SCALE));
 
-        g.setFont(Assets.getFont("JosefinSans", Font.BOLD, 36));
+        g.setFont(Assets.getFont("JosefinSans", Font.BOLD, 45 * Game.RELATIVE_SCALE));
         for (int i = 0; i < buttons.length; i++)
         {
             Rectangle b = buttons[i];
 
             g.setColor(new Color(70, 90, 160));
-            g.fillRoundRect(b.x, b.y, b.width, b.height, 16, 16);
+            g.fillRoundRect(b.x, b.y, b.width, b.height, (int)(20 * Game.RELATIVE_SCALE), (int)(20 * Game.RELATIVE_SCALE));
 
             g.setColor(Color.WHITE);
-            g.drawRoundRect(b.x, b.y, b.width, b.height, 16, 16);
+            g.drawRoundRect(b.x, b.y, b.width, b.height, (int)(20 * Game.RELATIVE_SCALE), (int)(20 * Game.RELATIVE_SCALE));
 
             String label = String.valueOf(i + 1);
             int lw = g.getFontMetrics().stringWidth(label);

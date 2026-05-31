@@ -51,8 +51,8 @@ public class TitleScene extends Scene
     @Override
     public void render(Graphics2D g)
     {
-        g.setColor(new Color(20, 24, 40));
-        g.fillRect(0, 0, Game.instance().getWidth(), Game.instance().getHeight());
+        g.setBackground(new Color(20, 24, 40));
+        g.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
 
         g.setColor(Color.WHITE);
         g.setFont(Assets.getFont("AvenueX", Font.PLAIN, (int)(130 * Game.RELATIVE_SCALE)));
