@@ -149,7 +149,7 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         if (e instanceof Charge)
             return ((Charge)e).getCharge() > 0 ? Color.PINK : Color.CYAN;
         if (e instanceof UniformEField)
-            return new Color(250, 206, 175);
+            return new Color(252, 221, 187);
         return Color.RED;
     }
 
@@ -162,7 +162,7 @@ public class Puck extends Actor implements RequireReset, LateUpdate
         if (e instanceof Wire)
             return new Color(252, 252, 177);
         if (e instanceof UniformBField)
-            return new Color(189, 136, 242);
+            return new Color(224, 184, 245);
         return Color.MAGENTA;
     }
 
