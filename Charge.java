@@ -102,8 +102,11 @@ public class Charge extends Actor implements HasEField
         if (!getWorld().gameStarted()
             && dragOffset != null && Game.instance().mouseDown())
         {
+            Vector2 pScreenPos = screenPos;
             screenPos = Game.instance().mousePos().add(dragOffset);
-            getWorld().eFieldUpdated = true;
+
+            if (!pScreenPos.equals(screenPos))
+                getWorld().eFieldUpdated = true;
         }
         
         // if the mouse is no longer down, set dragOffset to null and
