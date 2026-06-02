@@ -76,23 +76,38 @@ public class Charge extends Actor implements HasEField
         return charge;
     }
 
+    /**
+     * Gets the world space position of the charge.
+     * @return The world space position, in meters
+     */
+    public Vector2 getPosition()
+    {
+        return WorldScene.screenToWorldPoint(screenPos);
+    }
+
     @Override
     public void update()
     {
         if (fixed)
             return;
 
+        // check if the charge was pressed down upon, store where it was pressed relative
+        // to center
         if (!getWorld().gameStarted()
             && mouseOver(Game.instance().mousePos())
             && Game.instance().consumePress())
             dragOffset = screenPos.sub(Game.instance().mousePos());
         
+        // dragging the charge if mouse is down
         if (!getWorld().gameStarted()
             && dragOffset != null && Game.instance().mouseDown())
         {
             screenPos = Game.instance().mousePos().add(dragOffset);
             getWorld().eFieldUpdated = true;
         }
+        
+        // if the mouse is no longer down, set dragOffset to null and
+        // check if this charge is over a ChargeBag (for removing)
         else if (dragOffset != null)
         {
             dragOffset = null;
@@ -153,7 +168,7 @@ public class Charge extends Actor implements HasEField
     @Override
     public Vector2 getFieldAt(Vector2 position)
     {
-        return Calc.coulombLawField(WorldScene.screenToWorldPoint(this.screenPos), charge, position);
+        return Calc.coulombLawField(getPosition(), charge, position);
     }
 
     @Override
