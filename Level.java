@@ -66,7 +66,7 @@ public class Level {
                 // global info about the level
                 if (line.startsWith("!"))
                 {
-                    switch(key.substring(1))
+                    switch (key.substring(1))
                     {
                         case "chargelimit":
                             chargeLimit = parseInt(value);
