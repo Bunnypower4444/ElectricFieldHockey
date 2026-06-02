@@ -77,7 +77,8 @@ public class Charge extends Actor implements HasEField
     }
 
     /**
-     * Gets the world space position of the charge.
+     * Calculates the world space position of the charge (internally,
+     * the charge only stores its screen space position).
      * @return The world space position, in meters
      */
     public Vector2 getPosition()
