@@ -347,11 +347,17 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     @Override
     public void keyPressed(KeyEvent e)
     {
-        // alt + r
+        // alt + r (reload assets)
         if (e.isAltDown() && e.getKeyCode() == 82)
         {
             Assets.load();
             System.out.println("Assets reloaded");
+        }
+
+        // alt + d (toggle debug mode)
+        else if (e.isAltDown() && e.getKeyCode() == 68)
+        {
+            WorldScene.debug = !WorldScene.debug;
         }
     }
 

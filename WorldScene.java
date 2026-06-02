@@ -20,7 +20,7 @@ import java.util.Queue;
  */
 public class WorldScene extends Scene
 {
-    private static boolean debug = false;
+    protected static boolean debug = false;
 
     private static final int TOOLBAR_HEIGHT = (int)(80 * Game.RELATIVE_SCALE);
     
