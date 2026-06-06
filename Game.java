@@ -35,16 +35,22 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     // (since JPanel extends something that implements Serializable)
     // (also so that javadoc stops yelling about adding comments for these)
     private transient Stack<Scene> scenes = new Stack<>();
+
     private transient Timer updateTimer;
     private transient Timer renderTimer;
+
     private transient long lastFrameTimeMillis;
     private transient float deltaTime = 0;
     private transient long lastRenderFrameTimeMillis;
     private transient float renderDeltaTime = 0;
+
     private transient Vector2 mousePos = Vector2.zero;
     private transient boolean mouseDown = false;
     private transient boolean mouseClicked = false;
     private transient boolean mousePressed = false;
+
+    private transient boolean shiftDown = false;
+
     private static Game instance;
 
     /**
@@ -256,6 +262,15 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         return pos;
     }
 
+    /**
+     * Gets if the shift key is currently being held down.
+     * @return true if the shift key is currently held down; false otherwise
+     */
+    public boolean shiftDown()
+    {
+        return shiftDown;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e)
     {
@@ -359,8 +374,36 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         {
             WorldScene.debug = !WorldScene.debug;
         }
+
+        // alt + s (print out charge positions)
+        else if (e.isAltDown() && e.getKeyCode() == 83 && getCurrentScene() instanceof WorldScene)
+        {
+            WorldScene world = (WorldScene)getCurrentScene();
+            for (Charge c : world.getActorsOfType(Charge.class))
+            {
+                if (!c.isFixed())
+                {
+                    Vector2 pos = c.getPosition();
+                    System.out.println("!solutionpos=" + pos.x() + ", " + pos.y());
+                }
+            }
+            System.out.println();
+        }
+
+        // shift
+        else if (e.getKeyCode() == 16)
+        {
+            shiftDown = true;
+        }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e)
+    {
+        // shift
+        if (e.getKeyCode() == 16)
+        {
+            shiftDown = false;
+        }
+    }
 }

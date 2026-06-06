@@ -20,7 +20,21 @@ import java.util.Queue;
  */
 public class WorldScene extends Scene
 {
+    /**
+     * Determines whether debug information should be displayed.
+     */
     protected static boolean debug = false;
+    /**
+     * Determines whether the cheat allowing snapping charges to
+     * solution positions defined in the level by holding Shift
+     * should be enabled.
+     */
+    protected static boolean enableSnapToSolutionCheat = true;
+    /**
+     * A list of positions defined by the level that charges can be snapped to by holding
+     * Shift, if {@link WorldScene#enableSnapToSolutionCheat} is set to true.
+     */
+    protected LinkedList<Vector2> snapToCheatPositions = new LinkedList<>();
 
     private static final int TOOLBAR_HEIGHT = (int)(80 * Game.RELATIVE_SCALE);
     
@@ -77,7 +91,6 @@ public class WorldScene extends Scene
     private Level level;
 
     private int statsXPos = TOOLBAR_MARGIN;
-
 
     private static final int TOOLBAR_MARGIN = (int)(100 * Game.RELATIVE_SCALE);
 
@@ -154,6 +167,7 @@ public class WorldScene extends Scene
 
         level = Assets.getLevel(levelNum);
         level.loadLevel(this);
+        snapToCheatPositions = level.snapToCheatPositions;
 
         addActor(new ChargeBag(
             new Rectangle(
@@ -340,6 +354,16 @@ public class WorldScene extends Scene
         DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
             "Render FPS: " + String.format("%.2f", (1 / Game.instance().renderDeltaTime())),
             new Vector2(0, 0));
+
+        if (enableSnapToSolutionCheat && !snapToCheatPositions.isEmpty())
+        {
+            g.setColor(new Color(44, 222, 92));
+
+            for (Vector2 worldPos : snapToCheatPositions)
+            {
+                DrawUtil.fillCircle(g, worldToScreenPoint(worldPos).toPoint(), (int)(5 * Game.RELATIVE_SCALE));
+            }
+        }
 
         //#endregion
     }

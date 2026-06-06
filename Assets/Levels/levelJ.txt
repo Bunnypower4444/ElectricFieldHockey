@@ -2,6 +2,15 @@
 !name=Magnetic Fields
 !chargeLimit=4
 
+# 4 charge solution
+!solutionpos=981.7073, 167.68292
+!solutionpos=768.29266, 170.7317
+!solutionpos=496.9513, 167.68292
+!solutionpos=248.4756, 167.68292
+
+# 1 charge solution
+!solutionpos=146.34146, 483.23166
+
 type=Puck
 charge=1.0
 position=150,500

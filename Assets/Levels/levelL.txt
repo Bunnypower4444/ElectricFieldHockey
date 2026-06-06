@@ -2,6 +2,10 @@
 !name=Was This Really Necessary? 
 !chargeLimit=999
 
+# funny solution
+!solutionpos=748.4757, 478.6585
+!solutionpos=166.15843, 487.80487
+
 type=Puck
 charge=1.0
 position=150,500

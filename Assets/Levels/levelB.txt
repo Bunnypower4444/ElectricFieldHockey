@@ -2,6 +2,13 @@
 # PhET Level 2
 !name=Walls
 
+!solutionpos=464.93903, 460.36578
+!solutionpos=463.4146, 788.10974
+!solutionpos=765.2439, 542.68286
+!solutionpos=974.0853, 548.78046
+!solutionpos=762.1952, 204.26828
+!solutionpos=24.390337, 579.26825
+
 type=Puck
 charge=1.0
 position=150,500

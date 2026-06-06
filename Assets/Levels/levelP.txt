@@ -3,6 +3,18 @@
 !negativeLimit=4
 !positiveLimit=5
 
+# 5 charge solution
+#!solutionpos=612.8049, 871.9512
+#!solutionpos=932.9267, 740.85364
+#!solutionpos=1221.0365, 717.9878
+#!solutionpos=929.87805, 742.37805
+#!solutionpos=184.45122, 36.585365
+
+# 3 charge solution
+!solutionpos=187.49991, 33.536583
+!solutionpos=922.25604, 742.37805
+!solutionpos=846.03656, 932.9268
+
 type=Puck
 charge=1.0
 position=150,150

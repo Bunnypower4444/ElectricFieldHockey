@@ -1,6 +1,17 @@
 # Level 14 - Introduce switches
 !name=Wires and Switches
 
+# 3 charge solution
+!solutionpos=318.59756, 820.12195
+!solutionpos=1146.3414, 496.95117
+#   negative
+!solutionpos=291.15854, 259.1463
+
+# 2 charge solution
+#   both positive
+!solutionpos=1150.9146, 522.8658
+!solutionpos=318.59756, 820.12195
+
 type=Puck
 charge=1.0
 position=350,800

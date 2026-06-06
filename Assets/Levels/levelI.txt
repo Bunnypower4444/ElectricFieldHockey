@@ -2,6 +2,8 @@
 !name=Electric Fields
 !chargeLimit=1
 
+!solutionpos=138.71951, 492.378
+
 type=Puck
 charge=1.0
 position=150,500

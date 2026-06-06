@@ -2,6 +2,11 @@
 !name=Thinking Out of the Box
 !chargeLimit=10
 
+!solutionpos=984.75604, 641.76825
+!solutionpos=775.9146, 963.4146
+!solutionpos=454.2682, 919.2072
+!solutionpos=126.52438, 333.8414
+
 type=Puck
 charge=1.0
 position=150,500

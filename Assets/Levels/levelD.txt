@@ -2,6 +2,16 @@
 # Phet Level 3
 !name=Snake
 
+!solutionpos=847.561, 315.54874
+!solutionpos=602.13416, 56.40244
+!solutionpos=608.2317, 379.57312
+!solutionpos=719.5121, 574.69507
+!solutionpos=1217.9878, 881.09753
+!solutionpos=620.4268, 846.03656
+!solutionpos=896.34143, 603.65845
+!solutionpos=445.12195, 631.09753
+!solutionpos=271.34137, 190.54878
+
 type=Puck
 charge=1.0
 position=150,500

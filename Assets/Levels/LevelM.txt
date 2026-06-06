@@ -2,6 +2,11 @@
 !name=Current-carrying Wires
 !chargeLimit=1
 
+# positive charge solution
+!solutionpos=103.65853, 551.8292
+# negative charge solution
+!solutionpos=809.4511, 670.7317
+
 type=Puck
 charge=1.0
 position=150,500

@@ -21,6 +21,8 @@ public class Charge extends Actor implements HasEField
     private static final Color NEGATIVE = Color.BLUE;
     private static final Color NEUTRAL = Color.DARK_GRAY;
 
+    private static final float SNAP_TO_CHEAT_MAX_DIST = 6 * Game.RELATIVE_SCALE;
+
     /**
      * The elementary charge, e, of the world, in coulombs. Note that this is
      * not the actual value of e.
@@ -105,6 +107,29 @@ public class Charge extends Actor implements HasEField
         {
             Vector2 pScreenPos = screenPos;
             screenPos = Game.instance().mousePos().add(dragOffset);
+
+            // Snap to solution position cheat
+            if (Game.instance().shiftDown() && !getWorld().snapToCheatPositions.isEmpty())
+            {
+                Vector2 closestPos = null;
+                float closestDistSq = SNAP_TO_CHEAT_MAX_DIST * SNAP_TO_CHEAT_MAX_DIST;
+                for (Vector2 worldSnapPos : getWorld().snapToCheatPositions)
+                {
+                    Vector2 screenSnapPos = WorldScene.worldToScreenPoint(worldSnapPos);
+                    float distSq = screenSnapPos.sub(screenPos).lengthSq();
+
+                    if (distSq < closestDistSq)
+                    {
+                        closestPos = screenSnapPos;
+                        closestDistSq = distSq;
+                    }
+                }
+
+                if (closestPos != null)
+                {
+                    screenPos = closestPos;
+                }
+            }
 
             if (!pScreenPos.equals(screenPos))
                 getWorld().eFieldUpdated = true;

@@ -2,6 +2,9 @@
 # PhET Level 1
 !name=Hello World
 
+!solutionpos=611.2806, 669.2073
+!solutionpos=57.926735, 435.97556
+
 type=Puck
 charge=1.0
 position=150,500

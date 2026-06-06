@@ -1,6 +1,17 @@
 # Level 11 - external electric and magnetic fields at same time
 !name=Electric and Magnetic Fields
 
+# clockwise solution
+#   both positive
+!solutionpos=157.0121, 536.5853
+!solutionpos=971.0366, 522.8658
+
+# counterclockwise solution
+#   positive
+!solutionpos=1083.8416, 521.3414
+#   negative
+!solutionpos=146.34137, 466.4634
+
 type=Puck
 charge=1.0
 position=150,500

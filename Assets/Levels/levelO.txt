@@ -1,6 +1,14 @@
 # Level 15 - multiple wires
 !name=Parallel Wires
 
+!solutionpos=934.4512, 344.51218
+!solutionpos=1213.4146, 390.24384
+!solutionpos=1100.6099, 253.04877
+!solutionpos=1202.7439, 573.17065
+!solutionpos=931.4024, 535.061
+!solutionpos=1115.8536, 858.2317
+!solutionpos=106.70731, 814.02435
+
 type=Puck
 charge=1.0
 position=150,800

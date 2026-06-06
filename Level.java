@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 
 /**
@@ -25,6 +26,12 @@ public class Level {
     private String name = null;
 
     private Wire lastWire = null;
+    
+    /**
+     * A list of positions defined by the level that charges can be snapped to by holding
+     * Shift, if {@link WorldScene#enableSnapToSolutionCheat} is set to true.
+     */
+    protected LinkedList<Vector2> snapToCheatPositions = new LinkedList<>();
 
     /**
      * Parses the level data into a list of objects and their attributes.
@@ -79,6 +86,9 @@ public class Level {
                             break;
                         case "name":
                             name = value;
+                            break;
+                        case "solutionpos":
+                            snapToCheatPositions.add(parseVector(value));
                             break;
                     }
                     continue;

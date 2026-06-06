@@ -2,6 +2,9 @@
 !name=Electric Dipole
 !chargeLimit=6
 
+!solutionpos=649.3902, 108.23161
+!solutionpos=99.085365, 527.43896
+
 type=Puck
 charge=1.0
 position=150,500

@@ -1,5 +1,7 @@
 # Level 5 - Introduce fixed charges
 !name=Fixed Charges
+!solutionpos=570.12195, 789.6341
+!solutionpos=102.13414, 477.1341
 
 type=Puck
 charge=1.0

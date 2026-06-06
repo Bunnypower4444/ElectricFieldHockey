@@ -1,6 +1,16 @@
 # Level 20 - Bunnary
 !name=Bunnary
 
+# solution with 5 positive charges
+!solutionpos=70.12195, 501.52432
+!solutionpos=254.57317, 419.20724
+!solutionpos=463.4146, 362.8048
+!solutionpos=734.7561, 282.01215
+!solutionpos=998.4756, 210.36584
+
+# solution with only 1 negative charge
+!solutionpos=612.8049, 452.7439
+
 type=Puck
 charge=1.0
 position=150,500

@@ -1,6 +1,13 @@
 # Level 3 - lo then hi
 !name=Gaps
 
+!solutionpos=751.52435, 33.536583
+!solutionpos=1102.1342, 987.8049
+!solutionpos=716.4634, 576.2195
+!solutionpos=1070.122, 510.67072
+!solutionpos=437.5, 405.4878
+!solutionpos=57.926826, 618.9024
+
 type=Puck
 charge=1.0
 position=150,500

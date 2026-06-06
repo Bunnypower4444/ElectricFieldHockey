@@ -3,6 +3,8 @@
 !positiveLimit=1
 !negativeLimit=0
 
+!solutionpos=108.231705, 483.23166
+
 type=Puck
 charge=1.0
 position=150,500
