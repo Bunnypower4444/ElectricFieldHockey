@@ -29,7 +29,7 @@ public class WorldScene extends Scene
      * solution positions defined in the level by holding Shift
      * should be enabled.
      */
-    protected static boolean enableSnapToSolutionCheat = true;
+    protected static boolean enableSnapToSolutionCheat = false;
     /**
      * A list of positions defined by the level that charges can be snapped to by holding
      * Shift, if {@link WorldScene#enableSnapToSolutionCheat} is set to true.
