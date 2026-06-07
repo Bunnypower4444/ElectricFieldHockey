@@ -56,10 +56,24 @@ public class TitleScene extends Scene
 
         g.setColor(Color.WHITE);
         g.setFont(Assets.getFont("AvenueX", Font.PLAIN, (int)(130 * Game.RELATIVE_SCALE)));
+
         DrawUtil.drawText(g, new Vector2(Game.WIDTH / 2, Game.HEIGHT / 2 - g.getFont().getSize()),
             "Electric Field", new Vector2(0.5f, 1));
         DrawUtil.drawText(g, new Vector2(Game.WIDTH / 2, Game.HEIGHT / 2),
             "Hockey", new Vector2(0.5f, 1));
+
+        final float PADDING = 10 * Game.RELATIVE_SCALE;
+
+
+        g.setFont(Assets.getFont("JosefinSans", Font.ITALIC, WorldScene.BUTTON_HEIGHT / 2));
+
+        DrawUtil.drawText(g, new Vector2(0 + PADDING, Game.HEIGHT - PADDING),
+            "Version " + Game.VERSION_STRING, new Vector2(0, 1));
+
+        DrawUtil.drawText(g, new Vector2(Game.WIDTH - PADDING, Game.HEIGHT - PADDING),
+            "Original AP CSA project by Evan Guo, Adeline Krishna, and Aarohi Shah", new Vector2(1, 1));
+        DrawUtil.drawText(g, new Vector2(Game.WIDTH - PADDING, Game.HEIGHT - PADDING - g.getFont().getSize()),
+            "By Evan Guo", new Vector2(1, 1));
 
         for (UIButton b : buttons)
             b.render(g);

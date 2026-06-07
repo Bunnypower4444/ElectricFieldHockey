@@ -54,9 +54,14 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     private static Game instance;
 
     /**
+     * A string containing the version of the application.
+     */
+    public static final String VERSION_STRING = "1.0.0";
+
+    /**
      * The update (physics tick) frequency.
      */
-    public static final float UpdateFPS = 300;
+    public static final float UPDATE_FPS = 300;
     /**
      * The graphics refresh rate.
      */
@@ -81,7 +86,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     private Game()
     {
         instance = this;
-        updateTimer = new Timer((int)(1000 / UpdateFPS), this);
+        updateTimer = new Timer((int)(1000 / UPDATE_FPS), this);
         renderTimer = new Timer((int)(1000 / FPS), this);
 
         addMouseListener(this);
