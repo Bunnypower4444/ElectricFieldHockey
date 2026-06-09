@@ -1,0 +1,21 @@
+{
+    "java.project.exportJar.targetPath": "${workspaceFolder}/build/${workspaceFolderBasename}.jar",
+    "java.import.exclusions": [
+        "**/docs/**",
+        "**/build/**",
+        "**/node_modules/**",
+        "**/.metadata/**",
+        "**/archetype-resources/**",
+        "**/META-INF/maven/**"
+    ],
+    "java.project.referencedLibraries": {
+        "include": [],
+        "exclude": [
+            "build/**/*.jar"
+        ]
+    },
+    "java.project.sourcePaths": [
+        "Source",
+        "./"
+    ]
+}

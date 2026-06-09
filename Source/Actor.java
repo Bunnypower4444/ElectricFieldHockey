@@ -1,5 +1,5 @@
-import java.awt.Graphics2D;
 
+import java.awt.Graphics2D;
 
 /**
  * An abstract class that represents an object that exists in the WorldScene.

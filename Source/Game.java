@@ -1,6 +1,5 @@
 
 import java.util.Stack;
-
 import javax.swing.Timer;
 import javax.swing.JPanel;
 import java.awt.Container;
