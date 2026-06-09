@@ -390,7 +390,7 @@ public class WorldScene extends Scene
      */
     public float deltaTime()
     {
-        return getPaused() ? 0 : 1 / Game.UPDATE_FPS;
+        return getPaused() ? 0 : 1 / Game.instance().updateFPS;
     }
 
     /**

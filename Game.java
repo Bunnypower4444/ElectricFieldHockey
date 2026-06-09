@@ -57,15 +57,24 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
      * A string containing the version of the application.
      */
     public static final String VERSION_STRING = "1.0.1";
+    
+    /**
+     * The default update (physics tick) frequency.
+     */
+    public static final float DEFAULT_UPDATE_FPS = 300;
+    /**
+     * The default graphics refresh rate.
+     */
+    public static final float DEFAULT_RENDER_FPS = 60;
 
     /**
      * The update (physics tick) frequency.
      */
-    public static final float UPDATE_FPS = 300;
+    public float updateFPS;
     /**
      * The graphics refresh rate.
      */
-    public static final float FPS = 60;
+    public float renderFPS;
 
     /**
      * The height that the Game JPanel should be at.
@@ -83,11 +92,13 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
      */
     public static final float RELATIVE_SCALE = HEIGHT / 900f;
 
-    private Game()
+    private Game(float updateFPS, float renderFPS)
     {
+        this.updateFPS = updateFPS;
+        this.renderFPS = renderFPS;
         instance = this;
-        updateTimer = new Timer((int)(1000 / UPDATE_FPS), this);
-        renderTimer = new Timer((int)(1000 / FPS), this);
+        updateTimer = new Timer((int)(1000 / updateFPS), this);
+        renderTimer = new Timer((int)(1000 / renderFPS), this);
 
         addMouseListener(this);
         addKeyListener(this);
@@ -101,16 +112,47 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
      * Creates and runs the instance of the Game. This method is required
      * to instantiate the Game, since there can only be one instance of the Game.
      * When the Game is created, a new TitleScene object will be pushed to the stack
-     * of scenes.
+     * of scenes. The new Game will run with the specified update and render frequencies.
+     * @param updateFPS the update tick frequency
+     * @param renderFPS the graphics refresh rate
+     * @throws IllegalStateException if <code>createGame()</code> has already
+     * been run
+     */
+    public static void createGame(float updateFPS, float renderFPS)
+    {
+        if (instance != null)
+            throw new IllegalStateException("Game has already been created");
+
+        new Game(updateFPS, renderFPS);
+    }
+
+    /**
+     * Creates and runs the instance of the Game. This method is required
+     * to instantiate the Game, since there can only be one instance of the Game.
+     * When the Game is created, a new TitleScene object will be pushed to the stack
+     * of scenes. The new Game will run with the specified update frequencies and
+     * the default render FPS, given by {@link Game#DEFAULT_RENDER_FPS}.
+     * @param updateFPS the update tick frequency
+     * @throws IllegalStateException if <code>createGame()</code> has already
+     * been run
+     */
+    public static void createGame(float updateFPS)
+    {
+        createGame(updateFPS, DEFAULT_RENDER_FPS);
+    }
+
+    /**
+     * Creates and runs the instance of the Game. This method is required
+     * to instantiate the Game, since there can only be one instance of the Game.
+     * When the Game is created, a new TitleScene object will be pushed to the stack
+     * of scenes. The new Game will run with the the default update and render frequencies,
+     * given by {@link Game#DEFAULT_UPDATE_FPS} and {@link Game#DEFAULT_RENDER_FPS}, respectively.
      * @throws IllegalStateException if <code>createGame()</code> has already
      * been run
      */
     public static void createGame()
     {
-        if (instance != null)
-            throw new IllegalStateException("Game has already been created");
-
-        new Game();
+        createGame(DEFAULT_UPDATE_FPS, DEFAULT_RENDER_FPS);
     }
 
     /**

@@ -12,21 +12,22 @@ import javax.swing.JFrame;
 public class ElectricFieldHockey extends JFrame
 {
     /**
-     * Creates a new instance of the window and instantiates and adds the Game
+     * Creates a new instance of the window and adds the Game as a component
      */
     public ElectricFieldHockey()
     {
         super("Electric Field Hockey");
-        
-        Game.createGame();
 
         add(Game.instance());
     }
 
     /**
-     * Runs the game, creating a new window with the size given by constants in the Game class,
-     * and adjusting the size to account for the size of the title of the window.
-     * @param args command-line arguments (not used)
+     * Runs the game, creating a new window and instantiating the Game, with the size given by
+     * constants in the Game class, and adjusting the size to account for the size of the
+     * title of the window. The update and render FPS can be optionally specified through
+     * the command-line arguments.
+     * @param args command-line arguments; up to two floating-point arguments can be specified,
+     * with the first specifying the update FPS and the second the render FPS.
      */
     public static void main(String[] args)
     {
@@ -40,8 +41,15 @@ public class ElectricFieldHockey extends JFrame
             return;
         }
 
+        if (args.length >= 2)
+            Game.createGame(Float.parseFloat(args[0]), Float.parseFloat(args[1]));
+        else if (args.length >= 1)
+            Game.createGame(Float.parseFloat(args[0]));
+        else
+            Game.createGame();
+
         ElectricFieldHockey EFH = new ElectricFieldHockey();
-        EFH.setBounds(300, 300, Game.WIDTH, Game.HEIGHT);
+        EFH.setBounds(100, 100, Game.WIDTH, Game.HEIGHT);
 
         EFH.setDefaultCloseOperation(EXIT_ON_CLOSE);
         EFH.setVisible(true);
