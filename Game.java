@@ -56,7 +56,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     /**
      * A string containing the version of the application.
      */
-    public static final String VERSION_STRING = "1.0.0";
+    public static final String VERSION_STRING = "1.0.1";
 
     /**
      * The update (physics tick) frequency.
