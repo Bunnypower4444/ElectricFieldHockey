@@ -290,7 +290,8 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         }
         catch (Exception exception)
         {
-            System.err.println("ERROR: " + exception);
+            System.err.print("ERROR: ");
+            exception.printStackTrace();
             updateTimer.stop();
             renderTimer.stop();
         }
@@ -319,14 +320,24 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     @Override
     public void paintComponent(Graphics g)
     {
-        long currentTimeMillis = System.currentTimeMillis();
-        renderDeltaTime = (currentTimeMillis - lastRenderFrameTimeMillis) / 1000f;
+        try
+        {
+            long currentTimeMillis = System.currentTimeMillis();
+            renderDeltaTime = (currentTimeMillis - lastRenderFrameTimeMillis) / 1000f;
 
-        super.paintComponent(g);
-        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        getCurrentScene().render((Graphics2D)g);
+            super.paintComponent(g);
+            ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            getCurrentScene().render((Graphics2D)g);
 
-        lastRenderFrameTimeMillis = currentTimeMillis;
+            lastRenderFrameTimeMillis = currentTimeMillis;
+        }
+        catch (Exception exception)
+        {
+            System.err.print("ERROR: ");
+            exception.printStackTrace();
+            updateTimer.stop();
+            renderTimer.stop();
+        }
     }
 
     private Scene getCurrentScene()

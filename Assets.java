@@ -134,27 +134,31 @@ public class Assets
     }
 
     /**
-     * Gets a named font derived with the given style and size.
+     * Gets a named font derived from a loaded base font with the given style and size.
+     * Calling this method for a given font, style, and size will store the derived font
+     * in a cache, which is used for successive calls for the same font parameters.
+     * If the specified font name is not loaded, the method will fall back to Trebuchet MS. 
      *
      * @param name  the font name (file name without extension)
      * @param style the font style (e.g. {@link Font#PLAIN}, {@link Font#BOLD})
      * @param size  the point size
      * @return the derived font
-     * @throws NullPointerException if no font with that name is loaded
      */
     public static Font getFont(String name, int style, float size)
     {
         FontParameters fp = new FontParameters(style, size);
-        if (cachedFonts.get(name).containsKey(fp))
+        if (cachedFonts.containsKey(name) && cachedFonts.get(name).containsKey(fp))
         {
             return cachedFonts.get(name).get(fp);
         }
-        else
+        else if (baseFonts.containsKey(name))
         {
             Font derivedFont = baseFonts.get(name).deriveFont(style, size);
             cachedFonts.get(name).put(fp, derivedFont);
             return derivedFont;
         }
+
+        return new Font("Trebuchet MS", style, (int)(size + 0.5));
     }
 
     /**
