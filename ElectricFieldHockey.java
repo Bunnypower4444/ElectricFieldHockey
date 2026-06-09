@@ -30,7 +30,15 @@ public class ElectricFieldHockey extends JFrame
      */
     public static void main(String[] args)
     {
-        Assets.load();
+        try
+        {
+            Assets.load();
+        }
+        catch (Exception e)
+        {
+            System.err.println(e);
+            return;
+        }
 
         ElectricFieldHockey EFH = new ElectricFieldHockey();
         EFH.setBounds(300, 300, Game.WIDTH, Game.HEIGHT);

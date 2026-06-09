@@ -370,8 +370,16 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         // alt + r (reload assets)
         if (e.isAltDown() && e.getKeyCode() == 82)
         {
-            Assets.load();
-            System.out.println("Assets reloaded");
+            try
+            {
+                Assets.load();
+                System.out.println("Assets reloaded");
+            }
+            catch (Exception err)
+            {
+                System.err.println("Unable to reload assets");
+                System.err.println(err);
+            }
         }
 
         // alt + d (toggle debug mode)

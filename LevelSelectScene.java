@@ -8,7 +8,7 @@ import java.awt.Rectangle;
  * of level buttons; clicking one pushes a new WorldScene for that level onto
  * the Game's scene stack.
  *
- * @author  Adeline Krishna
+ * @author  Adeline Krishna, Evan Guo
  * @version 5/25/26
  */
 public class LevelSelectScene extends Scene

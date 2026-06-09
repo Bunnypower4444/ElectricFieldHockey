@@ -7,7 +7,7 @@ import java.awt.Rectangle;
  * The opening screen into the game, which allows the player to choose to
  * go to the {@link LevelSelectScene level select screen} or the sandbox level.
  * 
- * @author Aarohi Shah
+ * @author Aarohi Shah, Evan Guo
  * @version 5/25/26
  */
 public class TitleScene extends Scene

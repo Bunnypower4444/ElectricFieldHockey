@@ -6,21 +6,28 @@ import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Loads the game's level files from disk 
  *
- * @author  Adeline Krishna
+ * @author  Adeline Krishna, Evan Guo
  * @version 5/25/26
  */
 
 public class Assets
 {
-    private static final String LEVELS_DIR = "Assets/Levels";
-    private static final String IMAGES_DIR = "Assets/Images";
-    private static final String FONTS_DIR = "Assets/Fonts";
+    private static final String ASSETS_FOLDER = "Assets";
+    private static final String LEVELS_DIR = "Levels";
+    private static final String IMAGES_DIR = "Images";
+    private static final String FONTS_DIR = "Fonts";
+
+    private static Path assetsPath;
 
     private static ArrayList<Level> levels = new ArrayList<>();
     private static HashMap<String, BufferedImage> images = new HashMap<>();
@@ -58,9 +65,34 @@ public class Assets
 
     /**
      * Loads all levels, images and fonts from disk.
+     * @throws FileNotFoundException if the Assets folder cannot be found
+     * @throws URISyntaxException if unable to get the location of the application
      */
-    public static void load()
+    public static void load() throws FileNotFoundException, URISyntaxException
     {
+        // finds that path to the assets folder, since
+        // the place where the code is run may not be the
+        // same directory as where the assets are located
+        // (code adapted from Celeste64's Assets.ContentPath getter)
+
+        // get location of the running code (works also for jar files)
+        Path appPath = Path.of(Assets.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        if (!Files.isDirectory(appPath))
+            appPath = appPath.getParent();
+
+        Path searchUpPath = Path.of("");
+        int up = 0;
+
+        while (!Files.isDirectory(appPath.resolve(searchUpPath).resolve(ASSETS_FOLDER)) && up++ < 5)
+        {
+            searchUpPath = searchUpPath.resolve("..");
+        }
+
+        if (!Files.isDirectory(appPath.resolve(searchUpPath).resolve(ASSETS_FOLDER)))
+            throw new FileNotFoundException("Unable to find " + ASSETS_FOLDER + " Directory from " + appPath);
+
+        assetsPath = appPath.resolve(searchUpPath).resolve(ASSETS_FOLDER);
+
         loadLevels();
         loadImages();
         loadFonts();
@@ -102,13 +134,37 @@ public class Assets
     }
 
     /**
+     * Gets a named font derived with the given style and size.
+     *
+     * @param name  the font name (file name without extension)
+     * @param style the font style (e.g. {@link Font#PLAIN}, {@link Font#BOLD})
+     * @param size  the point size
+     * @return the derived font
+     * @throws NullPointerException if no font with that name is loaded
+     */
+    public static Font getFont(String name, int style, float size)
+    {
+        FontParameters fp = new FontParameters(style, size);
+        if (cachedFonts.get(name).containsKey(fp))
+        {
+            return cachedFonts.get(name).get(fp);
+        }
+        else
+        {
+            Font derivedFont = baseFonts.get(name).deriveFont(style, size);
+            cachedFonts.get(name).put(fp, derivedFont);
+            return derivedFont;
+        }
+    }
+
+    /**
      * Loads data for all the levels.
      */
     private static void loadLevels()
     {
         levels.clear();
 
-        File dir = new File(LEVELS_DIR);
+        File dir = assetsPath.resolve(LEVELS_DIR).toFile();
         if (!dir.isDirectory())
         {
             return;
@@ -141,7 +197,7 @@ public class Assets
      */
     private static void loadImages()
     {
-        File dir = new File(IMAGES_DIR);
+        File dir = assetsPath.resolve(IMAGES_DIR).toFile();
         if (!dir.isDirectory())
             return;
 
@@ -168,35 +224,11 @@ public class Assets
     }
 
     /**
-     * Gets a named font derived with the given style and size.
-     *
-     * @param name  the font name (file name without extension)
-     * @param style the font style (e.g. {@link Font#PLAIN}, {@link Font#BOLD})
-     * @param size  the point size
-     * @return the derived font
-     * @throws NullPointerException if no font with that name is loaded
-     */
-    public static Font getFont(String name, int style, float size)
-    {
-        FontParameters fp = new FontParameters(style, size);
-        if (cachedFonts.get(name).containsKey(fp))
-        {
-            return cachedFonts.get(name).get(fp);
-        }
-        else
-        {
-            Font derivedFont = baseFonts.get(name).deriveFont(style, size);
-            cachedFonts.get(name).put(fp, derivedFont);
-            return derivedFont;
-        }
-    }
-
-    /**
      * Loads fonts for all the objects and registers them with the graphics environment.
      */
     private static void loadFonts()
     {
-        File dir = new File(FONTS_DIR);
+        File dir = assetsPath.resolve(FONTS_DIR).toFile();
         if (!dir.isDirectory())
             return;
 

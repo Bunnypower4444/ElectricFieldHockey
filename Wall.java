@@ -7,6 +7,9 @@ import java.awt.Rectangle;
  * An actor that represents a stationary rectangular wall in the world,
  * which serves as the primary obstacle for the puck. The level
  * will instantly be failed if the puck collides with a wall.
+ * 
+ * @author Aarohi Shah, Evan Guo
+ * @version 5/26/26
  */
 public class Wall extends Actor
 {

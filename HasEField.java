@@ -2,7 +2,7 @@
 /**
  * An interface implemented by Actors that provide an electric (E) field.
  * 
- * @author Aarohi Shah
+ * @author Aarohi Shah, Evan Guo
  * @version 5/12/26
  */
 public interface HasEField
