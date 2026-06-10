@@ -16,6 +16,10 @@
     },
     "java.project.sourcePaths": [
         "Source",
+        "Source/Actors",
+        "Source/Data",
+        "Source/Helpers",
+        "Source/Scenes",
         "./"
     ]
 }
