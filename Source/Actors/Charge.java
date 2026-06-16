@@ -109,7 +109,7 @@ public class Charge extends Actor implements HasEField
             screenPos = Game.instance().mousePos().add(dragOffset);
 
             // Snap to solution position cheat
-            if (Game.instance().shiftDown() && !getWorld().snapToCheatPositions.isEmpty())
+            if (Game.instance().shiftDown() && WorldScene.enableSnapToSolutionCheat && !getWorld().snapToCheatPositions.isEmpty())
             {
                 Vector2 closestPos = null;
                 float closestDistSq = SNAP_TO_CHEAT_MAX_DIST * SNAP_TO_CHEAT_MAX_DIST;
