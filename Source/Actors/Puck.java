@@ -34,6 +34,8 @@ public class Puck extends Actor implements RequireReset, LateUpdate
     
     private Vector2 netEField = Vector2.zero;
     private Vector3 netBField = Vector3.zero;
+    
+    private boolean needForceUpdate = false;
 
     private final Vector2 initialPosition;
     private final Vector2 initialVelocity;
@@ -80,10 +82,12 @@ public class Puck extends Actor implements RequireReset, LateUpdate
     {
         if (getWorld().getPaused() || !getWorld().gameStarted())
         {
-            if (getWorld().eFieldUpdated)
+            if (getWorld().eFieldUpdated || needForceUpdate)
                 netEField = updateEFields();
-            if (getWorld().bFieldUpdated)
+            if (getWorld().bFieldUpdated || needForceUpdate)
                 netBField = updateBFields();
+
+            needForceUpdate = false;
 
             acceleration = Calc.lorentzForce(charge, netEField, velocity, netBField).xy().div(MASS);
 
@@ -328,8 +332,7 @@ public class Puck extends Actor implements RequireReset, LateUpdate
     {
         position = initialPosition;
         velocity = initialVelocity;
-        getWorld().eFieldUpdated = true;
-        getWorld().bFieldUpdated = true;
+        needForceUpdate = true;
     }
 
     /**
