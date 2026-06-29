@@ -2,7 +2,9 @@
 import java.util.Stack;
 import javax.swing.Timer;
 import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
@@ -185,6 +187,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     public void pushScene(Scene s)
     {
         scenes.push(s);
+        s.update();
     }
 
     /**
@@ -361,14 +364,33 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     @Override
     public void paintComponent(Graphics g)
     {
+        Graphics2D g2d = (Graphics2D)g;
         try
         {
             long currentTimeMillis = System.currentTimeMillis();
             renderDeltaTime = (currentTimeMillis - lastRenderFrameTimeMillis) / 1000f;
 
-            super.paintComponent(g);
-            ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-            getCurrentScene().render((Graphics2D)g);
+            super.paintComponent(g2d);
+            (g2d).setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            getCurrentScene().render(g2d);
+
+            // debug FPS
+            if (WorldScene.debug)
+            {
+                g2d.setColor(new Color(0, 0, 0, 128));
+                g2d.fillRect((int)(WIDTH - 250 * RELATIVE_SCALE), 0, (int)(250 * RELATIVE_SCALE), 2 * g2d.getFont().getSize());
+
+                g2d.setColor(Color.CYAN);
+                g2d.setFont(Assets.getFont("JosefinSans", Font.ITALIC, WorldScene.BUTTON_HEIGHT / 2));
+
+                int line = 0;
+                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
+                    "Update FPS: " + String.format("%.2f", (1 / deltaTime())),
+                    new Vector2(1, 0));
+                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
+                    "Render FPS: " + String.format("%.2f", (1 / renderDeltaTime())),
+                    new Vector2(1, 0));
+            }
 
             lastRenderFrameTimeMillis = currentTimeMillis;
         }

@@ -348,12 +348,6 @@ public class WorldScene extends Scene
         DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
             "t: " + globalAnimTimer,
             new Vector2(0, 0));
-        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
-            "Update FPS: " + String.format("%.2f", (1 / Game.instance().deltaTime())),
-            new Vector2(0, 0));
-        DrawUtil.drawText(g, Vector2.unitY.mult((line++) * g.getFont().getSize()),
-            "Render FPS: " + String.format("%.2f", (1 / Game.instance().renderDeltaTime())),
-            new Vector2(0, 0));
 
         if (enableSnapToSolutionCheat && !snapToCheatPositions.isEmpty())
         {
