@@ -2,6 +2,8 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 /**
  * An actor that calculates and visualizes the net electric field in the world
@@ -9,25 +11,36 @@ import java.awt.Point;
  */
 public class TotalEField extends Actor implements LateUpdate
 {
-    private Vector2[][] fieldDisplayPoints;
-
     private static final int VECTOR_LENGTH = (int)(40 * Game.RELATIVE_SCALE);
     private static final float FULLY_OPAQUE_LENGTH = 50000;
     private static final int VECTOR_WIDTH = (int)(5 * Game.RELATIVE_SCALE);
     private static final int GRID_SPACING = (int)(50 * Game.RELATIVE_SCALE);
     private static final Color COLOR = Color.BLACK;
 
+    private Vector2[][] fieldDisplayPoints;
+    
+    private BufferedImage cachedDisplay;
+    private Graphics2D cacheGraphics;
+    private boolean cacheDirty = false;
+
     @Override
     public void setWorld(WorldScene world)
     {
-        if (getWorld() != world && world != null)
+        WorldScene pWorld = getWorld();
+        super.setWorld(world);
+        
+        if (pWorld != world && world != null)
         {
             fieldDisplayPoints = new Vector2[WorldScene.FIELD_WIDTH / GRID_SPACING][WorldScene.FIELD_HEIGHT / GRID_SPACING];
+
+            cachedDisplay = DrawUtil.createScaledImageBuffer(WorldScene.FIELD_WIDTH, WorldScene.FIELD_HEIGHT);
+            cacheGraphics = cachedDisplay.createGraphics();
+            cacheGraphics.setBackground(WorldScene.FIELD_COLOR);
+            DrawUtil.scaleGraphics(cacheGraphics);
+            cacheGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+
+            recalculateDisplays();
         }
-
-        super.setWorld(world);
-
-        recalculateDisplays();
     }
 
     @Override
@@ -54,6 +67,8 @@ public class TotalEField extends Actor implements LateUpdate
                 fieldDisplayPoints[i][j] = getNetFieldAt(WorldScene.screenToWorldPoint(new Vector2(x, y)));
             }
         }
+
+        cacheDirty = true;
     }
 
     private Vector2 getNetFieldAt(Vector2 position)
@@ -73,6 +88,14 @@ public class TotalEField extends Actor implements LateUpdate
     @Override
     public void render(Graphics2D g)
     {
+        if (!cacheDirty)
+        {
+            g.drawImage(cachedDisplay, 0, 0, WorldScene.FIELD_WIDTH, WorldScene.FIELD_HEIGHT, Game.instance());
+            return;
+        }
+
+        DrawUtil.clear(cacheGraphics, cachedDisplay.getWidth(), cachedDisplay.getHeight());
+
         for (int i = 0; i < fieldDisplayPoints.length; i++)
         {
             int x = i * GRID_SPACING + GRID_SPACING / 2;
@@ -83,10 +106,13 @@ public class TotalEField extends Actor implements LateUpdate
                 if (fieldDisplayPoints[i][j].equals(Vector2.zero))
                     continue;
 
-                DrawUtil.drawDirectionVector(g, new Point(x, y), fieldDisplayPoints[i][j],
+                DrawUtil.drawDirectionVector(cacheGraphics, new Point(x, y), fieldDisplayPoints[i][j],
                     COLOR, VECTOR_WIDTH, VECTOR_LENGTH, FULLY_OPAQUE_LENGTH);
             }
         }
+
+        g.drawImage(cachedDisplay, 0, 0, WorldScene.FIELD_WIDTH, WorldScene.FIELD_HEIGHT, Game.instance());
+        cacheDirty = false;
     }
 
     @Override

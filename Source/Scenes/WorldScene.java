@@ -705,4 +705,15 @@ public class WorldScene extends Scene
     {
         return vector.withY(- vector.y()).div(SCALE_FACTOR);
     }
+
+    /**
+     * Checks if a given point is on the playing field.
+     * @param point The point, with its position in screen space
+     * @return true if the point is on the playing field; false otherwise
+     */
+    public static boolean pointOnScreen(Vector2 point)
+    {
+        return point.x() >= 0 && point.y() >= 0
+            && point.x() <= WorldScene.FIELD_WIDTH && point.y() <= WorldScene.FIELD_HEIGHT;
+    }
 }

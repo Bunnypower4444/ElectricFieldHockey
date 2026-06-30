@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.awt.image.BufferedImage;
 
 /**
  * A static utility class containing convenient methods for drawing, such as for drawing various shapes
@@ -361,13 +362,42 @@ public class DrawUtil
     }
 
     /**
-     * Checks if a given point is on the playing field.
-     * @param point The point, with its position in screen space
-     * @return true if the point is on the playing field; false otherwise
+     * Clears a Graphics2D object to be transparent.
+     * @param g The Graphics2D object
+     * @param width The width, in pixels, of the canvas
+     * @param height The height, in pixels, of the canvas
      */
-    public static boolean pointOnScreen(Vector2 point)
+    public static void clear(Graphics2D g, int width, int height)
     {
-        return point.x() >= 0 && point.y() >= 0
-            && point.x() <= WorldScene.FIELD_WIDTH && point.y() <= WorldScene.FIELD_HEIGHT;
+        Color background = g.getBackground();
+        g.setBackground(new Color(0, 0, 0, 0));
+        g.clearRect(0, 0, width, height);
+        g.setBackground(background);
+    }
+
+    /**
+     * Creates a new BufferedImage of the given dimensions, scaled according to
+     * the screen's pixel density (using {@link Game#SCREEN_TRANSFORM}). The
+     * new BufferedImage will have the image type of {@link BufferedImage#TYPE_INT_ARGB_PRE}.
+     * @param width Unscaled image width, in pixels
+     * @param height Unscaled image height, in pixels
+     * @return The new BufferedImage
+     */
+    public static BufferedImage createScaledImageBuffer(int width, int height)
+    {
+        return new BufferedImage(
+            (int)(width * Game.SCREEN_TRANSFORM.getScaleX() + 0.5),
+            (int)(height * Game.SCREEN_TRANSFORM.getScaleY() + 0.5),
+            BufferedImage.TYPE_INT_ARGB_PRE);
+    }
+
+    /**
+     * Scales a Graphics2D object according to the screen's pixel density
+     * (using {@link Game#SCREEN_TRANSFORM}).
+     * @param g The Graphics2D object to scale
+     */
+    public static void scaleGraphics(Graphics2D g)
+    {
+        g.scale(Game.SCREEN_TRANSFORM.getScaleX(), Game.SCREEN_TRANSFORM.getScaleY());
     }
 }

@@ -61,6 +61,7 @@ public class UniformBField extends Actor implements HasBField
         // (t already accounts for animTime)
         double theta = Math.PI * t;
         int alpha = (int)(255 * Math.sin(theta) * Math.sin(theta));
+        // Color c = VECTOR_COLOR;
         Color c = new Color(VECTOR_COLOR.getRed(), VECTOR_COLOR.getGreen(), VECTOR_COLOR.getBlue(), alpha);
         g.setColor(c);
 

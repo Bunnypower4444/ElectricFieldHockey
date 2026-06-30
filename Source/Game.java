@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.MouseInfo;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -15,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
 
 /**
  * The main class that handles running and maintaining the game, i.e., the "engine,"
@@ -92,6 +94,16 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
      * the size of the window changes.
      */
     public static final float RELATIVE_SCALE = HEIGHT / 900f;
+
+    /**
+     * The transformation applied when the screen is rendered, which accounts
+     * for the screen's pixel density.
+     */
+    public static final AffineTransform SCREEN_TRANSFORM = GraphicsEnvironment
+        .getLocalGraphicsEnvironment()
+        .getDefaultScreenDevice()
+        .getDefaultConfiguration()
+        .getDefaultTransform();
 
     private Game(float updateFPS, float renderFPS)
     {
@@ -210,6 +222,15 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         pushScene(s);
     }
 
+    private Scene getCurrentScene()
+    {
+        if (!scenes.isEmpty())
+            return scenes.peek();
+
+        pushScene(new TitleScene());
+        return scenes.peek();
+    }
+
     /**
      * Gets the amount of time between update (physics) ticks.
      * @return The time between physics ticks, in seconds
@@ -227,6 +248,91 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     {
         return renderDeltaTime;
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+        Timer source = (Timer)e.getSource();
+
+        try
+        {
+            if (source == updateTimer)
+                update();
+            else if (source == renderTimer)
+                repaint();
+        }
+        catch (Exception exception)
+        {
+            System.err.print("ERROR: ");
+            exception.printStackTrace();
+            updateTimer.stop();
+            renderTimer.stop();
+        }
+    }
+
+    private void update()
+    {
+        long currentTimeMillis = System.currentTimeMillis();
+        deltaTime = (currentTimeMillis - lastFrameTimeMillis) / 1000f;
+
+        mousePos = getRelativeMousePosition();
+
+        boolean pMouseClicked = mouseClicked;
+        boolean pMousePressed = mousePressed;
+        
+        getCurrentScene().update();
+
+        if (pMouseClicked)
+            mouseClicked = false;
+        if (pMousePressed)
+            mousePressed = false;
+
+        lastFrameTimeMillis = currentTimeMillis;
+    }
+
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        Graphics2D g2d = (Graphics2D)g;
+        try
+        {
+            long currentTimeMillis = System.currentTimeMillis();
+            renderDeltaTime = (currentTimeMillis - lastRenderFrameTimeMillis) / 1000f;
+
+            super.paintComponent(g2d);
+            g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            getCurrentScene().render(g2d);
+
+            // debug FPS
+            if (WorldScene.debug)
+            {
+                g2d.setColor(new Color(0, 0, 0, 128));
+                g2d.fillRect((int)(WIDTH - 250 * RELATIVE_SCALE), 0, (int)(250 * RELATIVE_SCALE), 2 * g2d.getFont().getSize());
+
+                g2d.setColor(Color.CYAN);
+                g2d.setFont(Assets.getFont("JosefinSans", Font.ITALIC, WorldScene.BUTTON_HEIGHT / 2));
+
+                int line = 0;
+                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
+                    "Update FPS: " + String.format("%.2f", (1 / deltaTime())),
+                    new Vector2(1, 0));
+                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
+                    "Render FPS: " + String.format("%.2f", (1 / renderDeltaTime())),
+                    new Vector2(1, 0));
+            }
+
+            lastRenderFrameTimeMillis = currentTimeMillis;
+        }
+        catch (Exception exception)
+        {
+            System.err.print("ERROR: ");
+            exception.printStackTrace();
+            updateTimer.stop();
+            renderTimer.stop();
+        }
+    }
+
+    //#region Input
 
     /**
      * Gets the screen coordinates of the mouse.
@@ -321,98 +427,6 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        Timer source = (Timer)e.getSource();
-
-        try
-        {
-            if (source == updateTimer)
-                update();
-            else if (source == renderTimer)
-                repaint();
-        }
-        catch (Exception exception)
-        {
-            System.err.print("ERROR: ");
-            exception.printStackTrace();
-            updateTimer.stop();
-            renderTimer.stop();
-        }
-    }
-
-    private void update()
-    {
-        long currentTimeMillis = System.currentTimeMillis();
-        deltaTime = (currentTimeMillis - lastFrameTimeMillis) / 1000f;
-
-        mousePos = getRelativeMousePosition();
-
-        boolean pMouseClicked = mouseClicked;
-        boolean pMousePressed = mousePressed;
-        
-        getCurrentScene().update();
-
-        if (pMouseClicked)
-            mouseClicked = false;
-        if (pMousePressed)
-            mousePressed = false;
-
-        lastFrameTimeMillis = currentTimeMillis;
-    }
-
-    @Override
-    public void paintComponent(Graphics g)
-    {
-        Graphics2D g2d = (Graphics2D)g;
-        try
-        {
-            long currentTimeMillis = System.currentTimeMillis();
-            renderDeltaTime = (currentTimeMillis - lastRenderFrameTimeMillis) / 1000f;
-
-            super.paintComponent(g2d);
-            (g2d).setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-            getCurrentScene().render(g2d);
-
-            // debug FPS
-            if (WorldScene.debug)
-            {
-                g2d.setColor(new Color(0, 0, 0, 128));
-                g2d.fillRect((int)(WIDTH - 250 * RELATIVE_SCALE), 0, (int)(250 * RELATIVE_SCALE), 2 * g2d.getFont().getSize());
-
-                g2d.setColor(Color.CYAN);
-                g2d.setFont(Assets.getFont("JosefinSans", Font.ITALIC, WorldScene.BUTTON_HEIGHT / 2));
-
-                int line = 0;
-                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
-                    "Update FPS: " + String.format("%.2f", (1 / deltaTime())),
-                    new Vector2(1, 0));
-                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
-                    "Render FPS: " + String.format("%.2f", (1 / renderDeltaTime())),
-                    new Vector2(1, 0));
-            }
-
-            lastRenderFrameTimeMillis = currentTimeMillis;
-        }
-        catch (Exception exception)
-        {
-            System.err.print("ERROR: ");
-            exception.printStackTrace();
-            updateTimer.stop();
-            renderTimer.stop();
-        }
-    }
-
-    private Scene getCurrentScene()
-    {
-        if (!scenes.isEmpty())
-            return scenes.peek();
-
-        pushScene(new TitleScene());
-        return scenes.peek();
-    }
-
-    @Override
     public void mouseClicked(MouseEvent e) {}
 
     @Override
@@ -493,4 +507,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
             shiftDown = false;
         }
     }
+
+    //#endregion
+
 }
