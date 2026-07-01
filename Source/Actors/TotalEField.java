@@ -19,9 +19,9 @@ public class TotalEField extends Actor implements LateUpdate
 
     private Vector2[][] fieldDisplayPoints;
     
-    private BufferedImage cachedDisplay;
-    private Graphics2D cacheGraphics;
-    private boolean cacheDirty = false;
+    private BufferedImage renderTarget;
+    private Graphics2D targetGraphics;
+    private boolean targetDirty = false;
 
     @Override
     public void setWorld(WorldScene world)
@@ -33,11 +33,11 @@ public class TotalEField extends Actor implements LateUpdate
         {
             fieldDisplayPoints = new Vector2[WorldScene.FIELD_WIDTH / GRID_SPACING][WorldScene.FIELD_HEIGHT / GRID_SPACING];
 
-            cachedDisplay = DrawUtil.createScaledImageBuffer(WorldScene.FIELD_WIDTH, WorldScene.FIELD_HEIGHT);
-            cacheGraphics = cachedDisplay.createGraphics();
-            cacheGraphics.setBackground(WorldScene.FIELD_COLOR);
-            DrawUtil.scaleGraphics(cacheGraphics);
-            cacheGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            renderTarget = DrawUtil.createScaledImageBuffer(WorldScene.FIELD_WIDTH, WorldScene.FIELD_HEIGHT);
+            targetGraphics = renderTarget.createGraphics();
+            targetGraphics.setBackground(WorldScene.FIELD_COLOR);
+            DrawUtil.scaleGraphics(targetGraphics);
+            targetGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
             recalculateDisplays();
         }
@@ -68,7 +68,7 @@ public class TotalEField extends Actor implements LateUpdate
             }
         }
 
-        cacheDirty = true;
+        targetDirty = true;
     }
 
     private Vector2 getNetFieldAt(Vector2 position)
@@ -88,13 +88,13 @@ public class TotalEField extends Actor implements LateUpdate
     @Override
     public void render(Graphics2D g)
     {
-        if (!cacheDirty)
+        if (!targetDirty)
         {
-            g.drawImage(cachedDisplay, 0, 0, WorldScene.FIELD_WIDTH, WorldScene.FIELD_HEIGHT, Game.instance());
+            g.drawImage(renderTarget, 0, 0, WorldScene.FIELD_WIDTH, WorldScene.FIELD_HEIGHT, Game.instance());
             return;
         }
 
-        DrawUtil.clear(cacheGraphics, cachedDisplay.getWidth(), cachedDisplay.getHeight());
+        DrawUtil.clear(renderTarget);
 
         for (int i = 0; i < fieldDisplayPoints.length; i++)
         {
@@ -106,13 +106,13 @@ public class TotalEField extends Actor implements LateUpdate
                 if (fieldDisplayPoints[i][j].equals(Vector2.zero))
                     continue;
 
-                DrawUtil.drawDirectionVector(cacheGraphics, new Point(x, y), fieldDisplayPoints[i][j],
+                DrawUtil.drawDirectionVector(targetGraphics, new Point(x, y), fieldDisplayPoints[i][j],
                     COLOR, VECTOR_WIDTH, VECTOR_LENGTH, FULLY_OPAQUE_LENGTH);
             }
         }
 
-        g.drawImage(cachedDisplay, 0, 0, WorldScene.FIELD_WIDTH, WorldScene.FIELD_HEIGHT, Game.instance());
-        cacheDirty = false;
+        g.drawImage(renderTarget, 0, 0, WorldScene.FIELD_WIDTH, WorldScene.FIELD_HEIGHT, Game.instance());
+        targetDirty = false;
     }
 
     @Override

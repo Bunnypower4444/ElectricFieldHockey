@@ -1,6 +1,8 @@
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -8,6 +10,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 
 /**
  * A static utility class containing convenient methods for drawing, such as for drawing various shapes
@@ -362,16 +365,51 @@ public class DrawUtil
     }
 
     /**
-     * Clears a Graphics2D object to be transparent.
+     * Draws a BufferedImage using a Graphics2D object with a specified alpha (transparency) value.
      * @param g The Graphics2D object
-     * @param width The width, in pixels, of the canvas
-     * @param height The height, in pixels, of the canvas
+     * @param image The image to draw
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     * @param w The width
+     * @param h The height
+     * @param alpha The alpha value
+     * @param observer Object to be notified as more of the image is converted
      */
-    public static void clear(Graphics2D g, int width, int height)
+    public static void drawImageAlpha(Graphics2D g, BufferedImage image, int x, int y, int w, int h, float alpha, ImageObserver observer)
     {
+        Composite pComposite = g.getComposite();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+
+        g.drawImage(image, x, y, w, h, observer);
+
+        g.setComposite(pComposite);
+    }
+
+    /**
+     * Draws a BufferedImage using a Graphics2D object with a specified alpha (transparency) value,
+     * using the image's default width and height values.
+     * @param g The Graphics2D object
+     * @param image The image to draw
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     * @param alpha The alpha value
+     * @param observer Object to be notified as more of the image is converted
+     */
+    public static void drawImageAlpha(Graphics2D g, BufferedImage image, int x, int y, float alpha, ImageObserver observer)
+    {
+        drawImageAlpha(g, image, x, y, image.getWidth(), image.getHeight(), alpha, observer);
+    }
+
+    /**
+     * Clears a BufferedImage object to be transparent.
+     * @param target the image
+     */
+    public static void clear(BufferedImage image)
+    {
+        Graphics2D g = image.createGraphics();
         Color background = g.getBackground();
         g.setBackground(new Color(0, 0, 0, 0));
-        g.clearRect(0, 0, width, height);
+        g.clearRect(0, 0, image.getWidth(), image.getHeight());
         g.setBackground(background);
     }
 
