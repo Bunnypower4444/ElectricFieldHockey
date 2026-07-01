@@ -42,9 +42,9 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     private transient Timer updateTimer;
     private transient Timer renderTimer;
 
-    private transient long lastFrameTimeMillis;
+    private transient long lastFrameTimeNano;
     private transient float deltaTime = 0;
-    private transient long lastRenderFrameTimeMillis;
+    private transient long lastRenderFrameTimeNano;
     private transient float renderDeltaTime = 0;
 
     private transient Vector2 mousePos = Vector2.zero;
@@ -61,6 +61,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
      */
     public static final String VERSION_STRING = "1.0.1";
     
+    // TODO maybe have a separate update (runs at same freq as render) and physics tick system?
     /**
      * The default update (physics tick) frequency.
      */
@@ -188,8 +189,8 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     {
         updateTimer.start();
         renderTimer.start();
-        lastFrameTimeMillis = System.currentTimeMillis();
-        lastRenderFrameTimeMillis = System.currentTimeMillis();
+        lastFrameTimeNano = System.currentTimeMillis();
+        lastRenderFrameTimeNano = System.currentTimeMillis();
     }
 
     /**
@@ -272,8 +273,8 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
 
     private void update()
     {
-        long currentTimeMillis = System.currentTimeMillis();
-        deltaTime = (currentTimeMillis - lastFrameTimeMillis) / 1000f;
+        long currentTimeNano = System.nanoTime();
+        deltaTime = (currentTimeNano - lastFrameTimeNano) / 1e9f;
 
         mousePos = getRelativeMousePosition();
 
@@ -287,7 +288,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         if (pMousePressed)
             mousePressed = false;
 
-        lastFrameTimeMillis = currentTimeMillis;
+        lastFrameTimeNano = currentTimeNano;
     }
 
     @Override
@@ -296,8 +297,8 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         Graphics2D g2d = (Graphics2D)g;
         try
         {
-            long currentTimeMillis = System.currentTimeMillis();
-            renderDeltaTime = (currentTimeMillis - lastRenderFrameTimeMillis) / 1000f;
+            long currentTimeNano = System.nanoTime();
+            renderDeltaTime = (currentTimeNano - lastRenderFrameTimeNano) / 1e9f;
 
             super.paintComponent(g2d);
             g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -314,14 +315,14 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
 
                 int line = 0;
                 DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
-                    "Update FPS: " + String.format("%.2f", (1 / deltaTime())),
+                    "Update FPS: " + (int)(1 / deltaTime() + 0.5) /* String.format("%.2f", (1 / deltaTime())) */,
                     new Vector2(1, 0));
                 DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
-                    "Render FPS: " + String.format("%.2f", (1 / renderDeltaTime())),
+                    "Render FPS: " + (int)(1 / renderDeltaTime() + 0.5) /* String.format("%.2f", (1 / renderDeltaTime())) */,
                     new Vector2(1, 0));
             }
 
-            lastRenderFrameTimeMillis = currentTimeMillis;
+            lastRenderFrameTimeNano = currentTimeNano;
         }
         catch (Exception exception)
         {
