@@ -449,4 +449,22 @@ public class DrawUtil
     {
         g.scale(Game.SCREEN_TRANSFORM.getScaleX(), Game.SCREEN_TRANSFORM.getScaleY());
     }
+
+    /**
+     * Linearly interpolates between two colors. This method can also be used
+     * for transparency calculations.
+     * @param a The first color
+     * @param b The second color
+     * @param t The percentage of the way between the two colors
+     * @return The resulting color
+     */
+    public static Color lerpColor(Color a, Color b, float t)
+    {
+        float oneMinusT = 1 - t;
+        return new Color(
+            (int)(b.getRed() * t + a.getRed() * oneMinusT + 0.5),
+            (int)(b.getGreen() * t + a.getGreen() * oneMinusT + 0.5),
+            (int)(b.getBlue() * t + a.getBlue() * oneMinusT + 0.5),
+            (int)(b.getAlpha() * t + a.getAlpha() * oneMinusT + 0.5));
+    }
 }
