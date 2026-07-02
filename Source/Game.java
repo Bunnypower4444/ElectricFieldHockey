@@ -311,7 +311,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
                 g2d.fillRect((int)(WIDTH - 250 * RELATIVE_SCALE), 0, (int)(250 * RELATIVE_SCALE), 2 * g2d.getFont().getSize());
 
                 g2d.setColor(Color.CYAN);
-                g2d.setFont(Assets.getFont("JosefinSans", Font.ITALIC, WorldScene.BUTTON_HEIGHT / 2));
+                g2d.setFont(new Font("Monospace", Font.PLAIN, WorldScene.BUTTON_HEIGHT / 2));
 
                 int line = 0;
                 DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
