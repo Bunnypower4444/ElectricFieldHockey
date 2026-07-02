@@ -3,7 +3,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 /**
@@ -57,7 +56,6 @@ public class UniformEField extends Actor implements HasEField
         targetGraphics = renderTarget.createGraphics();
         targetGraphics.setBackground(new Color(0, 0, 0, 0));
         DrawUtil.scaleGraphics(targetGraphics);
-        targetGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
         displayVector = strength.normalize().mult(VECTOR_LENGTH);
 

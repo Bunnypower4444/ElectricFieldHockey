@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 
@@ -147,11 +148,12 @@ public class DrawUtil
         Polygon arrow = calculateEqTrianglePolygon(length);
         arrow.translate(position.x, position.y);
         
+        AffineTransform pTransform = g.getTransform();
         g.rotate(-angle, position.x, position.y);
 
         g.drawPolygon(arrow);
 
-        g.rotate(angle, position.x, position.y);
+        g.setTransform(pTransform);
     }
 
     private static Polygon calculateArrowPolygon(int length, int width)
@@ -223,11 +225,12 @@ public class DrawUtil
         Polygon arrow = calculateArrowPolygon(length, width);
         arrow.translate(position.x, position.y);
         
+        AffineTransform pTransform = g.getTransform();
         g.rotate(vector.angle(), position.x, position.y);
 
         g.drawPolygon(arrow);
 
-        g.rotate(-vector.angle(), position.x, position.y);
+        g.setTransform(pTransform);
 
         g.setColor(pColor);
         g.setStroke(pStroke);
@@ -258,11 +261,12 @@ public class DrawUtil
         Polygon arrow = calculateArrowPolygon((int)vector.length(), width);
         arrow.translate(position.x, position.y);
         
+        AffineTransform pTransform = g.getTransform();
         g.rotate(vector.angle(), position.x, position.y);
 
         g.fillPolygon(arrow);
 
-        g.rotate(-vector.angle(), position.x, position.y);
+        g.setTransform(pTransform);
 
         g.setColor(pColor);
     }
@@ -316,20 +320,28 @@ public class DrawUtil
     public static void drawDotCross(Graphics2D g, Point point, float radius)
     {
         // scaling shenanigans so that the result isn't confined to larger pixels
+        // (many drawing functions only take in integers, but usually the pixel density is higher than 1)
         if (radius > 0)
         {
-            final float KNOT_SIZE_PROPORTION = 0.5f;
+            // ratio of diameter of dot to the given radius (fits inside larger circle)
+            final float DOT_SIZE_PROPORTION = 0.5f;
+
+            AffineTransform pTransform = g.getTransform();
+
             g.translate(point.x, point.y);
-            g.scale(KNOT_SIZE_PROPORTION * radius, KNOT_SIZE_PROPORTION * radius);
+            g.scale(DOT_SIZE_PROPORTION * radius, DOT_SIZE_PROPORTION * radius);
+
             fillCircle(g, Vector2.zero.toPoint(), 1);
-            g.scale(1 / (KNOT_SIZE_PROPORTION * radius), 1 / (KNOT_SIZE_PROPORTION * radius));
-            g.translate(-point.x, -point.y);
+
+            g.setTransform(pTransform);
         }
         else
         {
             Stroke pStroke = g.getStroke();
 
             g.setStroke(new BasicStroke(VECTOR_STROKE_WIDTH / (-radius * (float)(Math.sqrt(2) / 2))));
+
+            AffineTransform pTransform = g.getTransform();
 
             g.translate(point.x, point.y);
             double component = radius * Math.sqrt(2) / 2;
@@ -342,8 +354,7 @@ public class DrawUtil
                  - 1, + 1,
                  + 1, - 1);
 
-            g.scale(1 / component, 1 / component);
-            g.translate(-point.x, -point.y);
+            g.setTransform(pTransform);
             g.setStroke(pStroke);
         }
     }

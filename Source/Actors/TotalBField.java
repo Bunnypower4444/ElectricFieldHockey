@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 /**
@@ -35,7 +34,6 @@ public class TotalBField extends Actor implements LateUpdate
             targetGraphics = renderTarget.createGraphics();
             targetGraphics.setBackground(WorldScene.FIELD_COLOR);
             DrawUtil.scaleGraphics(targetGraphics);
-            targetGraphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
             recalculateDisplays();
         }
