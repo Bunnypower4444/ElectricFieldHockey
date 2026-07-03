@@ -1,12 +1,12 @@
 # Level 11 - external electric and magnetic fields at same time
 !name=Electric and Magnetic Fields
 
-# clockwise solution
+# counterclockwise solution
 #   both positive
 !solutionpos=157.0121, 536.5853
-!solutionpos=971.0366, 522.8658
+!solutionpos=978.6586, 525.91455
 
-# counterclockwise solution
+# clockwise solution
 #   positive
 !solutionpos=1083.8416, 521.3414
 #   negative
@@ -20,29 +20,29 @@ type=Goal
 bounds=1100,500,50,100
 
 type=Wall
-bounds=385,300,20,400
+bounds=405,300,20,400
 
 type=Wall
-bounds=805,300,20,400
+bounds=825,300,20,400
 
 type=Wall
-bounds=385,280,440,20
+bounds=405,280,440,20
 
 type=Wall
-bounds=385,700,440,20
+bounds=405,700,440,20
 
 type=UniformBField
-bounds=0,0,605,550
+bounds=0,0,625,550
 strength=-100
 
 type=UniformEField
-bounds=0,450,605,550
+bounds=0,450,625,550
 strength=70712,-70712
 
 type=UniformBField
-bounds=605,450,625,550
+bounds=625,450,625,550
 strength=100
 
 type=UniformEField
-bounds=605,0,625,550
+bounds=625,0,625,550
 strength=-70712,70712
