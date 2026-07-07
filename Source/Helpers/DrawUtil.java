@@ -277,7 +277,7 @@ public class DrawUtil
      * the dot/cross with circle surrounding it. This method is used for highlighting the direction of a vector,
      * such as in visualizing the net magnetic field.
      * @param g The Graphics2D object to which to render the shape
-     * @param position The screen-space position at which to draw the vector
+     * @param position The screen-space center position at which to draw the vector
      * @param z The world-space vector to draw (NOTE: the positive z-axis is out of the screen)
      * @param color The color using which to draw the vector
      * @param radius The radius using which to draw the vector
@@ -311,7 +311,7 @@ public class DrawUtil
      * If <code>radius</code> is positive, a dot will be drawn; otherwise, a cross will be drawn. The dots/crosses
      * are designed to be able to fit within a circle with the magnitude of the specified radius.
      * @param g The Graphics2D object to which to render the shape
-     * @param point The screen-space position at which to draw the vector
+     * @param point The screen-space center position at which to draw the vector
      * @param radius The radius of a circle surrounding the shape. The radius should have the same
      * sign as the z-component in world space of a vector being represented. If <code>radius > 0</code>,
      * a dot will be drawn; otherwise, a cross will be drawn. The magnitude of <code>radius</code> is used to
@@ -338,13 +338,13 @@ public class DrawUtil
         else
         {
             Stroke pStroke = g.getStroke();
+            double component = radius * Math.sqrt(2) / 2;
 
-            g.setStroke(new BasicStroke(VECTOR_STROKE_WIDTH / (-radius * (float)(Math.sqrt(2) / 2))));
+            g.setStroke(new BasicStroke((float)(VECTOR_STROKE_WIDTH / -component)));
 
             AffineTransform pTransform = g.getTransform();
 
             g.translate(point.x, point.y);
-            double component = radius * Math.sqrt(2) / 2;
             g.scale(component, component);
 
             g.drawLine(
@@ -383,7 +383,7 @@ public class DrawUtil
      * @param y The y-coordinate
      * @param w The width
      * @param h The height
-     * @param alpha The alpha value
+     * @param alpha The alpha value, in the inclusive range [0.0, 1.0]
      * @param observer Object to be notified as more of the image is converted
      */
     public static void drawImageAlpha(Graphics2D g, BufferedImage image, int x, int y, int w, int h, float alpha, ImageObserver observer)
@@ -403,7 +403,7 @@ public class DrawUtil
      * @param image The image to draw
      * @param x The x-coordinate
      * @param y The y-coordinate
-     * @param alpha The alpha value
+     * @param alpha The alpha value, in the inclusive range [0.0, 1.0]
      * @param observer Object to be notified as more of the image is converted
      */
     public static void drawImageAlpha(Graphics2D g, BufferedImage image, int x, int y, float alpha, ImageObserver observer)

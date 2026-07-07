@@ -66,6 +66,9 @@ public class UniformEField extends Actor implements HasEField
     {
         DrawUtil.clear(renderTarget);
 
+        if (strength.equals(Vector2.zero))
+            return;
+
         int width = screenBottomRight.x - screenTopLeft.x;
         int height = screenBottomRight.y - screenTopLeft.y;
 

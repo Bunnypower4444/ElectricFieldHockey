@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 /**
  * An actor representing a rectangular region in which a uniform
@@ -12,9 +13,6 @@ import java.awt.Rectangle;
  */
 public class UniformBField extends Actor implements HasBField
 {
-    private Rectangle bounds;
-    private Vector3 strength;
-
     private static final Color BG_COLOR = new Color(106, 28, 184, 100);
     private static final Color VECTOR_COLOR = new Color(106, 28, 184);
 
@@ -22,7 +20,35 @@ public class UniformBField extends Actor implements HasBField
     private static final int VECTOR_SPACING = (int)(70 * Game.RELATIVE_SCALE);
     // The length of the vector such that it will take one second to animate
     private static final float VECTOR_LENGTH_ANIM_1S = 100;
+    // Scales from (1 - ANIM_SCALE_CHANGE) to (1 + ANIM_SCALE_CHANGE)
+    private static final float ANIM_SCALE_CHANGE = 0.50f;
 
+    private Rectangle bounds;
+    private Vector3 strength;
+
+    private static final int RENDER_TARGET_SIZE = (int)(2 * (VECTOR_RADIUS * (1 + 1 * ANIM_SCALE_CHANGE) + DrawUtil.VECTOR_STROKE_WIDTH));
+    // if the strength of the field ever is able to be changed,
+    // must add a targetDirty field (see classes for total field)
+    private BufferedImage renderTarget;
+    private Graphics2D targetGraphics;
+
+    private Point screenTopLeft, screenBottomRight;
+
+    /* static
+    {
+        renderTargetOut = DrawUtil.createScaledImageBuffer(targetSize, targetSize);
+        targetGraphicsOut = renderTargetOut.createGraphics();
+        targetGraphicsOut.setBackground(new Color(0, 0, 0, 0));
+        DrawUtil.scaleGraphics(targetGraphicsOut);
+
+        renderTargetIn = DrawUtil.createScaledImageBuffer(targetSize, targetSize);
+        targetGraphicsIn = renderTargetIn.createGraphics();
+        targetGraphicsIn.setBackground(new Color(0, 0, 0, 0));
+        DrawUtil.scaleGraphics(targetGraphicsIn);
+
+        prerenderArrows();
+    } */
+    
     /**
      * Creates a new UniformBField with the specified bounds and vector strength.
      * @param bounds The world-space bounds of the uniform field, in meters
@@ -32,6 +58,43 @@ public class UniformBField extends Actor implements HasBField
     {
         this.bounds = bounds;
         this.strength = strength;
+
+        screenTopLeft = WorldScene.worldToScreenPoint(new Vector2(bounds.x, bounds.y + bounds.height)).toPoint();
+        screenBottomRight = WorldScene.worldToScreenPoint(new Vector2(bounds.x + bounds.width, bounds.y)).toPoint();
+
+        renderTarget = DrawUtil.createScaledImageBuffer(RENDER_TARGET_SIZE, RENDER_TARGET_SIZE);
+        targetGraphics = renderTarget.createGraphics();
+        targetGraphics.setBackground(new Color(0, 0, 0, 0));
+        DrawUtil.scaleGraphics(targetGraphics);
+    }
+
+    /* private static void prerenderArrows()
+    {
+        Point center = new Point(targetSize / 2, targetSize / 2);
+        float radius = VECTOR_RADIUS * (1 + 0 * ANIM_SCALE_CHANGE);
+
+        // outward arrow
+        DrawUtil.clear(renderTargetOut);
+
+        targetGraphicsOut.setColor(VECTOR_COLOR);
+        DrawUtil.drawDotCross(targetGraphicsOut, center, +radius);
+
+        // inward arrow
+        DrawUtil.clear(renderTargetIn);
+
+        targetGraphicsIn.setColor(VECTOR_COLOR);
+        DrawUtil.drawDotCross(targetGraphicsIn, center, -radius);
+    } */
+
+    private void renderArrowToTarget(float radius, float alpha)
+    {
+        Point center = new Point(RENDER_TARGET_SIZE / 2, RENDER_TARGET_SIZE / 2);
+
+        DrawUtil.clear(renderTarget);
+
+        targetGraphics.setColor(new Color(VECTOR_COLOR.getRed(), VECTOR_COLOR.getGreen(), VECTOR_COLOR.getBlue(), (int)(alpha * 255 + 0.5f)));
+        
+        DrawUtil.drawDotCross(targetGraphics, center, radius);
     }
 
     @Override
@@ -40,12 +103,13 @@ public class UniformBField extends Actor implements HasBField
         g.setColor(BG_COLOR);
         DrawUtil.fillWorldRectangle(g, bounds);
 
-        Point topLeft = WorldScene.worldToScreenPoint(new Vector2(bounds.x, bounds.y + bounds.height)).toPoint();
-        Point bottomRight = WorldScene.worldToScreenPoint(new Vector2(bounds.x + bounds.width, bounds.y)).toPoint();
-        int width = bottomRight.x - topLeft.x;
-        int height = bottomRight.y - topLeft.y;
+        if (strength.z() == 0)
+            return;
 
-        g.setClip(new Rectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y));
+        int width = screenBottomRight.x - screenTopLeft.x;
+        int height = screenBottomRight.y - screenTopLeft.y;
+
+        g.setClip(new Rectangle(screenTopLeft.x, screenTopLeft.y, screenBottomRight.x - screenTopLeft.x, screenBottomRight.y - screenTopLeft.y));
 
         float animTime = animTime();
         float t = (getWorld().globalAnimTimer() % animTime) / animTime;
@@ -54,33 +118,34 @@ public class UniformBField extends Actor implements HasBField
         if (strength.z() < 0)
             t = 1 - t;
 
-        float radius = VECTOR_RADIUS * (t + 0.5f);
+        float radius = VECTOR_RADIUS * (1 + (t - 0.5f) * 2 * ANIM_SCALE_CHANGE);
 
         // the period of the sin(theta) should be 2 * animTime, so one oscillation of sin^2 happens
         // in 1 * animTime
         // (t already accounts for animTime)
         double theta = Math.PI * t;
-        int alpha = (int)(255 * Math.sin(theta) * Math.sin(theta));
-        // Color c = VECTOR_COLOR;
-        Color c = new Color(VECTOR_COLOR.getRed(), VECTOR_COLOR.getGreen(), VECTOR_COLOR.getBlue(), alpha);
-        g.setColor(c);
+        float alpha = (float)(Math.sin(theta) * Math.sin(theta));
+
+        renderArrowToTarget(Math.signum(strength.z()) * radius, alpha);
 
         int startX, startY;
 
         if (width < VECTOR_SPACING)
-            startX = topLeft.x + width / 2;
+            startX = screenTopLeft.x + width / 2;
         else
-            startX = topLeft.x - VECTOR_SPACING / 2;
+            startX = screenTopLeft.x - VECTOR_SPACING / 2;
 
         if (height < VECTOR_SPACING)
-            startY = topLeft.y + height / 2;
+            startY = screenTopLeft.y + height / 2;
         else
-            startY = topLeft.y - VECTOR_SPACING / 2;
+            startY = screenTopLeft.y - VECTOR_SPACING / 2;
 
-        for (int x = startX; x < bottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
-        for (int y = startY; y < bottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
+        for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
+        for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
         {
-            DrawUtil.drawDotCross(g, new Point(x, y), Math.signum(strength.z()) * radius);
+            g.drawImage(renderTarget,
+                x - RENDER_TARGET_SIZE / 2, y - RENDER_TARGET_SIZE / 2,
+                RENDER_TARGET_SIZE, RENDER_TARGET_SIZE, Game.instance());
         }
         
         g.setClip(null);
