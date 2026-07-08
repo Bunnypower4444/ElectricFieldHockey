@@ -86,13 +86,13 @@ public class UniformBField extends Actor implements HasBField
         DrawUtil.drawDotCross(targetGraphicsIn, center, -radius);
     } */
 
-    private void renderArrowToTarget(float radius, float alpha)
+    private void renderArrowToTarget(float radius)
     {
         Point center = new Point(RENDER_TARGET_SIZE / 2, RENDER_TARGET_SIZE / 2);
 
         DrawUtil.clear(renderTarget);
 
-        targetGraphics.setColor(new Color(VECTOR_COLOR.getRed(), VECTOR_COLOR.getGreen(), VECTOR_COLOR.getBlue(), (int)(alpha * 255 + 0.5f)));
+        targetGraphics.setColor(VECTOR_COLOR);
         
         DrawUtil.drawDotCross(targetGraphics, center, radius);
     }
@@ -126,7 +126,7 @@ public class UniformBField extends Actor implements HasBField
         double theta = Math.PI * t;
         float alpha = (float)(Math.sin(theta) * Math.sin(theta));
 
-        renderArrowToTarget(Math.signum(strength.z()) * radius, alpha);
+        renderArrowToTarget(Math.signum(strength.z()) * radius);
 
         int startX, startY;
 
@@ -143,9 +143,9 @@ public class UniformBField extends Actor implements HasBField
         for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
         for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
         {
-            g.drawImage(renderTarget,
+            DrawUtil.drawImageAlpha(g, renderTarget,
                 x - RENDER_TARGET_SIZE / 2, y - RENDER_TARGET_SIZE / 2,
-                RENDER_TARGET_SIZE, RENDER_TARGET_SIZE, Game.instance());
+                RENDER_TARGET_SIZE, RENDER_TARGET_SIZE, alpha, Game.instance());
         }
         
         g.setClip(null);
