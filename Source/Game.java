@@ -1,4 +1,5 @@
 
+import java.util.LinkedList;
 import java.util.Stack;
 import javax.swing.Timer;
 import javax.swing.JPanel;
@@ -42,10 +43,12 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     private transient Timer updateTimer;
     private transient Timer renderTimer;
 
-    private transient long lastFrameTimeNano;
+    private transient long lastFrameNanoTime;
     private transient float deltaTime = 0;
-    private transient long lastRenderFrameTimeNano;
+    private transient LinkedList<Long> updateNanoTimeHistory = new LinkedList<>();
+    private transient long lastRenderFrameNanoTime;
     private transient float renderDeltaTime = 0;
+    private transient LinkedList<Long> renderNanoTimeHistory = new LinkedList<>();
 
     private transient Vector2 mousePos = Vector2.zero;
     private transient boolean mouseDown = false;
@@ -62,6 +65,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     public static final String VERSION_STRING = "1.0.1";
     
     // TODO maybe have a separate update (runs at same freq as render) and physics tick system?
+    // should also update all the (int) casts to round the numbers
     /**
      * The default update (physics tick) frequency.
      */
@@ -74,11 +78,11 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     /**
      * The update (physics tick) frequency.
      */
-    public float updateFPS;
+    public transient float updateFPS;
     /**
      * The graphics refresh rate.
      */
-    public float renderFPS;
+    public transient float renderFPS;
 
     /**
      * The height that the Game JPanel should be at.
@@ -189,8 +193,8 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     {
         updateTimer.start();
         renderTimer.start();
-        lastFrameTimeNano = System.currentTimeMillis();
-        lastRenderFrameTimeNano = System.currentTimeMillis();
+        lastFrameNanoTime = System.currentTimeMillis();
+        lastRenderFrameNanoTime = System.currentTimeMillis();
     }
 
     /**
@@ -274,7 +278,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     private void update()
     {
         long currentTimeNano = System.nanoTime();
-        deltaTime = (currentTimeNano - lastFrameTimeNano) / 1e9f;
+        deltaTime = (currentTimeNano - lastFrameNanoTime) / 1e9f;
 
         mousePos = getRelativeMousePosition();
 
@@ -288,7 +292,12 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         if (pMousePressed)
             mousePressed = false;
 
-        lastFrameTimeNano = currentTimeNano;
+        lastFrameNanoTime = currentTimeNano;
+
+        updateNanoTimeHistory.add(System.nanoTime() - lastFrameNanoTime);
+
+        if (updateNanoTimeHistory.size() > 60)
+            updateNanoTimeHistory.removeFirst();
     }
 
     @Override
@@ -298,7 +307,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         try
         {
             long currentTimeNano = System.nanoTime();
-            renderDeltaTime = (currentTimeNano - lastRenderFrameTimeNano) / 1e9f;
+            renderDeltaTime = (currentTimeNano - lastRenderFrameNanoTime) / 1e9f;
 
             super.paintComponent(g2d);
             g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -307,8 +316,10 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
             // debug FPS
             if (WorldScene.debug)
             {
+                final int FPS_INFO_WIDTH = (int)(350 * RELATIVE_SCALE + 0.5f);
+
                 g2d.setColor(new Color(0, 0, 0, 128));
-                g2d.fillRect((int)(WIDTH - 250 * RELATIVE_SCALE), 0, (int)(250 * RELATIVE_SCALE), 2 * g2d.getFont().getSize());
+                g2d.fillRect(WIDTH - FPS_INFO_WIDTH, 0, FPS_INFO_WIDTH, 4 * g2d.getFont().getSize());
 
                 g2d.setColor(Color.CYAN);
                 g2d.setFont(new Font("Monospace", Font.PLAIN, WorldScene.BUTTON_HEIGHT / 2));
@@ -320,9 +331,33 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
                 DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
                     "Render FPS: " + (int)(1 / renderDeltaTime() + 0.5) /* String.format("%.2f", (1 / renderDeltaTime())) */,
                     new Vector2(1, 0));
+
+                long avgUpdateNanoTime = 0, avgRenderNanoTime = 0;
+                
+                for (Long l : updateNanoTimeHistory)
+                    avgUpdateNanoTime += l;
+                if (avgUpdateNanoTime > 0)
+                    avgUpdateNanoTime /= updateNanoTimeHistory.size();
+
+                for (Long l : renderNanoTimeHistory)
+                    avgRenderNanoTime += l;
+                if (avgRenderNanoTime > 0)
+                    avgRenderNanoTime /= renderNanoTimeHistory.size();
+
+                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
+                    "Avg. Update Time: " + avgUpdateNanoTime / 1e6 + "ms" /* String.format("%.2f", (1 / deltaTime())) */,
+                    new Vector2(1, 0));
+                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
+                    "Avg. Render Time " + avgRenderNanoTime / 1e6 + "ms" /* String.format("%.2f", (1 / renderDeltaTime())) */,
+                    new Vector2(1, 0));
             }
 
-            lastRenderFrameTimeNano = currentTimeNano;
+            lastRenderFrameNanoTime = currentTimeNano;
+
+            renderNanoTimeHistory.add(System.nanoTime() - lastFrameNanoTime);
+            
+            if (renderNanoTimeHistory.size() > 15)
+                renderNanoTimeHistory.removeFirst();
         }
         catch (Exception exception)
         {
