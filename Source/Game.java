@@ -62,7 +62,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     /**
      * A string containing the version of the application.
      */
-    public static final String VERSION_STRING = "1.0.1";
+    public static final String VERSION_STRING = "1.0.2";
     
     // TODO maybe have a separate update (runs at same freq as render) and physics tick system?
     // should also update all the (int) casts to round the numbers
@@ -205,6 +205,9 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     {
         scenes.push(s);
         s.update();
+
+        updateNanoTimeHistory.clear();
+        renderNanoTimeHistory.clear();
     }
 
     /**
@@ -214,6 +217,9 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     {
         if (!scenes.isEmpty())
             scenes.pop();
+
+        updateNanoTimeHistory.clear();
+        renderNanoTimeHistory.clear();
     }
 
     /**
@@ -223,8 +229,13 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
      */
     public void switchScene(Scene s)
     {
-        popScene();
+        if (!scenes.isEmpty())
+            scenes.pop();
         pushScene(s);
+        s.update();
+
+        updateNanoTimeHistory.clear();
+        renderNanoTimeHistory.clear();
     }
 
     private Scene getCurrentScene()
@@ -319,7 +330,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
                 final int FPS_INFO_WIDTH = (int)(350 * RELATIVE_SCALE + 0.5f);
 
                 g2d.setColor(new Color(0, 0, 0, 128));
-                g2d.fillRect(WIDTH - FPS_INFO_WIDTH, 0, FPS_INFO_WIDTH, 4 * g2d.getFont().getSize());
+                g2d.fillRect(WIDTH - FPS_INFO_WIDTH, 0, FPS_INFO_WIDTH, 6 * g2d.getFont().getSize());
 
                 g2d.setColor(Color.CYAN);
                 g2d.setFont(new Font("Monospace", Font.PLAIN, WorldScene.BUTTON_HEIGHT / 2));
@@ -332,7 +343,13 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
                     "Render FPS: " + (int)(1 / renderDeltaTime() + 0.5) /* String.format("%.2f", (1 / renderDeltaTime())) */,
                     new Vector2(1, 0));
 
+                long updateNanoTime = 0, renderNanoTime = 0;
                 long avgUpdateNanoTime = 0, avgRenderNanoTime = 0;
+
+                if (!updateNanoTimeHistory.isEmpty())
+                    updateNanoTime = updateNanoTimeHistory.getLast();
+                if (!renderNanoTimeHistory.isEmpty())
+                    renderNanoTime = renderNanoTimeHistory.getLast();
                 
                 for (Long l : updateNanoTimeHistory)
                     avgUpdateNanoTime += l;
@@ -345,10 +362,16 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
                     avgRenderNanoTime /= renderNanoTimeHistory.size();
 
                 DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
-                    "Avg. Update Time: " + avgUpdateNanoTime / 1e6 + "ms" /* String.format("%.2f", (1 / deltaTime())) */,
+                    "Update Time: " + updateNanoTime / 1e6 + "ms",
                     new Vector2(1, 0));
                 DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
-                    "Avg. Render Time " + avgRenderNanoTime / 1e6 + "ms" /* String.format("%.2f", (1 / renderDeltaTime())) */,
+                    "Render Time: " + renderNanoTime / 1e6 + "ms",
+                    new Vector2(1, 0));
+                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
+                    "Avg. Update Time: " + avgUpdateNanoTime / 1e6 + "ms",
+                    new Vector2(1, 0));
+                DrawUtil.drawText(g2d, new Vector2(WIDTH, (line++) * g2d.getFont().getSize()),
+                    "Avg. Render Time " + avgRenderNanoTime / 1e6 + "ms",
                     new Vector2(1, 0));
             }
 
@@ -356,7 +379,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
 
             renderNanoTimeHistory.add(System.nanoTime() - lastFrameNanoTime);
             
-            if (renderNanoTimeHistory.size() > 15)
+            if (renderNanoTimeHistory.size() > 600)
                 renderNanoTimeHistory.removeFirst();
         }
         catch (Exception exception)
