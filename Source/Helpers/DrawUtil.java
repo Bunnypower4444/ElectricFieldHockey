@@ -319,6 +319,9 @@ public class DrawUtil
      */
     public static void drawDotCross(Graphics2D g, Point point, float radius)
     {
+        if (radius == 0)
+            return;
+
         // scaling shenanigans so that the result isn't confined to larger pixels
         // (many drawing functions only take in integers, but usually the pixel density is higher than 1)
         if (radius > 0)
@@ -337,10 +340,11 @@ public class DrawUtil
         }
         else
         {
+            radius = -radius;
             Stroke pStroke = g.getStroke();
             double component = radius * Math.sqrt(2) / 2;
 
-            g.setStroke(new BasicStroke((float)(VECTOR_STROKE_WIDTH / -component)));
+            g.setStroke(new BasicStroke((float)(VECTOR_STROKE_WIDTH / component)));
 
             AffineTransform pTransform = g.getTransform();
 
@@ -462,9 +466,97 @@ public class DrawUtil
     {
         float oneMinusT = 1 - t;
         return new Color(
-            (int)(b.getRed() * t + a.getRed() * oneMinusT + 0.5),
-            (int)(b.getGreen() * t + a.getGreen() * oneMinusT + 0.5),
-            (int)(b.getBlue() * t + a.getBlue() * oneMinusT + 0.5),
-            (int)(b.getAlpha() * t + a.getAlpha() * oneMinusT + 0.5));
+            (int)(b.getRed() * t + a.getRed() * oneMinusT + 0.5f),
+            (int)(b.getGreen() * t + a.getGreen() * oneMinusT + 0.5f),
+            (int)(b.getBlue() * t + a.getBlue() * oneMinusT + 0.5f),
+            (int)(b.getAlpha() * t + a.getAlpha() * oneMinusT + 0.5f));
+    }
+
+    /**
+     * Computes the resulting color from an Porter-Duff OVER operation for compositing
+     * one transparent color on another.
+     * @param dst The destination/background color
+     * @param src The source/foreground color
+     * @return The resulting color
+     */
+    public static Color alphaCompositeOver(Color dst, Color src)
+    {
+        if (src.getAlpha() == 255)
+            return src;
+
+        if (src.getAlpha() == 0)
+            return dst;
+
+        if (dst.getAlpha() == 0)
+            return src;
+
+        float alphaSrc = src.getAlpha() / 255f;
+        float alphaDst = dst.getAlpha() / 255f;
+        float alphaNew = alphaSrc + alphaDst * (1 - alphaSrc);
+
+        int r = compositeOverChannel(src.getRed(), alphaSrc, dst.getRed(), alphaDst, alphaNew);
+        int g = compositeOverChannel(src.getGreen(), alphaSrc, dst.getGreen(), alphaDst, alphaNew);
+        int b = compositeOverChannel(src.getBlue(), alphaSrc, dst.getBlue(), alphaDst, alphaNew);
+
+        return new Color(r, g, b, (int)(alphaNew * 255 + 0.5f));
+    }
+
+    private static int compositeOverChannel(int src, float alphaSrc, int dst, float alphaDst, float alphaNew)
+    {
+        return (int)(0.5f + (src * alphaSrc + dst * alphaDst * (1 - alphaSrc)) / alphaNew);
+    }
+
+    /**
+     * Returns a new color with the same values for the red,
+     * green, and blue channels and with the specified alpha
+     * value.
+     * @param c The source color
+     * @param alpha The new alpha value, on a 0-255 scale
+     * @return The new color with the specified alpha value
+     */
+    public static Color colorWithAlpha(Color c, int alpha)
+    {
+        return new Color((c.getRGB() & 0x00FFFFFF) | (alpha << 24), true);
+    }
+
+    /**
+     * Returns a new color with the same values for the red,
+     * green, and blue channels and with the specified alpha
+     * value given as a float between 0.0 and 1.0.
+     * @param c The source color
+     * @param alpha The new alpha value, on a 0.0-1.0 scale
+     * @return The new color with the specified alpha value
+     */
+    public static Color colorWithAlpha(Color c, float alpha)
+    {
+        return colorWithAlpha(c, (int)(alpha * 255 + 0.5f));
+    }
+
+    /**
+     * Returns a new Color with the color channels each
+     * multiplied by the alpha value (from 0.0 to 1.0) of the
+     * source color.
+     * @param c The source color
+     * @return The new premultiplied color
+     */
+    public static Color premultiplyColor(Color c)
+    {
+        return premultiplyColor(c, c.getAlpha() / 255f);
+    }
+
+    /**
+     * Returns a new Color with the color channels each
+     * multiplied by the specified alpha value (from 0.0 to 1.0).
+     * @param c The source color
+     * @param alpha The alpha value to multiply by, given as a float between 0.0 and 1.0
+     * @return The new premultiplied color
+     */
+    public static Color premultiplyColor(Color c, float alpha)
+    {
+        return new Color(
+            (int)(c.getRed() * alpha + 0.5f),
+            (int)(c.getGreen() * alpha + 0.5f),
+            (int)(c.getBlue() * alpha + 0.5f),
+            (int)(alpha * 255 + 0.5f));
     }
 }
