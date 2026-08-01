@@ -10,7 +10,7 @@
  */
 public class Vector3
 {
-    private float x, y, z;
+    private final float x, y, z;
 
     /**
      * Creates a new Vector2 with the specified x-, y-, and z- components.
@@ -327,5 +327,15 @@ public class Vector3
     public String toString()
     {
         return "<" + x + ", " + y + ", " + z + ">";
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 41;
+        hash = hash * 486187739 + Float.hashCode(x);
+        hash = hash * 486187739 + Float.hashCode(y);
+        hash = hash * 486187739 + Float.hashCode(z);
+        return hash;
     }
 }

@@ -12,7 +12,7 @@ import java.awt.Point;
  */
 public class Vector2
 {
-    private float x, y;
+    private final float x, y;
 
     /**
      * Creates a new Vector2 with the specified x- and y- components.
@@ -259,5 +259,14 @@ public class Vector2
     public String toString()
     {
         return "<" + x + ", " + y + ">";
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 47;
+        hash = hash * 486187739 + Float.hashCode(x);
+        hash = hash * 486187739 + Float.hashCode(y);
+        return hash;
     }
 }
