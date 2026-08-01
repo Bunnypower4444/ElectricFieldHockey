@@ -1,5 +1,6 @@
 
 import java.awt.Graphics2D;
+import java.util.PriorityQueue;
 
 /**
  * An abstract class that represents an object that exists in the WorldScene.
@@ -46,6 +47,18 @@ public abstract class Actor
      * @param g The Graphics2D object to which to render the actor
      */
     public void render(Graphics2D g) {}
+
+    /**
+     * Provides a PriorityQueue for the Actor to add any/all RenderCalls to, which is done
+     * by the WorldScene on every frame. This method should be overridden by the
+     * child class to render the specific actor.
+     * <p>
+     * Postcondition: the state of the actor should not be modified; the provided PriorityQueue
+     * should only be used to add new RenderCalls
+     * @param calls The queue of RenderCalls that is populated by all the Actors
+     * in the WorldScene
+     */
+    public void collectRenderCalls(PriorityQueue<RenderCall> calls) {};
     
     /**
      * Gets the z-index, or depth value, of the actor, which determines

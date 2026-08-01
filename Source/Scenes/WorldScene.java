@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 /**
@@ -29,7 +30,7 @@ public class WorldScene extends Scene
      * solution positions defined in the level by holding Shift
      * should be enabled.
      */
-    protected static boolean enableSnapToSolutionCheat = false;
+    protected static boolean enableSnapToSolutionCheat = true;
     /**
      * A list of positions defined by the level that charges can be snapped to by holding
      * Shift, if {@link WorldScene#enableSnapToSolutionCheat} is set to true.
@@ -257,8 +258,18 @@ public class WorldScene extends Scene
         g.setBackground(FIELD_COLOR);
         g.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
 
+        PriorityQueue<RenderCall> renderCalls = new PriorityQueue<>();
+
         for (Actor a : actors)
-            a.render(g);
+        {
+            a.collectRenderCalls(renderCalls);
+
+            // support for render()
+            renderCalls.add(new RenderCall(a::render, a.getZIndex()));
+        }
+
+        while (!renderCalls.isEmpty())
+            renderCalls.remove().call(g);
 
         //#region UI
 
