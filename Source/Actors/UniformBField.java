@@ -1,8 +1,12 @@
+
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import java.util.PriorityQueue;
 
 /**
  * An actor representing a rectangular region in which a uniform
@@ -14,6 +18,10 @@ import java.awt.image.BufferedImage;
 public class UniformBField extends Actor implements HasBField
 {
     private static final Color BG_COLOR = new Color(106, 28, 184, 100);
+    private static final Color NOALPHA_SHADING_COLOR = DrawUtil.alphaCompositeOver(WorldScene.FIELD_COLOR, BG_COLOR);
+    private static final Stroke NOALPHA_OUTLINE_STROKE = new BasicStroke(3 * Game.RELATIVE_SCALE);
+    private static final Stroke NOALPHA_SHADING_STROKE = new BasicStroke(5 * Game.RELATIVE_SCALE);
+    private static final float NOALPHA_SHADING_SPACING = 40 * Game.RELATIVE_SCALE;
     private static final Color VECTOR_COLOR = new Color(106, 28, 184);
 
     private static final float VECTOR_RADIUS = 8 * Game.RELATIVE_SCALE;
@@ -22,6 +30,19 @@ public class UniformBField extends Actor implements HasBField
     private static final float VECTOR_LENGTH_ANIM_1S = 100;
     // Scales from (1 - ANIM_SCALE_CHANGE) to (1 + ANIM_SCALE_CHANGE)
     private static final float ANIM_SCALE_CHANGE = 0.50f;
+
+    /**
+     * If set to true, the total field will be assumed to be drawn on top of
+     * a solid color background with nothing else underneath, and an optimization will be
+     * used that precalculates the alpha calculation for all the arrows once,
+     * interpolating between the vector color and the field color drawn on the background.
+     */
+    // public boolean usePlainBGOptimization = true;
+
+    /**
+     * If set to true, the field arrows will not have the fading out and in effect.
+     */
+    public boolean useNoAlphaOptimization = true;
 
     private Rectangle bounds;
     private Vector3 strength;
@@ -97,19 +118,69 @@ public class UniformBField extends Actor implements HasBField
         DrawUtil.drawDotCross(targetGraphics, center, radius);
     }
 
+    /* // Pretends that the background is a solid color, the color of the uniform field
+    // on the playing field.
+    private void renderArrowToTargetBGOptimization(float radius, Color playingFieldBG, float alpha)
+    {
+        Point center = new Point(RENDER_TARGET_SIZE / 2, RENDER_TARGET_SIZE / 2);
+
+        DrawUtil.clear(renderTarget);
+
+        Color bg = DrawUtil.alphaCompositeOver(playingFieldBG, BG_COLOR);
+        Color c = DrawUtil.alphaCompositeOver(bg, DrawUtil.colorWithAlpha(VECTOR_COLOR, alpha));
+        targetGraphics.setColor(c);
+        
+        DrawUtil.drawDotCross(targetGraphics, center, radius);
+    } */
+
     @Override
     public void render(Graphics2D g)
     {
-        g.setColor(BG_COLOR);
-        DrawUtil.fillWorldRectangle(g, bounds);
+        int width = screenBottomRight.x - screenTopLeft.x;
+        int height = screenBottomRight.y - screenTopLeft.y;
+
+        if (useNoAlphaOptimization)
+        {
+            g.setColor(NOALPHA_SHADING_COLOR);
+            g.setStroke(NOALPHA_SHADING_STROKE);
+
+            g.setClip(new Rectangle(screenTopLeft.x, screenTopLeft.y, width, height));
+
+            int hash = (strength.hashCode() * 41) ^ (screenTopLeft.hashCode() * 43) ^ (screenBottomRight.hashCode() * 47);
+            // randomly offset the shading based on the strength, size, and position
+            float r = Math.abs((hash % 4444) / 4444f) * NOALPHA_SHADING_SPACING;
+
+            for (; r < width; r += NOALPHA_SHADING_SPACING)
+            {
+                int intR = (int)(r + 0.5f);
+                int x2 = r > height ? screenBottomRight.x - (intR - height) : screenBottomRight.x;
+                int y2 = Math.min(screenTopLeft.y + intR, screenBottomRight.y);
+
+                g.drawLine(screenBottomRight.x - intR, screenTopLeft.y, x2, y2);
+            }
+            for (; r < width + height; r += NOALPHA_SHADING_SPACING)
+            {
+                int intR = (int)(r + 0.5f);
+                int x2 = r > height ? screenBottomRight.x - (intR - height) : screenBottomRight.x;
+                int y2 = Math.min(screenTopLeft.y + intR, screenBottomRight.y);
+
+                g.drawLine(screenTopLeft.x, screenTopLeft.y + intR - width, x2, y2);
+            }
+
+            g.setClip(null);
+
+            // the outline is drawn later at a higher z-index
+        }
+        else
+        {
+            g.setColor(BG_COLOR);
+            DrawUtil.fillWorldRectangle(g, bounds);
+        }
 
         if (strength.z() == 0)
             return;
 
-        int width = screenBottomRight.x - screenTopLeft.x;
-        int height = screenBottomRight.y - screenTopLeft.y;
-
-        g.setClip(new Rectangle(screenTopLeft.x, screenTopLeft.y, screenBottomRight.x - screenTopLeft.x, screenBottomRight.y - screenTopLeft.y));
+        g.setClip(new Rectangle(screenTopLeft.x, screenTopLeft.y, width, height));
 
         float animTime = animTime();
         float t = (getWorld().globalAnimTimer() % animTime) / animTime;
@@ -126,6 +197,10 @@ public class UniformBField extends Actor implements HasBField
         double theta = Math.PI * t;
         float alpha = (float)(Math.sin(theta) * Math.sin(theta));
 
+        /* if (usePlainBGOptimization)
+            renderArrowToTargetBGOptimization(Math.signum(strength.z()) * radius, g.getBackground(), alpha);
+        else
+            renderArrowToTarget(Math.signum(strength.z()) * radius); */
         renderArrowToTarget(Math.signum(strength.z()) * radius);
 
         int startX, startY;
@@ -140,15 +215,43 @@ public class UniformBField extends Actor implements HasBField
         else
             startY = screenTopLeft.y - VECTOR_SPACING / 2;
 
-        for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
-        for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
+        if (useNoAlphaOptimization /* usePlainBGOptimization */)
         {
-            DrawUtil.drawImageAlpha(g, renderTarget,
-                x - RENDER_TARGET_SIZE / 2, y - RENDER_TARGET_SIZE / 2,
-                RENDER_TARGET_SIZE, RENDER_TARGET_SIZE, alpha, Game.instance());
+            for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
+            for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
+            {
+                g.drawImage(renderTarget,
+                    x - RENDER_TARGET_SIZE / 2, y - RENDER_TARGET_SIZE / 2,
+                    RENDER_TARGET_SIZE, RENDER_TARGET_SIZE, Game.instance());
+            }
+        }
+
+        else
+        {
+            for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
+            for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
+            {
+                DrawUtil.drawImageAlpha(g, renderTarget,
+                    x - RENDER_TARGET_SIZE / 2, y - RENDER_TARGET_SIZE / 2,
+                    RENDER_TARGET_SIZE, RENDER_TARGET_SIZE, alpha, Game.instance());
+            }
         }
         
         g.setClip(null);
+    }
+
+    private void noAlphaRenderOutline(Graphics2D g)
+    {
+        g.setColor(VECTOR_COLOR);
+        g.setStroke(NOALPHA_OUTLINE_STROKE);
+        DrawUtil.drawWorldRectangle(g, bounds);
+    }
+
+    @Override
+    public void collectRenderCalls(PriorityQueue<RenderCall> renderCalls)
+    {
+        if (useNoAlphaOptimization)
+            renderCalls.add(new RenderCall(this::noAlphaRenderOutline, 26));
     }
 
     private float animTime()

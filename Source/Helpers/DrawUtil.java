@@ -364,6 +364,22 @@ public class DrawUtil
     }
 
     /**
+     * Draws the outline of a rectangle given by the specified bounds in world space, using the current color.
+     * @param g The Graphics2D object to which to render the shape
+     * @param worldBounds The world-space bounds of the rectangle (NOTE: the x and y values specify the
+     * bottom left corner)
+     */
+    public static void drawWorldRectangle(Graphics2D g, Rectangle worldBounds)
+    {
+        Point point = WorldScene.worldToScreenPoint(new Vector2(worldBounds.x, worldBounds.y)).toPoint();
+        Point size = WorldScene.worldToScreenVector(new Vector2(worldBounds.width, worldBounds.height)).toPoint();
+        // size.y will be negative, so flip it and shift up point
+        size.y = -size.y;
+        point.y -= size.y;
+        g.drawRect(point.x, point.y, size.x, size.y);
+    }
+
+    /**
      * Fills in a rectangle given by the specified bounds in world space, using the current color.
      * @param g The Graphics2D object to which to render the shape
      * @param worldBounds The world-space bounds of the rectangle (NOTE: the x and y values specify the

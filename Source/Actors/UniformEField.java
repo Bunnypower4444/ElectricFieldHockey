@@ -1,9 +1,12 @@
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import java.util.PriorityQueue;
 
 /**
  * An actor representing a rectangular region in which a uniform
@@ -15,6 +18,10 @@ import java.awt.image.BufferedImage;
 public class UniformEField extends Actor implements HasEField
 {
     private static final Color BG_COLOR = new Color(250, 143, 67, 100);
+    private static final Color NOALPHA_SHADING_COLOR = DrawUtil.alphaCompositeOver(WorldScene.FIELD_COLOR, BG_COLOR);
+    private static final Stroke NOALPHA_OUTLINE_STROKE = new BasicStroke(3 * Game.RELATIVE_SCALE);
+    private static final Stroke NOALPHA_SHADING_STROKE = new BasicStroke(5 * Game.RELATIVE_SCALE);
+    private static final float NOALPHA_SHADING_SPACING = 40 * Game.RELATIVE_SCALE;
     private static final Color VECTOR_COLOR = new Color(250, 143, 67);
     
     private static final float VECTOR_LENGTH = 40;
@@ -22,6 +29,11 @@ public class UniformEField extends Actor implements HasEField
     private static final int VECTOR_SPACING = (int)(70 * Game.RELATIVE_SCALE);
     // The length of the vector such that it will take one second to animate
     private static final float VECTOR_LENGTH_ANIM_1S = 100000;
+
+    /**
+     * If set to true, the field arrows will not have the fading out and in effect.
+     */
+    public boolean useNoAlphaOptimization = true;
 
     private Rectangle bounds;
     private Vector2 strength;
@@ -96,11 +108,46 @@ public class UniformEField extends Actor implements HasEField
     @Override
     public void render(Graphics2D g)
     {
-        g.setColor(BG_COLOR);
-        DrawUtil.fillWorldRectangle(g, bounds);
-
         int width = screenBottomRight.x - screenTopLeft.x;
         int height = screenBottomRight.y - screenTopLeft.y;
+
+        if (useNoAlphaOptimization)
+        {
+            g.setColor(NOALPHA_SHADING_COLOR);
+            g.setStroke(NOALPHA_SHADING_STROKE);
+
+            g.setClip(new Rectangle(screenTopLeft.x, screenTopLeft.y, width, height));
+
+            int hash = (strength.hashCode() * 41) ^ (screenTopLeft.hashCode() * 43) ^ (screenBottomRight.hashCode() * 47);
+            // randomly offset the shading based on the strength, size, and position
+            float r = Math.abs((hash % 4444) / 4444f) * NOALPHA_SHADING_SPACING;
+
+            for (; r < width; r += NOALPHA_SHADING_SPACING)
+            {
+                int intR = (int)(r + 0.5f);
+                int x2 = r > height ? screenTopLeft.x + (intR - height) : screenTopLeft.x;
+                int y2 = Math.min(screenTopLeft.y + intR, screenBottomRight.y);
+
+                g.drawLine(screenTopLeft.x + intR, screenTopLeft.y, x2, y2);
+            }
+            for (; r < width + height; r += NOALPHA_SHADING_SPACING)
+            {
+                int intR = (int)(r + 0.5f);
+                int x2 = r > height ? screenTopLeft.x + (intR - height) : screenTopLeft.x;
+                int y2 = Math.min(screenTopLeft.y + intR, screenBottomRight.y);
+
+                g.drawLine(screenBottomRight.x, screenTopLeft.y + intR - width, x2, y2);
+            }
+
+            g.setClip(null);
+
+            // the outline is drawn later at a higher z-index
+        }
+        else
+        {
+            g.setColor(BG_COLOR);
+            DrawUtil.fillWorldRectangle(g, bounds);
+        }
 
         g.setClip(new Rectangle(screenTopLeft.x, screenTopLeft.y, width, height));
         
@@ -122,6 +169,20 @@ public class UniformEField extends Actor implements HasEField
             alpha, Game.instance());
         
         g.setClip(null);
+    }
+
+    private void noAlphaRenderOutline(Graphics2D g)
+    {
+        g.setColor(VECTOR_COLOR);
+        g.setStroke(NOALPHA_OUTLINE_STROKE);
+        DrawUtil.drawWorldRectangle(g, bounds);
+    }
+
+    @Override
+    public void collectRenderCalls(PriorityQueue<RenderCall> renderCalls)
+    {
+        if (useNoAlphaOptimization)
+            renderCalls.add(new RenderCall(this::noAlphaRenderOutline, 25));
     }
 
     private float animTime()
