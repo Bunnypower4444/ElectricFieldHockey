@@ -9,7 +9,7 @@ import java.util.PriorityQueue;
  * @author  Aarohi Shah, Evan Guo
  * @version 5/25/26
  */
-public abstract class Actor
+public abstract class Actor implements GraphicsElement
 {
     private WorldScene world;
 
@@ -37,6 +37,7 @@ public abstract class Actor
      * Updates the state of the actor, which is done by the WorldScene on every physics tick.
      * This method should be overridden by the child class to define update functionality.
      */
+    @Override
     public void update() {}
     
     /**
@@ -46,6 +47,7 @@ public abstract class Actor
      * Postcondition: the state of the actor should not be modified
      * @param g The Graphics2D object to which to render the actor
      */
+    @Override
     public void render(Graphics2D g) {}
 
     /**

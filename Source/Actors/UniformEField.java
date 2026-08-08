@@ -31,9 +31,10 @@ public class UniformEField extends Actor implements HasEField
     private static final float VECTOR_LENGTH_ANIM_1S = 100000;
 
     /**
-     * If set to true, the field arrows will not have the fading out and in effect.
+     * If set to true, the background will be replaced with diagonal striped shading with no
+     * transparency.
      */
-    public boolean useNoAlphaOptimization = true;
+    public boolean disableAlpha = false;
 
     private Rectangle bounds;
     private Vector2 strength;
@@ -72,6 +73,11 @@ public class UniformEField extends Actor implements HasEField
         displayVector = strength.normalize().mult(VECTOR_LENGTH);
 
         renderArrowsToTarget();
+    }
+
+    private boolean getNoAlphaEnabled()
+    {
+        return disableAlpha || Save.instance().lowDetailMode;
     }
 
     private void renderArrowsToTarget()
@@ -119,7 +125,7 @@ public class UniformEField extends Actor implements HasEField
         int width = screenBottomRight.x - screenTopLeft.x;
         int height = screenBottomRight.y - screenTopLeft.y;
 
-        if (!useNoAlphaOptimization)
+        if (!getNoAlphaEnabled())
         {
             g.setColor(BG_COLOR);
             DrawUtil.fillWorldRectangle(g, bounds);
@@ -191,7 +197,7 @@ public class UniformEField extends Actor implements HasEField
     @Override
     public void collectRenderCalls(PriorityQueue<RenderCall> renderCalls)
     {
-        if (useNoAlphaOptimization)
+        if (getNoAlphaEnabled())
         {
             // Shading should go behind all arrows
             renderCalls.add(new RenderCall(this::noAlphaRenderShading, 15));

@@ -8,13 +8,15 @@ import java.awt.Graphics2D;
  * @author Aarohi Shah
  * @version 5/12/26
  */
-public abstract class Scene
+public abstract class Scene implements GraphicsElement
 {
     /**
      * Updates the state of the scene, which is done by the Game on every physics tick.
      * This method should be overridden by the child class to define update functionality.
      */
+    @Override
     public abstract void update();
+
     /**
      * Renders the scene to the given Graphics2D, which is done by the Game on every frame.
      * This method should be overridden by the child class to render the specific scebe.
@@ -22,6 +24,7 @@ public abstract class Scene
      * Postcondition: the state of the scene should not be modified
      * @param g The Graphics2D object to which to render the scene
      */
+    @Override
     public abstract void render(Graphics2D g);
 }
 

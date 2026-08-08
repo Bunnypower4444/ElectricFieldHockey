@@ -22,11 +22,12 @@ public class TitleScene extends Scene
      */
     public TitleScene()
     {
-        buttons = new UIButton[2];
+        buttons = new UIButton[3];
 
+        int y = Game.HEIGHT / 2 + WorldScene.BUTTON_PADDING;
         buttons[0] = new UIButton(
             new Rectangle(
-                Game.WIDTH / 2 - BUTTON_WIDTH / 2, Game.HEIGHT / 2 + WorldScene.BUTTON_PADDING,
+                Game.WIDTH / 2 - BUTTON_WIDTH / 2, y,
                 BUTTON_WIDTH, WorldScene.BUTTON_HEIGHT
                 ),
             "Level Select",
@@ -34,11 +35,23 @@ public class TitleScene extends Scene
         
         buttons[1] = new UIButton(
             new Rectangle(
-                Game.WIDTH / 2 - BUTTON_WIDTH / 2, Game.HEIGHT / 2 + WorldScene.BUTTON_HEIGHT + 2 * WorldScene.BUTTON_PADDING,
+                Game.WIDTH / 2 - BUTTON_WIDTH / 2, y += (WorldScene.BUTTON_HEIGHT + WorldScene.BUTTON_PADDING),
                 BUTTON_WIDTH, WorldScene.BUTTON_HEIGHT
                 ),
             "Sandbox",
             () -> Game.instance().pushScene(new WorldScene(0)));
+
+        buttons[2] = new UIButton(
+            new Rectangle(
+                Game.WIDTH / 2 - BUTTON_WIDTH / 2, y += (WorldScene.BUTTON_HEIGHT + WorldScene.BUTTON_PADDING),
+                BUTTON_WIDTH, WorldScene.BUTTON_HEIGHT
+                ),
+            "Low Detail Mode: " + (Save.instance().lowDetailMode ? "ON" : "OFF"),
+            button ->
+            {
+                Save.instance().toggleLowDetailMode();
+                button.setText("Low Detail Mode: " + (Save.instance().lowDetailMode ? "ON" : "OFF"));
+            });
     }
 
     @Override

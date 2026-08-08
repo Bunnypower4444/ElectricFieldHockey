@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.util.function.Consumer;
 
 /**
  * A utility class that allows for easily creating, updating,
@@ -13,11 +14,11 @@ import java.awt.Stroke;
  * @author Evan Guo
  * @version 5/25/26
  */
-public class UIButton
+public class UIButton implements GraphicsElement
 {
     private Rectangle bounds;
     private String text;
-    private Runnable action;
+    private Consumer<UIButton> action;
     private boolean visible = true;
     private boolean enabled = true;
 
@@ -31,13 +32,28 @@ public class UIButton
      * and <code>Runnable</code> action to be invoked when clicked.
      * @param bounds The rectangular bounds of the button
      * @param text The text label to be displayed on the button
+     * @param action The action to be run when the button is clicked, taking in the UIButton
+     * as a parameter
+     */
+    public UIButton(Rectangle bounds, String text, Consumer<UIButton> action)
+    {
+        this.bounds = bounds;
+        this.text = text;
+        this.action = action;
+    }
+
+    /**
+     * Creates a new UIButton with the specified bounds, text label,
+     * and <code>Runnable</code> action to be invoked when clicked.
+     * @param bounds The rectangular bounds of the button
+     * @param text The text label to be displayed on the button
      * @param action The action to be run when the button is clicked
      */
     public UIButton(Rectangle bounds, String text, Runnable action)
     {
         this.bounds = bounds;
         this.text = text;
-        this.action = action;
+        this.action = __ -> action.run();
     }
 
     private boolean positionInBounds(Vector2 mousePos)
@@ -51,6 +67,7 @@ public class UIButton
      * the button (which causes the button to be rendered differently),
      * and invoking the button's associated action when clicked.
      */
+    @Override
     public void update()
     {
         if (!visible)
@@ -67,7 +84,7 @@ public class UIButton
         else if (Game.instance().consumeClick())
         {
             state = PressedState.Depressed;
-            action.run();
+            action.accept(this);
         }
         else if (Game.instance().mouseDown())
             state = PressedState.Pressed;
@@ -146,6 +163,7 @@ public class UIButton
      * Postcondition: the state of the button will not be modified
      * @param g The Graphics2D to which to render the button
      */
+    @Override
     public void render(Graphics2D g)
     {
         if (!visible)

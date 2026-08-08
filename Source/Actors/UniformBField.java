@@ -40,9 +40,11 @@ public class UniformBField extends Actor implements HasBField
     // public boolean usePlainBGOptimization = true;
 
     /**
-     * If set to true, the field arrows will not have the fading out and in effect.
+     * If set to true, the field arrows will not have the fading out and in effect,
+     * and the background will be replaced with diagonal striped shading with no
+     * transparency.
      */
-    public boolean useNoAlphaOptimization = true;
+    public boolean disableAlpha = false;
 
     private Rectangle bounds;
     private Vector3 strength;
@@ -87,6 +89,11 @@ public class UniformBField extends Actor implements HasBField
         targetGraphics = renderTarget.createGraphics();
         targetGraphics.setBackground(new Color(0, 0, 0, 0));
         DrawUtil.scaleGraphics(targetGraphics);
+    }
+
+    private boolean getNoAlphaEnabled()
+    {
+        return disableAlpha || Save.instance().lowDetailMode;
     }
 
     /* private static void prerenderArrows()
@@ -147,7 +154,7 @@ public class UniformBField extends Actor implements HasBField
         int width = screenBottomRight.x - screenTopLeft.x;
         int height = screenBottomRight.y - screenTopLeft.y;
 
-        if (!useNoAlphaOptimization)
+        if (!getNoAlphaEnabled())
         {
             g.setColor(BG_COLOR);
             DrawUtil.fillWorldRectangle(g, bounds);
@@ -191,7 +198,7 @@ public class UniformBField extends Actor implements HasBField
         else
             startY = screenTopLeft.y - VECTOR_SPACING / 2;
 
-        if (useNoAlphaOptimization /* usePlainBGOptimization */)
+        if (getNoAlphaEnabled() /* usePlainBGOptimization */)
         {
             for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
             for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
@@ -260,7 +267,7 @@ public class UniformBField extends Actor implements HasBField
     @Override
     public void collectRenderCalls(PriorityQueue<RenderCall> renderCalls)
     {
-        if (useNoAlphaOptimization)
+        if (getNoAlphaEnabled())
         {
             // Shading should go behind all arrows
             renderCalls.add(new RenderCall(this::noAlphaRenderShading, 16));
