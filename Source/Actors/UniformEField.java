@@ -105,45 +105,21 @@ public class UniformEField extends Actor implements HasEField
         }
     }
 
+    /**
+     * When useNoAlphaOptimization is set to true:
+     * The shading is drawn via a RenderCall at a Z-index
+     * of 15 (behind all uniform field arrows)
+     * The outline is drawn via a RenderCall at a Z-index
+     * of 25 (above all uniform field arrows)
+     * Only the arrows are drawn by render()
+     */
     @Override
     public void render(Graphics2D g)
     {
         int width = screenBottomRight.x - screenTopLeft.x;
         int height = screenBottomRight.y - screenTopLeft.y;
 
-        if (useNoAlphaOptimization)
-        {
-            g.setColor(NOALPHA_SHADING_COLOR);
-            g.setStroke(NOALPHA_SHADING_STROKE);
-
-            g.setClip(new Rectangle(screenTopLeft.x, screenTopLeft.y, width, height));
-
-            int hash = (strength.hashCode() * 41) ^ (screenTopLeft.hashCode() * 43) ^ (screenBottomRight.hashCode() * 47);
-            // randomly offset the shading based on the strength, size, and position
-            float r = Math.abs((hash % 4444) / 4444f) * NOALPHA_SHADING_SPACING;
-
-            for (; r < width; r += NOALPHA_SHADING_SPACING)
-            {
-                int intR = (int)(r + 0.5f);
-                int x2 = r > height ? screenTopLeft.x + (intR - height) : screenTopLeft.x;
-                int y2 = Math.min(screenTopLeft.y + intR, screenBottomRight.y);
-
-                g.drawLine(screenTopLeft.x + intR, screenTopLeft.y, x2, y2);
-            }
-            for (; r < width + height; r += NOALPHA_SHADING_SPACING)
-            {
-                int intR = (int)(r + 0.5f);
-                int x2 = r > height ? screenTopLeft.x + (intR - height) : screenTopLeft.x;
-                int y2 = Math.min(screenTopLeft.y + intR, screenBottomRight.y);
-
-                g.drawLine(screenBottomRight.x, screenTopLeft.y + intR - width, x2, y2);
-            }
-
-            g.setClip(null);
-
-            // the outline is drawn later at a higher z-index
-        }
-        else
+        if (!useNoAlphaOptimization)
         {
             g.setColor(BG_COLOR);
             DrawUtil.fillWorldRectangle(g, bounds);
@@ -171,6 +147,40 @@ public class UniformEField extends Actor implements HasEField
         g.setClip(null);
     }
 
+    private void noAlphaRenderShading(Graphics2D g)
+    {
+        int width = screenBottomRight.x - screenTopLeft.x;
+        int height = screenBottomRight.y - screenTopLeft.y;
+
+        g.setColor(NOALPHA_SHADING_COLOR);
+        g.setStroke(NOALPHA_SHADING_STROKE);
+
+        g.setClip(new Rectangle(screenTopLeft.x, screenTopLeft.y, width, height));
+
+        int hash = (strength.hashCode() * 41) ^ (screenTopLeft.hashCode() * 43) ^ (screenBottomRight.hashCode() * 47);
+        // randomly offset the shading based on the strength, size, and position
+        float r = Math.abs((hash % 4444) / 4444f) * NOALPHA_SHADING_SPACING;
+
+        for (; r < width; r += NOALPHA_SHADING_SPACING)
+        {
+            int intR = (int)(r + 0.5f);
+            int x2 = r > height ? screenTopLeft.x + (intR - height) : screenTopLeft.x;
+            int y2 = Math.min(screenTopLeft.y + intR, screenBottomRight.y);
+
+            g.drawLine(screenTopLeft.x + intR, screenTopLeft.y, x2, y2);
+        }
+        for (; r < width + height; r += NOALPHA_SHADING_SPACING)
+        {
+            int intR = (int)(r + 0.5f);
+            int x2 = r > height ? screenTopLeft.x + (intR - height) : screenTopLeft.x;
+            int y2 = Math.min(screenTopLeft.y + intR, screenBottomRight.y);
+
+            g.drawLine(screenBottomRight.x, screenTopLeft.y + intR - width, x2, y2);
+        }
+
+        g.setClip(null);
+    }
+
     private void noAlphaRenderOutline(Graphics2D g)
     {
         g.setColor(VECTOR_COLOR);
@@ -182,7 +192,12 @@ public class UniformEField extends Actor implements HasEField
     public void collectRenderCalls(PriorityQueue<RenderCall> renderCalls)
     {
         if (useNoAlphaOptimization)
+        {
+            // Shading should go behind all arrows
+            renderCalls.add(new RenderCall(this::noAlphaRenderShading, 15));
+            // Outlines should go in front of all arrows
             renderCalls.add(new RenderCall(this::noAlphaRenderOutline, 25));
+        }
     }
 
     private float animTime()
