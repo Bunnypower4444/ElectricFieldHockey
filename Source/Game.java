@@ -44,6 +44,8 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     private transient Timer renderTimer;
 
     private transient long lastFrameNanoTime;
+    private transient long updateAccumulator;
+    private transient long accumulatorLastTime;
     private transient float deltaTime = 0;
     private transient LinkedList<Long> updateNanoTimeHistory = new LinkedList<>();
     private transient long lastRenderFrameNanoTime;
@@ -62,7 +64,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     /**
      * A string containing the version of the application.
      */
-    public static final String VERSION_STRING = "1.0.2";
+    public static final String VERSION_STRING = "1.0.1";
     
     // TODO maybe have a separate update (runs at same freq as render) and physics tick system?
     // should also update all the (int) casts to round the numbers
@@ -191,10 +193,50 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
      */
     public void start()
     {
+        /* Thread t = new Thread(() -> {
+            long accumulator = 0;
+            long targetNanoFrameTime = (long)(1e9 / updateFPS + 0.5);
+            long lastTime = System.nanoTime();
+            while (true)
+            {
+                long elapsed = System.nanoTime();
+                accumulator += elapsed - lastTime;
+                lastTime = elapsed;
+
+                if (accumulator < targetNanoFrameTime)
+                {
+                    long sleepTime = targetNanoFrameTime - accumulator;
+                    long millis = sleepTime / 1_000_000;
+                    int nanos = (int)(sleepTime - 1_000_000 * millis);
+                    try
+                    {
+                        Thread.sleep(millis, nanos);
+                        long elapsed2 = System.nanoTime();
+                        accumulator += System.nanoTime() - lastTime;
+                        lastTime = elapsed2;
+                    }
+                    catch (InterruptedException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+
+                while (accumulator >= targetNanoFrameTime)
+                {
+                    accumulator -= targetNanoFrameTime;
+                    update();
+                }
+            }
+        }); */
+
         updateTimer.start();
         renderTimer.start();
-        lastFrameNanoTime = System.currentTimeMillis();
-        lastRenderFrameNanoTime = System.currentTimeMillis();
+        lastFrameNanoTime = System.nanoTime();
+        updateAccumulator = 0;
+        accumulatorLastTime = System.nanoTime();
+        lastRenderFrameNanoTime = System.nanoTime();
+        // t.run();
     }
 
     /**
@@ -273,7 +315,19 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
         try
         {
             if (source == updateTimer)
-                update();
+            {
+                long elapsed = System.nanoTime();
+                updateAccumulator += elapsed - accumulatorLastTime;
+                accumulatorLastTime = elapsed;
+                long targetNanoFrameTime = (long)(1e9 / updateFPS + 0.5);
+
+                while (updateAccumulator >= targetNanoFrameTime)
+                {
+                    updateAccumulator -= targetNanoFrameTime;
+                    update();
+                    break;
+                }
+            }
             else if (source == renderTimer)
                 repaint();
         }
