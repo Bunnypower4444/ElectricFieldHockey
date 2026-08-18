@@ -184,7 +184,9 @@ public class UniformBField extends Actor implements HasBField
             renderArrowToTargetBGOptimization(Math.signum(strength.z()) * radius, g.getBackground(), alpha);
         else
             renderArrowToTarget(Math.signum(strength.z()) * radius); */
-        renderArrowToTarget(Math.signum(strength.z()) * radius);
+        
+        if (ElectricFieldHockey.isWebVersion)
+            renderArrowToTarget(Math.signum(strength.z()) * radius);
 
         int startX, startY;
 
@@ -198,7 +200,9 @@ public class UniformBField extends Actor implements HasBField
         else
             startY = screenTopLeft.y - VECTOR_SPACING / 2;
 
-        if (getNoAlphaEnabled() /* usePlainBGOptimization */)
+        // The web version runs the non-LDM version faster with the buffered image,
+        // but the desktop version does better with directly calling DrawUtil.drawDotCross()
+        if (getNoAlphaEnabled() && ElectricFieldHockey.isWebVersion)
         {
             for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
             for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
@@ -209,7 +213,18 @@ public class UniformBField extends Actor implements HasBField
             }
         }
 
-        else
+        else if (getNoAlphaEnabled())
+        {
+            g.setColor(VECTOR_COLOR);
+
+            for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
+            for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
+            {
+                DrawUtil.drawDotCross(g, new Point(x, y), Math.signum(strength.z()) * radius);
+            }
+        }
+        
+        else if (ElectricFieldHockey.isWebVersion)
         {
             for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
             for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
@@ -217,6 +232,17 @@ public class UniformBField extends Actor implements HasBField
                 DrawUtil.drawImageAlpha(g, renderTarget,
                     x - RENDER_TARGET_SIZE / 2, y - RENDER_TARGET_SIZE / 2,
                     RENDER_TARGET_SIZE, RENDER_TARGET_SIZE, alpha, Game.instance());
+            }
+        }
+
+        else
+        {
+            g.setColor(DrawUtil.colorWithAlpha(VECTOR_COLOR, alpha));
+
+            for (int x = startX; x < screenBottomRight.x + VECTOR_SPACING / 2; x += VECTOR_SPACING)
+            for (int y = startY; y < screenBottomRight.y + VECTOR_SPACING / 2; y += VECTOR_SPACING)
+            {
+                DrawUtil.drawDotCross(g, new Point(x, y), Math.signum(strength.z()) * radius);
             }
         }
         

@@ -12,6 +12,12 @@ import javax.swing.JFrame;
 public class ElectricFieldHockey extends JFrame
 {
     /**
+     * If this value is set to true, it indicates that the application
+     * is running on the web.
+     */
+    public static boolean isWebVersion = false;
+    
+    /**
      * Creates a new instance of the window and adds the Game as a component
      */
     public ElectricFieldHockey()
@@ -27,7 +33,8 @@ public class ElectricFieldHockey extends JFrame
      * title of the window. The update and render FPS can be optionally specified through
      * the command-line arguments.
      * @param args command-line arguments; up to two floating-point arguments can be specified,
-     * with the first specifying the update FPS and the second the render FPS.
+     * with the first specifying the update FPS and the second the render FPS. A third flag "web" can be added
+     * to indicate that the application is running on the web.
      */
     public static void main(String[] args)
     {
@@ -40,6 +47,9 @@ public class ElectricFieldHockey extends JFrame
             System.err.println(e);
             return;
         }
+
+        if (args.length >= 3 && args[2].equals("web"))
+            isWebVersion = true;
 
         if (args.length >= 2)
             Game.createGame(Float.parseFloat(args[0]), Float.parseFloat(args[1]));
