@@ -4,7 +4,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -422,12 +421,13 @@ public class WorldScene extends Scene
 
             if (actor instanceof Charge && !((Charge)actor).isFixed())
                 charges++;
-
+            /* 
             int index = Collections.binarySearch(actors, actor, (a, b) -> a.getZIndex() - b.getZIndex());
             if (index < 0)
                 index = -(index + 1);
+             */
 
-            actors.add(index, actor);
+            actors.add(/* index, */ actor);
             actorSet.add(actor);
 
             for (Class<?> type : trackedActors.keySet())
