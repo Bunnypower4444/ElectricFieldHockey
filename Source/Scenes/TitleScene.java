@@ -75,10 +75,13 @@ public class TitleScene extends Scene
         DrawUtil.drawText(g, new Vector2(Game.WIDTH / 2, Game.HEIGHT / 2),
             "Hockey", new Vector2(0.5f, 1));
 
-        final float PADDING = 10 * Game.RELATIVE_SCALE;
-
-
         g.setFont(Assets.getFont("JosefinSans", Font.ITALIC, WorldScene.BUTTON_HEIGHT / 2));
+
+        final float PADDING = 10 * Game.RELATIVE_SCALE;
+        
+        if (ElectricFieldHockey.isWebVersion)
+            DrawUtil.drawText(g, new Vector2(Game.WIDTH / 2, (float)buttons[2].getBounds().getMaxY() + PADDING),
+                "Recommended for web version", new Vector2(0.5f, 0));
 
         DrawUtil.drawText(g, new Vector2(0 + PADDING, Game.HEIGHT - PADDING),
             "Version " + Game.VERSION_STRING, new Vector2(0, 1));

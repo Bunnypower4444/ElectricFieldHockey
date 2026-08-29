@@ -62,6 +62,15 @@ public class UIButton implements GraphicsElement
     }
 
     /**
+     * Gets the rectangle bounding box for this button.
+     * @return The bounding box
+     */
+    public Rectangle getBounds()
+    {
+        return bounds;
+    }
+
+    /**
      * Updates the state of the button for the update tick. This includes
      * detecting whether the mouse is hovering over or pressing down on
      * the button (which causes the button to be rendered differently),
