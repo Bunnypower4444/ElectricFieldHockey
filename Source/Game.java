@@ -64,7 +64,7 @@ public class Game extends JPanel implements ActionListener, MouseListener, KeyLi
     /**
      * A string containing the version of the application.
      */
-    public static final String VERSION_STRING = "1.0.1";
+    public static final String VERSION_STRING = "1.1.0";
     
     // TODO maybe have a separate update (runs at same freq as render) and physics tick system?
     // should also update all the (int) casts to round the numbers
