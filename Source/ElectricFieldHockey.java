@@ -49,7 +49,10 @@ public class ElectricFieldHockey extends JFrame
         }
 
         if (args.length >= 3 && args[2].equals("web"))
+        {
             isWebVersion = true;
+            Save.instance().lowDetailMode = true;
+        }
 
         if (args.length >= 2)
             Game.createGame(Float.parseFloat(args[0]), Float.parseFloat(args[1]));
